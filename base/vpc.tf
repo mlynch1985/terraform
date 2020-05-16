@@ -6,7 +6,8 @@ resource "aws_vpc" "vpc" {
 
   tags = {
     Name        = "${var.namespace}-vpc"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 
@@ -17,7 +18,8 @@ resource "aws_internet_gateway" "igw" {
 
   tags = {
     Name        = "${var.namespace}-igw"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 
@@ -33,7 +35,8 @@ resource "aws_route_table" "rtb-public" {
 
   tags = {
     Name        = "${var.namespace}-rtb-public"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 
@@ -44,7 +47,8 @@ resource "aws_eip" "eip-nat-a" {
 
   tags = {
     Name        = "${var.namespace}-eip-ngw-a"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 resource "aws_eip" "eip-nat-b" {
@@ -52,7 +56,8 @@ resource "aws_eip" "eip-nat-b" {
 
   tags = {
     Name        = "${var.namespace}-eip-ngw-b"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 resource "aws_eip" "eip-nat-c" {
@@ -60,7 +65,8 @@ resource "aws_eip" "eip-nat-c" {
 
   tags = {
     Name        = "${var.namespace}-eip-ngw-c"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 
@@ -73,7 +79,8 @@ resource "aws_nat_gateway" "ngw-private-a" {
 
   tags = {
     Name        = "${var.namespace}-ngw-public-a"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 resource "aws_nat_gateway" "ngw-private-b" {
@@ -83,7 +90,8 @@ resource "aws_nat_gateway" "ngw-private-b" {
 
   tags = {
     Name        = "${var.namespace}-ngw-public-b"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 resource "aws_nat_gateway" "ngw-private-c" {
@@ -93,7 +101,8 @@ resource "aws_nat_gateway" "ngw-private-c" {
 
   tags = {
     Name        = "${var.namespace}-ngw-public-c"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 
@@ -109,7 +118,8 @@ resource "aws_route_table" "rtb-private-a" {
 
   tags = {
     Name        = "${var.namespace}-rtb-private-a"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 resource "aws_route_table" "rtb-private-b" {
@@ -122,7 +132,8 @@ resource "aws_route_table" "rtb-private-b" {
 
   tags = {
     Name        = "${var.namespace}-rtb-private-b"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 resource "aws_route_table" "rtb-private-c" {
@@ -135,6 +146,7 @@ resource "aws_route_table" "rtb-private-c" {
 
   tags = {
     Name        = "${var.namespace}-rtb-private-c"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }

@@ -21,7 +21,8 @@ resource "aws_security_group" "allow_ssh" {
 
   tags = {
     Name        = "${var.namespace}-allow-ssh"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 
@@ -49,7 +50,8 @@ resource "aws_security_group" "allow_rdp" {
 
   tags = {
     Name        = "${var.namespace}-allow-rdp"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 
@@ -77,7 +79,8 @@ resource "aws_security_group" "allow_http" {
 
   tags = {
     Name        = "${var.namespace}-allow-http"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }
 
@@ -105,6 +108,7 @@ resource "aws_security_group" "allow_https" {
 
   tags = {
     Name        = "${var.namespace}-allow-https"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
   }
 }

@@ -6,36 +6,42 @@ data "aws_availability_zones" "azs" {
 
 ## Define Public Subnets
 resource "aws_subnet" "public-a" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.1.0/24"
-  availability_zone = data.aws_availability_zones.azs.names[0]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = data.aws_availability_zones.azs.names[0]
   map_public_ip_on_launch = true
 
   tags = {
     Name        = "${var.namespace}-public-a"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
+    Tier        = "public"
   }
 }
 resource "aws_subnet" "public-b" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.2.0/24"
-  availability_zone = data.aws_availability_zones.azs.names[1]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = data.aws_availability_zones.azs.names[1]
   map_public_ip_on_launch = true
 
   tags = {
     Name        = "${var.namespace}-public-b"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
+    Tier        = "public"
   }
 }
 resource "aws_subnet" "public-c" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.3.0/24"
-  availability_zone = data.aws_availability_zones.azs.names[2]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.3.0/24"
+  availability_zone       = data.aws_availability_zones.azs.names[2]
   map_public_ip_on_launch = true
 
   tags = {
     Name        = "${var.namespace}-public-c"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
+    Tier        = "public"
   }
 }
 
@@ -56,36 +62,42 @@ resource "aws_route_table_association" "public-c" {
 
 ## Define Private Subnets
 resource "aws_subnet" "private-a" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.11.0/24"
-  availability_zone = data.aws_availability_zones.azs.names[0]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.11.0/24"
+  availability_zone       = data.aws_availability_zones.azs.names[0]
   map_public_ip_on_launch = false
 
   tags = {
     Name        = "${var.namespace}-private-a"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
+    Tier        = "private"
   }
 }
 resource "aws_subnet" "private-b" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.12.0/24"
-  availability_zone = data.aws_availability_zones.azs.names[1]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.12.0/24"
+  availability_zone       = data.aws_availability_zones.azs.names[1]
   map_public_ip_on_launch = false
 
   tags = {
     Name        = "${var.namespace}-private-b"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
+    Tier        = "private"
   }
 }
 resource "aws_subnet" "private-c" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.13.0/24"
-  availability_zone = data.aws_availability_zones.azs.names[2]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.13.0/24"
+  availability_zone       = data.aws_availability_zones.azs.names[2]
   map_public_ip_on_launch = false
 
   tags = {
     Name        = "${var.namespace}-private-c"
-    Environment = "${var.environment}"
+    Environment = var.environment
+    Namespace   = var.namespace
+    Tier        = "private"
   }
 }
 
