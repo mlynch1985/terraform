@@ -1,38 +1,38 @@
 ## Define our target group
-resource "aws_lb_target_group" "targetgroup-linuxjump" {
-  name     = "${var.namespace}-targetgroup-linuxjump"
-  port     = 22
+resource "aws_lb_target_group" "targetgroup-windowsjump" {
+  name     = "${var.namespace}-targetgroup-windowsjump"
+  port     = 3389
   protocol = "TCP"
   #target_type = "ip"
   vpc_id   = data.aws_vpc.vpc.id ## Created in the autoscalinggroup.tf file
 
   tags = {
-    Name = "${var.namespace}-targetgroup-linuxjump"
+    Name = "${var.namespace}-targetgroup-windowsjump"
     Environment = var.environment
     Namespace   = var.namespace
   }
 }
 
 ## Define our Network Load Balancer
-resource "aws_lb" "nlb-linuxjump" {
-  name               = "${var.namespace}-nlb-linuxjump"
+resource "aws_lb" "nlb-windows-jump" {
+  name               = "${var.namespace}-nlb-windowsjump"
   internal           = false
   load_balancer_type = "network"
   subnets            = data.aws_subnet_ids.public-subnets.ids
   tags = {
-    Name = "${var.namespace}-nlb-linuxjump"
+    Name = "${var.namespace}-nlb-windowsjump"
     Environment = var.environment
     Namespace   = var.namespace
   }
 }
 
 ## Define our NLB Listener
-resource "aws_lb_listener" "listener-linuxjump" {
-  load_balancer_arn = aws_lb.nlb-linuxjump.arn
-  port              = "22"
+resource "aws_lb_listener" "listener-windowsjump" {
+  load_balancer_arn = aws_lb.nlb-windows-jump.arn
+  port              = "3389"
   protocol          = "TCP"
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.targetgroup-linuxjump.arn
+    target_group_arn = aws_lb_target_group.targetgroup-windowsjump.arn
   }
 }

@@ -1,5 +1,5 @@
 ## Allow SSH inbound traffic from VPC
-resource "aws_security_group" "allow_ssh" {
+resource "aws_security_group" "allow-ssh" {
   name        = "allow-ssh"
   description = "Allow SSH inbound traffic from VPC"
   vpc_id      = aws_vpc.vpc.id
@@ -28,7 +28,7 @@ resource "aws_security_group" "allow_ssh" {
 
 
 ## Allow RDP inbound traffic from VPC
-resource "aws_security_group" "allow_rdp" {
+resource "aws_security_group" "allow-rdp" {
   name        = "allow-rdp"
   description = "Allow RDP inbound traffic from VPC"
   vpc_id      = aws_vpc.vpc.id
@@ -57,7 +57,7 @@ resource "aws_security_group" "allow_rdp" {
 
 
 ## Allow HTTP inbound traffic from VPC
-resource "aws_security_group" "allow_http" {
+resource "aws_security_group" "allow-http" {
   name        = "allow-http"
   description = "Allow HTTP inbound traffic from VPC"
   vpc_id      = aws_vpc.vpc.id
@@ -86,7 +86,7 @@ resource "aws_security_group" "allow_http" {
 
 
 ## Allow HTTPS inbound traffic from VPC
-resource "aws_security_group" "allow_https" {
+resource "aws_security_group" "allow-https" {
   name        = "allow-https"
   description = "Allow HTTPS inbound traffic from VPC"
   vpc_id      = aws_vpc.vpc.id
