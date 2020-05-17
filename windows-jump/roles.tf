@@ -35,8 +35,8 @@ resource "aws_iam_role_policy_attachment" "attach-ec2-windowsjump-ssm" {
 
 ## Grant EC2 API Access to query for instance tags
 resource "aws_iam_role_policy" "inline-ec2-windowsjump-describetags" {
-  name        = "GrantEC2DescribeTags"
-	role = aws_iam_role.role-ec2-windowsjump.name
+  name = "GrantEC2DescribeTags"
+  role = aws_iam_role.role-ec2-windowsjump.name
 
   policy = <<EOF
 {
@@ -57,8 +57,8 @@ EOF
 
 ## Grant S3 API Access to download CloudwatchAgent Config file
 resource "aws_iam_role_policy" "inline-ec2-windowsjump-s3copyobject" {
-  name        = "GrantS3CopyObject"
-	role = aws_iam_role.role-ec2-windowsjump.name
+  name = "GrantS3CopyObject"
+  role = aws_iam_role.role-ec2-windowsjump.name
 
   policy = <<EOF
 {
@@ -76,6 +76,37 @@ resource "aws_iam_role_policy" "inline-ec2-windowsjump-s3copyobject" {
       "Resource": "*"
     }
   ]
+}
+EOF
+}
+
+## Grant SecretsManager access to obtain Admin Passwords
+resource "aws_iam_role_policy" "inline-ec2-windowsjump-getsecretvalue" {
+  name = "GrantGetSecretValue"
+  role = aws_iam_role.role-ec2-windowsjump.name
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+          "Sid": "GrantGetSecretValue",
+          "Effect": "Allow",
+          "Action": [
+            "secretsmanager:GetSecretValue",
+            "secretsmanager:DescribeSecret"
+          ],
+          "Resource": "${data.aws_secretsmanager_secret.secret-windowsjump.arn}"
+        },
+        {
+          "Sid": "GrantKMSDecrypt",
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt"
+          ],
+          "Resource": "${aws_kms_key.kms-key-windowsjump.arn}"
+        }
+    ]
 }
 EOF
 }

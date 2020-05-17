@@ -1,0 +1,36 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: WindowsJump Secret
+Parameters:
+  namespace:
+    Type: String
+  environment:
+    Type: String
+  KmsKey:
+    Type: String
+
+Resources:
+  Secret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: 'WindowsJump Secret'
+      Name: !Sub ${namespace}-windowsjump-secret
+      KmsKeyId: !Ref KmsKey
+      GenerateSecretString:
+        SecretStringTemplate:
+          Fn::Sub:
+              '{
+                  "users": [
+                      "manager",
+                      "mikel"
+                  ]
+              }'
+        GenerateStringKey: "Secret"
+        PasswordLength: 14
+        ExcludeCharacters: ""
+        ExcludePunctuation: True
+      Tags:
+        - Key: namespace
+          Value: !Ref namespace
+        - Key: environment
+          Value: !Ref environment

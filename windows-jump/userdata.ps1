@@ -20,6 +20,13 @@ try {
     Start-Process -FilePath $MsiExecPath -ArgumentList "/i $AgentDestination /qn /L*V C:\cloudwatchagent-log.txt" -Wait -NoNewWindow
 	Copy-S3Object -BucketName $BucketName -Key $ConfigSource -LocalFile $ConfigDestination
 	& "C:\Program Files\Amazon\AmazonCloudWatchAgent\amazon-cloudwatch-agent-ctl.ps1" -Action fetch-config -Mode ec2 -ConfigLocation file:$ConfigDestination -Start
+
+	$SecureString = (Get-SECSecretValue -SecretId "$($namespace)-windowsjump-secret").SecretString | ConvertFrom-Json
+
+	foreach ($user in $SecureString.users) {
+		NET USER $user $($SecureString.Secret) /ADD
+		NET LOCALGROUP administrators $user /ADD
+	}
 }
 catch {
 	$stacktrace = $_.ScriptStackTrace

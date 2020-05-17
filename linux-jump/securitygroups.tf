@@ -9,7 +9,7 @@ resource "aws_security_group" "allow-remote-ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["100.11.168.0/24"]
+    cidr_blocks = ["${var.office-ip}"]
   }
 
   egress {
