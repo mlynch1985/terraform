@@ -31,3 +31,7 @@ terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
 $Env:AWS_SDK_LOAD_CONFIG="1"
 cd "C:\Git\tf\windows-jump"
 terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
+
+$Env:AWS_SDK_LOAD_CONFIG="1"
+cd "C:\Git\tf\monitoring"
+terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
