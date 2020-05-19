@@ -35,8 +35,8 @@ resource "aws_iam_role_policy_attachment" "attach-ec2-linuxwordpress-ssm" {
 
 ## Grant EC2 API Access to query for instance tags
 resource "aws_iam_role_policy" "inline-ec2-linuxwordpress-describetags" {
-  name        = "GrantEC2DescribeTags"
-	role = aws_iam_role.role-ec2-linuxwordpress.name
+  name = "GrantEC2DescribeTags"
+  role = aws_iam_role.role-ec2-linuxwordpress.name
 
   policy = <<EOF
 {
@@ -57,8 +57,8 @@ EOF
 
 ## Grant S3 API Access to download CloudwatchAgent Config file
 resource "aws_iam_role_policy" "inline-ec2-linuxwordpress-s3copyobject" {
-  name        = "GrantS3CopyObject"
-	role = aws_iam_role.role-ec2-linuxwordpress.name
+  name = "GrantS3CopyObject"
+  role = aws_iam_role.role-ec2-linuxwordpress.name
 
   policy = <<EOF
 {
