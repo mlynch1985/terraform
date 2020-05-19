@@ -3,8 +3,7 @@ resource "aws_lb_target_group" "targetgroup-windowsjump" {
   name     = "${var.namespace}-targetgroup-windowsjump"
   port     = 3389
   protocol = "TCP"
-  #target_type = "ip"
-  vpc_id   = data.aws_vpc.vpc.id ## Created in the autoscalinggroup.tf file
+  vpc_id   = data.aws_vpc.vpc.id
 
   tags = {
     Name = "${var.namespace}-targetgroup-windowsjump"
