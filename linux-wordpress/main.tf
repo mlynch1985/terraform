@@ -18,6 +18,14 @@ provider "random" {
   version = "~> 2.2.0"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "useast1d-mltemp"
+    key = "useast1d-state-linuxwordpress"
+    region = "us-east-1"
+  }
+}
+
 ## Specify any DATA elements here to be shared across all components of this module
 
 ## Query for the latest Amazon Linux 2 AMI

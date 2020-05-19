@@ -13,6 +13,14 @@ provider "aws" {
   version = "~> 2.62"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "useast1d-mltemp"
+    key = "useast1d-state-windowsjump"
+    region = "us-east-1"
+  }
+}
+
 ## Specify any DATA elements here to be shared across all components of this module
 
 ## Query for the latest Windows Server 2019 AMI

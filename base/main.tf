@@ -12,3 +12,11 @@ provider "aws" {
   region  = var.region
   version = "~> 2.62"
 }
+
+terraform {
+  backend "s3" {
+    bucket = "useast1d-mltemp"
+    key = "useast1d-state-base"
+    region = "us-east-1"
+  }
+}
