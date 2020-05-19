@@ -43,20 +43,35 @@ amazon-linux-extras install php7.2 -y
 yum install php72-gd -y
 
 ## Download and extract the latest version of Wordpress
-# wget https://wordpress.org/latest.tar.gz
-# tar -xzvf latest.tar.gz
-# cp wordpress/wp-config-sample.php wordpress/wp-config.php
+wget https://wordpress.org/latest.tar.gz
+tar -xzvf latest.tar.gz
 
-# cp -r wordpress/* /var/www/html/
+## Setup Config file and then move it into HTTPD WebRoot
+cp wordpress/wp-config-sample.php wordpress/wp-config.php
+cp -r wordpress/* /var/www/html/
 
-# nano /etc/httpd/conf/httpd.conf
-#     AllowOverride All
+## Query AWS API to obtain Database Credentials
+DBHOST=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "$NAMESPACE-linuxwordpress-hostname")
+DBNAME=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "$NAMESPACE-linuxwordpress-dbname")
+DBUSER=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "$NAMESPACE-linuxwordpress-user")
+DBPASS=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "$NAMESPACE-linuxwordpress-password")
 
-# chown -R apache:apache /var/www
+## Update WP Config to include Database Connection Details
+sed -i "s/localhost/$DBHOST/g" /var/www/html/wp-config.php
+sed -i "s/database_name_here/$DBNAME/g" /var/www/html/wp-config.php
+sed -i "s/username_here/$DBUSER/g" /var/www/html/wp-config.php
+sed -i "s/password_here/$DBPASS/g" /var/www/html/wp-config.php
 
-# chmod 2775 /var/www
-# find /var/www -type d -exec chmod 2775 {} \;
-# find /var/www -type f -exec chmod 0664 {} \;
+## Generate new Cookie Seed Keys and update the WP Config file
+echo "" >> /var/www/html/wp-config.php
+curl -s 'https://api.wordpress.org/secret-key/1.1/salt/' >> /var/www/html/wp-config.php
 
-# systemctl start httpd
-# systemctl enable httpd
+## Reset permissions on the HTTPD WebRoot
+chown -R apache:apache /var/www
+chmod 2775 /var/www
+find /var/www -type d -exec chmod 2775 {} \;
+find /var/www -type f -exec chmod 0664 {} \;
+
+## Start HTTPD and enable it as a startup service
+systemctl start httpd
+systemctl enable httpd

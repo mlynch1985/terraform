@@ -28,10 +28,10 @@ resource "aws_iam_role_policy" "vpc-flow-logs-policy" {
 
   policy = <<EOF
 {
-  "Sid": "GrantCloudwatchLogs",
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Sid": "GrantCloudwatchLogs",
       "Action": [
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
