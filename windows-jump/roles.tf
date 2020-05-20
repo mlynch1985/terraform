@@ -13,8 +13,7 @@ resource "aws_iam_role" "role-ec2-windowsjump" {
       "Principal": {
         "Service": "ec2.amazonaws.com"
       },
-      "Effect": "Allow",
-      "Sid": ""
+      "Effect": "Allow"
     }
   ]
 }

@@ -1,3 +1,15 @@
+## Create Cloudwatch LogGroup for WindowsEvent Logs
+resource "aws_cloudwatch_log_group" "cloudwatch-windows-eventlogs" {
+  name = "${var.namespace}-windows-eventlogs"
+  retention_in_days = 14
+
+  tags = {
+    Name        = "${var.namespace}-cloudwatch-eventlogs"
+    Environment = var.environment
+    Namespace   = var.namespace
+  }
+}
+
 ## Alert on AutoScaling Events and send to SNS Topic
 resource "aws_cloudwatch_event_rule" "cw-asg-events" {
   name        = "${var.namespace}-cw-asg-events"

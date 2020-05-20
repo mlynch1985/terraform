@@ -1,21 +1,21 @@
 ## Create an Alias for the KMS Key
-resource "aws_kms_alias" "kms-alias-windowsjump" {
-  name          = "alias/${var.namespace}-kms-windowsjump"
-  target_key_id = aws_kms_key.kms-key-windowsjump.id
+resource "aws_kms_alias" "kms-alias-kinesis" {
+  name          = "alias/${var.namespace}-kms-kinesis"
+  target_key_id = aws_kms_key.kms-key-kinesis.id
 }
 
 ## Define our Customer Managed KMS Key
-resource "aws_kms_key" "kms-key-windowsjump" {
-  description             = "kms-windowsjump"
+resource "aws_kms_key" "kms-key-kinesis" {
+  description             = "kms-kinesis"
   deletion_window_in_days = 7
   tags = {
-    Name        = "${var.namespace}-kms-windowsjump"
+    Name        = "${var.namespace}-kms-kinesis"
     Environment = var.environment
     Namespace   = var.namespace
   }
   policy = <<EOF
 {
-    "Id": "${var.namespace}-kms-windowsjump",
+    "Id": "${var.namespace}-kms-kinesis",
     "Version": "2012-10-17",
     "Statement": [
         {
@@ -55,7 +55,8 @@ resource "aws_kms_key" "kms-key-windowsjump" {
             "Sid": "Allow use of the key",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "${aws_iam_role.role-ec2-windowsjump.arn}"
+                "Service": "logs.${var.region}.amazonaws.com",
+                "AWS": "${aws_iam_role.role-cloudwatch-kinesis.arn}"
             },
             "Action": [
                 "kms:Decrypt",
@@ -67,7 +68,8 @@ resource "aws_kms_key" "kms-key-windowsjump" {
             "Sid": "Allow attachment of persistent resources",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "${aws_iam_role.role-ec2-windowsjump.arn}"
+                "Service": "logs.${var.region}.amazonaws.com",
+                "AWS": "${aws_iam_role.role-cloudwatch-kinesis.arn}"
             },
             "Action": [
                 "kms:CreateGrant",
