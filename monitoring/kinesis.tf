@@ -15,11 +15,11 @@ resource "aws_kinesis_stream" "kinesis-logs-stream" {
 }
 
 ## Create Cloudwatch Log Subscription Filter
-resource "aws_cloudwatch_log_subscription_filter" "kinesis-cloudwatch-subscription-filter" {
-  name            = "${var.namespace}-kinesis-filter"
-  role_arn        = aws_iam_role.role-cloudwatch-kinesis.arn
-  log_group_name  = "${var.namespace}-windows-eventlogs"
-  filter_pattern  = "\"*\""
-  destination_arn = aws_kinesis_stream.kinesis-logs-stream.arn
-  distribution    = "Random"
-}
+# resource "aws_cloudwatch_log_subscription_filter" "kinesis-cloudwatch-subscription-filter" {
+#   name            = "${var.namespace}-kinesis-filter"
+#   role_arn        = aws_iam_role.role-cloudwatch-kinesis.arn
+#   log_group_name  = "${var.namespace}-windows-eventlogs"
+#   filter_pattern  = "\"*\""
+#   destination_arn = aws_kinesis_stream.kinesis-logs-stream.arn
+#   distribution    = "Random"
+# }
