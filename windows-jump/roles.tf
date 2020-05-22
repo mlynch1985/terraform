@@ -1,6 +1,6 @@
 ## Define the Base Role
-resource "aws_iam_role" "role-ec2-windowsjump" {
-  name                  = "${var.namespace}-role-ec2-windowsjump"
+resource "aws_iam_role" "windowsjump" {
+  name                  = "${var.namespace}_ec2_windowsjump"
   force_detach_policies = true
   path                  = "/app/"
 
@@ -21,21 +21,21 @@ EOF
 }
 
 ## Attach CloudwatchAgentServer Policy
-resource "aws_iam_role_policy_attachment" "attach-ec2-windowsjump-cloudwatch" {
-  role       = aws_iam_role.role-ec2-windowsjump.name
+resource "aws_iam_role_policy_attachment" "windowsjump_cloudwatch" {
+  role       = aws_iam_role.windowsjump.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 ## Attach SSMManagedInstanceCore Policy
-resource "aws_iam_role_policy_attachment" "attach-ec2-windowsjump-ssm" {
-  role       = aws_iam_role.role-ec2-windowsjump.name
+resource "aws_iam_role_policy_attachment" "windowsjump_ssm" {
+  role       = aws_iam_role.windowsjump.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 ## Grant EC2 API Access to query for instance tags
-resource "aws_iam_role_policy" "inline-ec2-windowsjump-describetags" {
+resource "aws_iam_role_policy" "windowsjump_describetags" {
   name = "GrantEC2DescribeTags"
-  role = aws_iam_role.role-ec2-windowsjump.name
+  role = aws_iam_role.windowsjump.name
 
   policy = <<EOF
 {
@@ -55,9 +55,9 @@ EOF
 }
 
 ## Grant S3 API Access to download CloudwatchAgent Config file
-resource "aws_iam_role_policy" "inline-ec2-windowsjump-s3copyobject" {
+resource "aws_iam_role_policy" "windowsjump_copyobject" {
   name = "GrantS3CopyObject"
-  role = aws_iam_role.role-ec2-windowsjump.name
+  role = aws_iam_role.windowsjump.name
 
   policy = <<EOF
 {
@@ -80,9 +80,9 @@ EOF
 }
 
 ## Grant SecretsManager access to obtain Admin Passwords
-resource "aws_iam_role_policy" "inline-ec2-windowsjump-getsecretvalue" {
+resource "aws_iam_role_policy" "windowsjump_getsecretvalue" {
   name = "GrantGetSecretValue"
-  role = aws_iam_role.role-ec2-windowsjump.name
+  role = aws_iam_role.windowsjump.name
 
   policy = <<EOF
 {
@@ -95,7 +95,7 @@ resource "aws_iam_role_policy" "inline-ec2-windowsjump-getsecretvalue" {
             "secretsmanager:GetSecretValue",
             "secretsmanager:DescribeSecret"
           ],
-          "Resource": "${data.aws_secretsmanager_secret.secret-windowsjump.arn}"
+          "Resource": "${data.aws_secretsmanager_secret.windowsjump.arn}"
         },
         {
           "Sid": "GrantKMSDecrypt",
@@ -103,7 +103,7 @@ resource "aws_iam_role_policy" "inline-ec2-windowsjump-getsecretvalue" {
           "Action": [
             "kms:Decrypt"
           ],
-          "Resource": "${aws_kms_key.kms-key-windowsjump.arn}"
+          "Resource": "${aws_kms_key.windowsjump.arn}"
         }
     ]
 }
@@ -111,7 +111,7 @@ EOF
 }
 
 ## Create EC2 Instance Profile
-resource "aws_iam_instance_profile" "ec2-windowsjump-instance-profile" {
-  name = "${var.namespace}-ec2-windowsjump"
-  role = aws_iam_role.role-ec2-windowsjump.name
+resource "aws_iam_instance_profile" "windowsjump" {
+  name = "${var.namespace}_ec2_windowsjump"
+  role = aws_iam_role.windowsjump.name
 }

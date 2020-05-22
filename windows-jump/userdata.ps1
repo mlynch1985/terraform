@@ -19,10 +19,10 @@ try {
     (New-Object System.Net.WebClient).DownloadFile($AgentSource , $AgentDestination)
     Start-Process -FilePath $MsiExecPath -ArgumentList "/i $AgentDestination /qn /L*V C:\cloudwatchagent-log.txt" -Wait -NoNewWindow
 	Copy-S3Object -BucketName $BucketName -Key $ConfigSource -LocalFile $ConfigDestination
-	((Get-Content -Path $ConfigDestination -Raw) -Replace "EventLogs","$namespace-windows-eventlogs") | Set-Content -Path $ConfigDestination
+	((Get-Content -Path $ConfigDestination -Raw) -Replace "EventLogs","$($namespace)_windows_eventlogs") | Set-Content -Path $ConfigDestination
 	& "C:\Program Files\Amazon\AmazonCloudWatchAgent\amazon-cloudwatch-agent-ctl.ps1" -Action fetch-config -Mode ec2 -ConfigLocation file:$ConfigDestination -Start
 
-	$SecureString = (Get-SECSecretValue -SecretId "$($namespace)-windowsjump-secret").SecretString | ConvertFrom-Json
+	$SecureString = (Get-SECSecretValue -SecretId "$($namespace)-windowsjump").SecretString | ConvertFrom-Json
 
 	foreach ($user in $SecureString.users) {
 		NET USER $user $($SecureString.Secret) /ADD

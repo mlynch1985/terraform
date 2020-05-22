@@ -1,6 +1,6 @@
 ## Define the Base Role
-resource "aws_iam_role" "role-ec2-linuxjump" {
-  name                  = "${var.namespace}-role-ec2-linuxjump"
+resource "aws_iam_role" "linuxjump" {
+  name                  = "${var.namespace}_ec2_linuxjump"
   force_detach_policies = true
   path                  = "/app/"
 
@@ -22,21 +22,21 @@ EOF
 }
 
 ## Attach CloudwatchAgentServer Policy
-resource "aws_iam_role_policy_attachment" "attach-ec2-linuxjump-cloudwatch" {
-  role       = aws_iam_role.role-ec2-linuxjump.name
+resource "aws_iam_role_policy_attachment" "linuxjump_cloudwatch" {
+  role       = aws_iam_role.linuxjump.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 ## Attach SSMManagedInstanceCore Policy
-resource "aws_iam_role_policy_attachment" "attach-ec2-linuxjump-ssm" {
-  role       = aws_iam_role.role-ec2-linuxjump.name
+resource "aws_iam_role_policy_attachment" "linuxjump_ssm" {
+  role       = aws_iam_role.linuxjump.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 ## Grant EC2 API Access to query for instance tags
-resource "aws_iam_role_policy" "inline-ec2-linuxjump-describetags" {
-  name        = "GrantEC2DescribeTags"
-	role = aws_iam_role.role-ec2-linuxjump.name
+resource "aws_iam_role_policy" "linuxjump_describetags" {
+  name = "GrantEC2DescribeTags"
+  role = aws_iam_role.linuxjump.name
 
   policy = <<EOF
 {
@@ -56,9 +56,9 @@ EOF
 }
 
 ## Grant S3 API Access to download CloudwatchAgent Config file
-resource "aws_iam_role_policy" "inline-ec2-linuxjump-s3copyobject" {
-  name        = "GrantS3CopyObject"
-	role = aws_iam_role.role-ec2-linuxjump.name
+resource "aws_iam_role_policy" "linuxjump_copyobject" {
+  name = "GrantS3CopyObject"
+  role = aws_iam_role.linuxjump.name
 
   policy = <<EOF
 {
@@ -81,7 +81,7 @@ EOF
 }
 
 ## Create EC2 Instance Profile
-resource "aws_iam_instance_profile" "ec2-linuxjump-instance-profile" {
-  name = "${var.namespace}-ec2-linuxjump"
-  role = aws_iam_role.role-ec2-linuxjump.name
+resource "aws_iam_instance_profile" "linuxjump" {
+  name = "${var.namespace}_ec2_linuxjump"
+  role = aws_iam_role.linuxjump.name
 }

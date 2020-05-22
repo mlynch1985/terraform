@@ -1,10 +1,7 @@
 #!/bin/bash
 
-## Perform system updates first and install some basic components
+## Perform system updates first
 yum update -y
-yum install tmux -y
-yum install telnet -y
-yum install jq -y
 
 ## Capture current Instance ID and Region
 INSTANCE_ID=$(curl -s 'http://169.254.169.254/latest/meta-data/instance-id')

@@ -1,21 +1,21 @@
 ## Define our SNS Topic to capture Cloudwatch Events and Alarms
-resource "aws_sns_topic" "sns-topic-asg-events" {
-  name = "${var.namespace}-asg-events"
+resource "aws_sns_topic" "autoscaling_events" {
+  name = "${var.namespace}-autoscaling_events"
   tags = {
-    Name        = "${var.namespace}-sns-topic-asg-events"
+    Name        = "${var.namespace}-autoscaling_events"
     Environment = var.environment
     Namespace   = var.namespace
   }
 }
 
 ## Define the SNS Topic Policy
-resource "aws_sns_topic_policy" "sns-policy-asg-events" {
-  arn    = aws_sns_topic.sns-topic-asg-events.arn
-  policy = data.aws_iam_policy_document.sns-iam-asg-events.json
+resource "aws_sns_topic_policy" "autoscaling_events" {
+  arn    = aws_sns_topic.autoscaling_events.arn
+  policy = data.aws_iam_policy_document.autoscaling_events.json
 }
 
 ## Define the SNS Topic Policy IAM Role
-data "aws_iam_policy_document" "sns-iam-asg-events" {
+data "aws_iam_policy_document" "autoscaling_events" {
   statement {
     effect  = "Allow"
     actions = ["SNS:Publish"]
@@ -28,6 +28,6 @@ data "aws_iam_policy_document" "sns-iam-asg-events" {
       ]
     }
 
-    resources = ["${aws_sns_topic.sns-topic-asg-events.arn}"]
+    resources = ["${aws_sns_topic.autoscaling_events.arn}"]
   }
 }

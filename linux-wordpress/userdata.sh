@@ -1,10 +1,7 @@
 #!/bin/bash
 
-## Perform system updates first and install some basic components
+## Perform system updates first
 yum update -y
-yum install tmux -y
-yum install telnet -y
-yum install jq -y
 
 ## Capture current Instance ID and Region
 INSTANCE_ID=$(curl -s 'http://169.254.169.254/latest/meta-data/instance-id')
@@ -22,10 +19,10 @@ fi
 export AWS_DEFAULT_REGION=$INSTANCE_REGION
 
 ## Query EC2 API for namespace instance tag
-NAMESPACE=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=namespace" --query 'Tags[0].Value' --output text)
+NAMESPACE=$(aws ec2 describe-tags --filters "Name=resource-id,Values=${INSTANCE_ID}" "Name=key,Values=namespace" --query 'Tags[0].Value' --output text)
 
 ## Define where to download the CloudwatchAgent config from and where to save it
-CWA_SOURCE="$NAMESPACE-mltemp/CloudWatchConfigs/linux-amazon-cloudwatch-agent.json"
+CWA_SOURCE="${NAMESPACE}-mltemp/CloudWatchConfigs/linux-amazon-cloudwatch-agent.json"
 CWA_DESTINATION="/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
 
 ## Define where the CloudwatchAgent binary lives
@@ -51,10 +48,10 @@ cp wordpress/wp-config-sample.php wordpress/wp-config.php
 cp -r wordpress/* /var/www/html/
 
 ## Query AWS API to obtain Database Credentials
-DBHOST=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "$NAMESPACE-linuxwordpress-hostname")
-DBNAME=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "$NAMESPACE-linuxwordpress-dbname")
-DBUSER=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "$NAMESPACE-linuxwordpress-user")
-DBPASS=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "$NAMESPACE-linuxwordpress-password")
+DBHOST=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "${NAMESPACE}_linuxwordpress_hostname")
+DBNAME=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "${NAMESPACE}_linuxwordpress_dbname")
+DBUSER=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "${NAMESPACE}_linuxwordpress_username")
+DBPASS=$(aws ssm get-parameter --region $INSTANCE_REGION --output text --query "Parameter.Value" --name "${NAMESPACE}_linuxwordpress_password")
 
 ## Update WP Config to include Database Connection Details
 sed -i "s/localhost/$DBHOST/g" /var/www/html/wp-config.php
