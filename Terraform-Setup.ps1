@@ -43,4 +43,9 @@ terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
 isengard ls
 isengard assume awsml+terraform
 isengard open awsml+terraform
+
 $Env:AWS_SDK_LOAD_CONFIG="1"
+cd "C:\Git\tf\"
+terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
+
+terraform destroy -var-file="C:\Git\tf\useast1d.tfvars"
