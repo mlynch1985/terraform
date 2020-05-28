@@ -11,7 +11,7 @@ $Env:HTTPS_PROXY="myproxy.home.com:81"
 aws configure set region us-east-1
 
 ## Initialize and apply each stack
-$Stack = "base-network"
+$Stack = "base"
 $Namespace = "useast1d"
 cd "C:\Git\tf\$Stack"
 terraform init ## -backend-config="$($Namespace).tfvars"

@@ -12,3 +12,5 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.lnk
+*.tfstate
+*.tfstate.backup
