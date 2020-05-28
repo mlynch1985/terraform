@@ -85,7 +85,7 @@ data "aws_security_group" "allow_office_rdp" {
 
 ## Query for WindowsJump Secret created by Cloudformation Stack
 data "aws_secretsmanager_secret" "windowsjump" {
-  name = "useast1d-windowsjump"
+  name = "${var.namespace}-windowsjump"
   depends_on = [
     aws_cloudformation_stack.windowsjump
   ]
