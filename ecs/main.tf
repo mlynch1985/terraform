@@ -5,7 +5,6 @@
 ###################
 
 variable "region" { default = "us-east-1" }
-variable "cidrblock" { default = "10.0.0.0/16"}
 
 provider "aws" {
     region  = var.region
@@ -132,7 +131,7 @@ resource "aws_lb" "elb" {
     internal = false
     load_balancer_type = "application"
     security_groups = [aws_security_group.elb.id]
-    subnets = [for s in data.aws_subnet_ids.public.ids : s]
+    subnets = [for id in data.aws_subnet_ids.public.ids : id]
     tags = {
         Name = "sample-ecs-elb"
     }

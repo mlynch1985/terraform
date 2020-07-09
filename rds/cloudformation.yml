@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description:
+  This template will create and store a random generated password for a Sample RDS Instance
+
+Resources:
+  RDSSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub '${AWS::StackName}'
+      Description: 'Sample RDS Instance Credentials'
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "sampleuser"}'
+        GenerateStringKey: "password"
+        PasswordLength: 24
+        ExcludeCharacters: '"@/\'
