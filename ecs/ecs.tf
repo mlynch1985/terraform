@@ -1,3 +1,10 @@
+resource "aws_ecs_cluster" "cluster" {
+    name = "sample_ecs_cluster"
+    tags = {
+        Name = "sample-ecs-cluster"
+    }
+}
+
 resource "aws_ecs_task_definition" "task" {
     family = "sample-service"
     network_mode = "awsvpc"
@@ -24,7 +31,7 @@ EOF
 }
 
 resource "aws_ecs_service" "service" {
-    depends_on = [aws_iam_role.role]
+    depends_on = [aws_iam_role.role, aws_lb_target_group.group, aws_lb_listener.listener]
     name = "sample-ecs-service"
     cluster = aws_ecs_cluster.cluster.arn
     deployment_maximum_percent = 200

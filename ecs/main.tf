@@ -38,10 +38,3 @@ data "aws_subnet_ids" "private" {
         Tier = "Private"
     }
 }
-
-resource "aws_ecs_cluster" "cluster" {
-    name = "sample_ecs_cluster"
-    tags = {
-        Name = "sample-ecs-cluster"
-    }
-}

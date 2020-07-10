@@ -21,6 +21,7 @@ resource "aws_lb_target_group" "group" {
 }
 
 resource "aws_lb_listener" "listener" {
+    depends_on = [aws_lb_target_group.group]
     load_balancer_arn = aws_lb.elb.arn
     port = 80
     protocol = "HTTP"

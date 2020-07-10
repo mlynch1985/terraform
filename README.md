@@ -35,53 +35,9 @@ terraform init
 terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
 ```
 
-### Deploy Monitoring second
-```bash
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "..\monitoring"
-terraform init
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
-```
-
-### Deploy Linux Jump
-```bash
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "..\linux-jump"
-terraform init
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
-```
-
-### Deploy Windows Jump
-```bash
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "..\windows-jump"
-terraform init
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
-```
-
-### Deploy Linux Wordpress
-```bash
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "..\linux-wordpress"
-terraform init
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
-```
-
 ## Remove each stack
 ```bash
 cd "..\linux-wordpress"
-terraform destroy -var-file="C:\Git\tf\useast1d.tfvars"
-
-cd "..\linux-jump"
-terraform destroy -var-file="C:\Git\tf\useast1d.tfvars"
-
-cd "..\windows-jump"
-terraform destroy -var-file="C:\Git\tf\useast1d.tfvars"
-
-cd "..\monitoring"
-terraform destroy -var-file="C:\Git\tf\useast1d.tfvars"
-
-cd "..\base"
 terraform destroy -var-file="C:\Git\tf\useast1d.tfvars"
 ```
 

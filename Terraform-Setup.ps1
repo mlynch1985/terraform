@@ -24,28 +24,8 @@ $Env:AWS_SDK_LOAD_CONFIG="1"
 cd "C:\Git\tf\base"
 terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
 
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "C:\Git\tf\linux-jump"
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
-
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "C:\Git\tf\windows-jump"
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
-
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "C:\Git\tf\monitoring"
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
-
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "C:\Git\tf\linux-wordpress"
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
-
 isengard ls
 isengard assume awsml+terraform
 isengard open awsml+terraform
-
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "C:\Git\tf\"
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
 
 terraform destroy -var-file="C:\Git\tf\useast1d.tfvars"
