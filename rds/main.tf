@@ -11,6 +11,20 @@ provider "aws" {
     version = "~> 2.69"
 }
 
+provider "random" {
+    version = "~> 2.3"
+}
+
+terraform {
+    backend "s3" {
+        bucket = "mltemp-terraform"
+        key = "rds"
+        region = "us-east-1"
+        encrypt = true
+        dynamodb_table = "terraform-lock"
+    }
+}
+
 data "aws_availability_zones" "available" {
     state = "available"
 }
@@ -28,15 +42,21 @@ data "aws_subnet_ids" "private" {
     }
 }
 
-data "aws_secretsmanager_secret" "secret" {
-  name = "sample-rds-credentials"
-  depends_on = [
-    aws_cloudformation_stack.rdscredentials
-  ]
+resource "random_password" "password" {
+    length = 18
+    special = true
+    override_special = "/@"
 }
 
-data "aws_secretsmanager_secret_version" "secret" {
-    secret_id = data.aws_secretsmanager_secret.secret.id
+resource "aws_secretsmanager_secret" "password" {
+    name = "sample-rds-password"
+    description = "Password used to create our sample RDS Cluster"
+    recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "password" {
+    secret_id = aws_secretsmanager_secret.password.id
+    secret_string = random_password.password.result
 }
 
 resource "aws_security_group" "rds" {
@@ -61,11 +81,6 @@ resource "aws_security_group" "rds" {
     }
 }
 
-resource "aws_cloudformation_stack" "rdscredentials" {
-    name = "sample-rds-credentials"
-    template_body = file("${path.module}/cloudformation.yml")
-}
-
 resource "aws_db_subnet_group" "default" {
     name = "sample-rds-subnetgroup"
     description = "Sample RDS Subnet Group created by Terraform"
@@ -79,8 +94,8 @@ resource "aws_rds_cluster" "cluster" {
     engine_mode = "serverless"
     engine = "aurora"
     database_name = "RDSSampleDatabase"
-    master_username = jsondecode(data.aws_secretsmanager_secret_version.secret.secret_string)["username"]
-    master_password = jsondecode(data.aws_secretsmanager_secret_version.secret.secret_string)["password"]
+    master_username = "sampleuser"
+    master_password = random_password.password.result
     db_subnet_group_name = aws_db_subnet_group.default.id
     vpc_security_group_ids = [aws_security_group.rds.id]
     availability_zones = [
