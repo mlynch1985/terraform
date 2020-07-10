@@ -53,7 +53,7 @@ resource "aws_sns_topic_policy" "cluster_events" {
 
 resource "aws_cloudwatch_metric_alarm" "highcpu" {
     alarm_name = "sample-ecs-highcpu"
-    comparison_operator = "LessThanOrEqualToThreshold"
+    comparison_operator = "GreaterThanOrEqualToThreshold"
     evaluation_periods = 2
     metric_name = "CPUUtilization"
     namespace = "AWS/ECS"
@@ -61,6 +61,10 @@ resource "aws_cloudwatch_metric_alarm" "highcpu" {
     statistic = "Average"
     threshold = 80 # 80% Utilization
     alarm_description = "This metric alarm tracks CPU Utilization over 80%"
+    dimensions = {
+        ClusterName = aws_ecs_cluster.cluster.name
+        ServiceName = aws_ecs_service.service.name
+    }
     tags = {
         Name = "sample-ecs-highcpu"
     }
@@ -76,6 +80,10 @@ resource "aws_cloudwatch_metric_alarm" "highmem" {
     statistic = "Average"
     threshold = 80 # 80% Utilization
     alarm_description = "This metric alarm tracks Memory Utilization over 80%"
+    dimensions = {
+        ClusterName = aws_ecs_cluster.cluster.name
+        ServiceName = aws_ecs_service.service.name
+    }
     tags = {
         Name = "sample-ecs-highmem"
     }
