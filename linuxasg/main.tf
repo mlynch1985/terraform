@@ -11,10 +11,6 @@ provider "aws" {
     version = "~> 2.69"
 }
 
-locals {
-    zones = ["A", "B", "C"]
-}
-
 data "aws_availability_zones" "available" {
     state = "available"
 }
