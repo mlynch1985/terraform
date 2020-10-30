@@ -1,1 +1,1 @@
-{"Modules":[{"Key":"vpc","Source":"./modules/vpc","Dir":"modules/vpc"},{"Key":"","Source":"","Dir":"."}]}
+{"Modules":[{"Key":"vpc","Source":"./modules/vpc","Dir":"modules/vpc"},{"Key":"","Source":"","Dir":"."},{"Key":"alb","Source":"./modules/alb","Dir":"modules/alb"},{"Key":"asg","Source":"./modules/asg","Dir":"modules/asg"}]}
