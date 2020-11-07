@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"asg","Source":"./modules/asg","Dir":"modules/asg"},{"Key":"vpc","Source":"./modules/vpc","Dir":"modules/vpc"},{"Key":"","Source":"","Dir":"."},{"Key":"alb","Source":"./modules/alb","Dir":"modules/alb"}]}

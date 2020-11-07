@@ -11,7 +11,7 @@ resource "aws_launch_template" "this" {
   }
 
   iam_instance_profile {
-    arn = length(var.iam_instance_profile) > 0 ? var.iam_instance_profile.arn : ""
+    arn = length(var.iam_instance_profile) > 0 ? var.iam_instance_profile : ""
   }
 
   tag_specifications {
