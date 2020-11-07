@@ -3,15 +3,15 @@ variable "namespace" {
   type        = string
 }
 
+variable "name" {
+  description = "Provide a name to label each resource within this module"
+  type        = string
+}
+
 variable "default_tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default     = {}
-}
-
-variable "name" {
-  description = "Provide a name to label each resource within this module"
-  type        = string
 }
 
 variable "path" {

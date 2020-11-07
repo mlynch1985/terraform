@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"asg","Source":"../modules/asg","Dir":"../modules/asg"},{"Key":"ec2_role","Source":"../modules/ec2_role","Dir":"../modules/ec2_role"},{"Key":"rds","Source":"../modules/rds","Dir":"../modules/rds"},{"Key":"","Source":"","Dir":"."},{"Key":"alb","Source":"../modules/alb","Dir":"../modules/alb"}]}

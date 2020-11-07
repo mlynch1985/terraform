@@ -62,7 +62,8 @@ resource "aws_subnet" "public" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_public_${count.index}"
+      "Name", "${var.namespace}_public_${count.index}",
+      "tier", "public"
     )
   )
 }
@@ -103,7 +104,8 @@ resource "aws_subnet" "private" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_private_${count.index}"
+      "Name", "${var.namespace}_private_${count.index}",
+      "tier", "private"
     )
   )
 }
@@ -228,7 +230,7 @@ resource "aws_iam_role_policy" "this" {
   count = var.enable_flow_logs ? 1 : 0
 
   name   = "GrantCloudwatchLogs"
-  role   = aws_iam_role.this.id
+  role   = aws_iam_role.this[0].id
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -268,8 +270,8 @@ resource "aws_flow_log" "this" {
   count = var.enable_flow_logs ? 1 : 0
 
   traffic_type    = "ALL"
-  iam_role_arn    = aws_iam_role.this.arn
-  log_destination = aws_cloudwatch_log_group.this.arn
+  iam_role_arn    = aws_iam_role.this[0].arn
+  log_destination = aws_cloudwatch_log_group.this[0].arn
   vpc_id          = aws_vpc.this.id
 
   tags = merge(

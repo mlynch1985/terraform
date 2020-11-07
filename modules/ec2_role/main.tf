@@ -20,12 +20,7 @@ resource "aws_iam_role" "this" {
 }
 EOF
 
-  tags = merge(
-    var.default_tags,
-    map(
-      "Name", "${var.namespace}_${var.name}_role"
-    )
-  )
+  tags = var.default_tags
 }
 
 resource "aws_iam_role_policy_attachment" "ssm-policy" {
@@ -41,4 +36,70 @@ resource "aws_iam_role_policy_attachment" "cloudwatch-policy" {
 resource "aws_iam_instance_profile" "this" {
   name_prefix = "${var.namespace}_${var.name}_role"
   role        = aws_iam_role.this.name
+}
+
+resource "aws_iam_role_policy" "s3" {
+  name_prefix = "GrantS3_"
+  role        = aws_iam_role.this.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::${var.namespace}-${var.name}-*",
+                "arn:aws:s3:::${var.namespace}-${var.name}-*/*"
+            ]
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "parameter_store" {
+  name_prefix = "GrantParameterStore_"
+  role        = aws_iam_role.this.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:DescribeParameter*",
+                "ssm:GetParameter*",
+                "ssm:PutParameter*",
+                "ssm:DeleteParameter*"
+            ],
+            "Resource": "arn:aws:ssm:*:*:parameter/${var.namespace}/${var.name}/*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "secrets_manager" {
+  name_prefix = "GrantSecretsManager"
+  role        = aws_iam_role.this.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:ListSecrets",
+                "secretsmanager:DescribeSecret",
+                "secretsmanager:GetSecretValue"
+            ],
+            "Resource": "arn:aws:secretsmanager:*:*:secret/${var.namespace}_${var.name}_*"
+        }
+    ]
+}
+EOF
 }

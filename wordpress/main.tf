@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 3.0"
     }
+    random = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
   }
 }
 
@@ -11,65 +15,70 @@ provider "aws" {
   region = var.region
 }
 
-module "vpc" {
-  source = "./modules/vpc"
+provider "random" {
+  region = var.region
+}
 
-  namespace                = var.namespace
-  default_tags             = local.default_tags
-  cidr_block               = "10.0.0.0/16"
-  enable_flow_logs         = true
-  deploy_private_subnets   = true
-  deploy_protected_subnets = true
+
+module "ec2_role" {
+  source = "../modules/ec2_role"
+
+  namespace    = var.namespace
+  name         = var.name
+  default_tags = local.default_tags
 }
 
 module "alb" {
-  source = "./modules/alb"
+  source = "../modules/alb"
 
   namespace         = var.namespace
+  name              = var.name
   default_tags      = local.default_tags
-  name              = "wordpress"
   is_internal       = false
-  vpc_id            = module.vpc.vpc.id
-  security_groups   = [module.vpc.default_security_group.id, aws_security_group.alb.id]
-  subnets           = module.vpc.public_subnets.*.id
+  vpc_id            = data.aws_vpc.this.id
+  security_groups   = [aws_security_group.alb.id]
+  subnets           = data.aws_subnet_ids.public.ids
   enable_stickiness = true
 }
 
 module "asg" {
-  source = "./modules/asg"
+  source = "../modules/asg"
 
   namespace                  = var.namespace
+  name                       = var.name
   default_tags               = local.default_tags
-  name                       = "wordpress"
   image_id                   = data.aws_ami.amazon_linux_2.image_id
   instance_type              = "t3.large"
-  security_groups            = [module.vpc.default_security_group.id]
+  security_groups            = [aws_security_group.asg.id]
   user_data                  = filebase64("${path.module}/userdata.sh")
   enable_detailed_monitoring = true
   iam_instance_profile       = module.ec2_role.profile.arn
   asg_min                    = 3
   asg_max                    = 3
   asg_desired                = 3
-  asg_subnets                = module.vpc.private_subnets.*.id
+  asg_subnets                = data.aws_subnet_ids.private.ids
   target_group_arns          = [module.alb.target_group.arn]
   asg_healthcheck_type       = "ELB"
 }
 
-module "ec2_role" {
-  source = "./modules/ec2_role"
+module "rds" {
+  source = "../modules/rds"
 
-  namespace    = var.namespace
-  default_tags = local.default_tags
-  name         = "wordpress"
+  namespace          = var.namespace
+  name               = var.name
+  default_tags       = local.default_tags
+  availability_zones = [data.aws_availability_zones.available.names[0],data.aws_availability_zones.available.names[1],data.aws_availability_zones.available.names[2]]
+  security_groups    = [aws_security_group.rds.id]
+  rds_subnets        = data.aws_subnet_ids.private.ids
 }
 
+
 resource "aws_security_group" "alb" {
-  name_prefix = "${var.namespace}_alb"
-  vpc_id      = module.vpc.vpc.id
+  name_prefix = "${var.namespace}_${var.name}_alb"
+  vpc_id      = data.aws_vpc.this.id
 
   ingress {
     protocol    = "tcp"
-    self        = true
     from_port   = 80
     to_port     = 80
     cidr_blocks = ["0.0.0.0/0"]
@@ -85,7 +94,59 @@ resource "aws_security_group" "alb" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${var.namespace}_alb"
+      "Name", "${var.namespace}_${var.name}_alb"
+    )
+  )
+}
+
+resource "aws_security_group" "asg" {
+  name_prefix = "${var.namespace}_${var.name}_asg"
+  vpc_id      = data.aws_vpc.this.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 80
+    to_port         = 80
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  egress {
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(
+    local.default_tags,
+    map(
+      "Name", "${var.namespace}_${var.name}_asg"
+    )
+  )
+}
+
+resource "aws_security_group" "rds" {
+  name_prefix = "${var.namespace}_${var.name}_rds"
+  vpc_id      = data.aws_vpc.this.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 3306
+    to_port         = 3306
+    security_groups = [aws_security_group.asg.id]
+  }
+
+  egress {
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(
+    local.default_tags,
+    map(
+      "Name", "${var.namespace}_${var.name}_rds"
     )
   )
 }
