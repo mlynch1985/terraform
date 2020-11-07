@@ -18,13 +18,13 @@ variable "cidr_block" {
 variable "enable_dns_support" {
     description = "Set to true to enable DNS support for the VPC"
     type = bool
-    default = false
+    default = true
 }
 
 variable "enable_dns_hostnames" {
     description = "Set to true to enable DNS hostnames for the VPC"
     type = bool
-    default = false
+    default = true
 }
 
 variable "target_az_count" {
