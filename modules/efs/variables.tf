@@ -26,25 +26,13 @@ variable "performance_mode" {
   default     = "generalPurpose"
 }
 
-variable "throughput_mode" {
-  description = "Set to either bursting or provisioned"
-  type        = string
-  default     = "bursting"
-}
-
-variable "throughput_mibps" {
-  description = "Set to required number of mibps"
-  type        = number
-  default     = 50
+variable "subnets" {
+  description = "Provide the subnet ID deploy EFS mount point into"
+  type        = list(string)
 }
 
 variable "security_groups" {
   description = "Provide a list of security group IDs to attach to the mount points"
   type        = list(string)
   default     = []
-}
-
-variable "subnets" {
-  description = "Provide the subnet ID deploy EFS mount point into"
-  type        = list(string)
 }

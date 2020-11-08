@@ -1,4 +1,5 @@
 resource "aws_lb" "this" {
+  name            = "${var.namespace}-${var.name}"
   internal        = var.is_internal
   security_groups = var.security_groups
   subnets         = var.subnets
@@ -12,9 +13,11 @@ resource "aws_lb" "this" {
 }
 
 resource "aws_lb_target_group" "this" {
-  port     = var.target_group_port
-  protocol = var.target_group_protocol
-  vpc_id   = var.vpc_id
+  name                 = "${var.namespace}-${var.name}"
+  port                 = var.target_group_port
+  protocol             = var.target_group_protocol
+  vpc_id               = var.vpc_id
+  deregistration_delay = var.deregistration_delay
 
   stickiness {
     type    = "lb_cookie"
@@ -24,7 +27,7 @@ resource "aws_lb_target_group" "this" {
   health_check {
     enabled             = true
     interval            = 15
-    path                = "/"
+    path                = var.healthcheck_path
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 2
@@ -50,4 +53,10 @@ resource "aws_lb_listener" "this" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.this.arn
   }
+}
+
+resource "aws_ssm_parameter" "this" {
+  name  = "/${var.namespace}/${var.name}/alb_dns"
+  type  = "String"
+  value = aws_lb.this.dns_name
 }

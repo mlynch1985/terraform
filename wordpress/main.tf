@@ -36,22 +36,22 @@ module "efs" {
   default_tags     = local.default_tags
   is_encrypted     = true
   performance_mode = "generalPurpose"
-  throughput_mode  = "bursting"
-  security_groups  = [aws_security_group.efs.id]
   subnets          = data.aws_subnet_ids.private.ids
+  security_groups  = [aws_security_group.efs.id]
 }
 
 module "alb" {
   source = "../modules/alb"
 
-  namespace         = var.namespace
-  name              = var.name
-  default_tags      = local.default_tags
-  is_internal       = false
-  vpc_id            = data.aws_vpc.this.id
-  security_groups   = [aws_security_group.alb.id]
-  subnets           = data.aws_subnet_ids.public.ids
-  enable_stickiness = true
+  namespace            = var.namespace
+  name                 = var.name
+  default_tags         = local.default_tags
+  is_internal          = false
+  security_groups      = [aws_security_group.alb.id]
+  subnets              = data.aws_subnet_ids.public.ids
+  vpc_id               = data.aws_vpc.this.id
+  deregistration_delay = 60
+  enable_stickiness    = true
 }
 
 module "asg" {
@@ -69,9 +69,9 @@ module "asg" {
   asg_min                    = 3
   asg_max                    = 3
   asg_desired                = 3
+  asg_healthcheck_type       = "ELB"
   asg_subnets                = data.aws_subnet_ids.private.ids
   target_group_arns          = [module.alb.target_group.arn]
-  asg_healthcheck_type       = "ELB"
 }
 
 module "rds" {
@@ -80,9 +80,26 @@ module "rds" {
   namespace          = var.namespace
   name               = var.name
   default_tags       = local.default_tags
+  subnets            = data.aws_subnet_ids.private.ids
   availability_zones = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1], data.aws_availability_zones.available.names[2]]
   security_groups    = [aws_security_group.rds.id]
-  rds_subnets        = data.aws_subnet_ids.private.ids
+}
+
+module "ec2_instance" {
+  source = "../modules/ec2_instance"
+
+  namespace                   = var.namespace
+  name                        = "app"
+  default_tags                = local.default_tags
+  image_id                    = data.aws_ami.amazon_linux_2.image_id
+  instance_type               = "t3.large"
+  enable_detailed_monitoring  = true
+  security_groups             = [aws_security_group.asg.id]
+  subnet_id                   = tolist(data.aws_subnet_ids.private.ids)[0]
+  associate_public_ip_address = false
+  user_data                   = ""
+  iam_instance_profile        = module.ec2_role.profile.name
+  enable_second_drive         = true
 }
 
 

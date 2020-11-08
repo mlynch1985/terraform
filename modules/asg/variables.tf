@@ -43,6 +43,18 @@ variable "user_data" {
   default     = ""
 }
 
+variable "block_device_mapping" {
+  description = "Specify an EBS block mapping for block drive"
+  type        = map(string)
+  default = {
+    device_name           = "/dev/xvda"
+    volume_type           = "gp2"
+    volume_size           = 30
+    delete_on_termination = true
+    encrypted             = true
+  }
+}
+
 variable "enable_detailed_monitoring" {
   description = "Set to true to enable detailed monitoring at 1 minute intervals"
   type        = bool
@@ -73,6 +85,12 @@ variable "asg_desired" {
   default     = 1
 }
 
+variable "asg_healthcheck_type" {
+  description = "Specify whether to use EC2 or ELB healthchecks"
+  type        = string
+  default     = "EC2"
+}
+
 variable "asg_subnets" {
   description = "Provide a list of subnets to deploy EC2 instances into"
   type        = list(string)
@@ -81,10 +99,4 @@ variable "asg_subnets" {
 variable "target_group_arns" {
   description = "Provide a list of ALB or NLB target group arns to link into the ASG"
   type        = list(string)
-}
-
-variable "asg_healthcheck_type" {
-  description = "Specify whether to use EC2 or ELB healthchecks"
-  type        = string
-  default     = "EC2"
 }

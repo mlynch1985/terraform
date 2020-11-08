@@ -48,6 +48,21 @@ then
     ENDPOINT=$(echo $RDS_SECRET | jq -r .endpoint)
     USERNAME=$(echo $RDS_SECRET | jq -r .username)
     PASSWORD=$(echo $RDS_SECRET | jq -r .password)
+
+    ## Query SSM Parameter Store for the ALB DNS
+    i=0
+    until [ ! -z $ALBDNS ]
+    do
+        ALBDNS=$(aws ssm get-parameter --name "/${NAMESPACE}/wordpress/alb_dns1" --region $REGION --output text --query Parameter.Value)
+        ((i=i+1))
+        sleep 30
+
+        if [ $i -gt 5 ]
+        then
+            ALBDNS=""
+            break
+        fi
+    done
     
     ## Download and install the latest version of Wordpress
     cd /var/www/html
@@ -61,6 +76,7 @@ then
     sed -i "s/localhost/${ENDPOINT}/g" wp-config.php
     sed -i "s/username_here/${USERNAME}/g" wp-config.php
     sed -i "s/password_here/${PASSWORD}/g" wp-config.php
+    sed -i "s#<?php#<?php\ndefine( 'WP_HOME', '$ALBDNS' );\ndefine( 'WP_SITEURL', '$ALBDNS' );#g" wp-config.php
 fi
 
 ## Enable autostart and startup the HTTPD service

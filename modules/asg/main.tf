@@ -1,10 +1,21 @@
 resource "aws_launch_template" "this" {
-  ebs_optimized          = true
+  name_prefix            = "${var.namespace}_${var.name}_"
   image_id               = var.image_id
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = var.security_groups
   user_data              = var.user_data
+
+  block_device_mappings {
+    device_name = var.block_device_mapping.device_name
+
+    ebs {
+      volume_type           = var.block_device_mapping.volume_type
+      volume_size           = var.block_device_mapping.volume_size
+      delete_on_termination = var.block_device_mapping.delete_on_termination
+      encrypted             = var.block_device_mapping.encrypted
+    }
+  }
 
   monitoring {
     enabled = var.enable_detailed_monitoring

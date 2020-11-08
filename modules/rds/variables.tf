@@ -14,6 +14,11 @@ variable "default_tags" {
   default     = {}
 }
 
+variable "subnets" {
+  description = "Provide a list of subnets to deploy EC2 instances into"
+  type        = list(string)
+}
+
 variable "availability_zones" {
   description = "Provide a list of AZs to deploy into"
   type        = list(string)
@@ -23,9 +28,4 @@ variable "security_groups" {
   description = "Provide a list of security group IDs to attach to this instance"
   type        = list(string)
   default     = []
-}
-
-variable "rds_subnets" {
-  description = "Provide a list of subnets to deploy EC2 instances into"
-  type        = list(string)
 }

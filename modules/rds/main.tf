@@ -11,7 +11,7 @@ resource "random_password" "password" {
 
 resource "aws_db_subnet_group" "this" {
   name_prefix = "${var.namespace}_${var.name}_subnet_group_"
-  subnet_ids  = var.rds_subnets
+  subnet_ids  = var.subnets
 
   tags = merge(
     var.default_tags,

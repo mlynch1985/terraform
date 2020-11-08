@@ -27,12 +27,6 @@ variable "enable_dns_hostnames" {
   default     = true
 }
 
-variable "enable_flow_logs" {
-  description = "Set to true to enable VPC flow logs"
-  type        = bool
-  default     = false
-}
-
 variable "target_az_count" {
   description = "Specify the number of Availability Zones to deploy subnets into"
   type        = number
@@ -49,4 +43,14 @@ variable "deploy_protected_subnets" {
   description = "Set to true to create protected subnets with no internet access"
   type        = bool
   default     = false
+}
+
+variable "enable_flow_logs" {
+  description = "Set to true to enable VPC flow logs"
+  type        = bool
+  default     = false
+}
+
+data "aws_availability_zones" "zones" {
+  state = "available"
 }

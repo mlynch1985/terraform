@@ -20,11 +20,6 @@ variable "is_internal" {
   default     = true
 }
 
-variable "vpc_id" {
-  description = "Specify the vpc where this alb should be deployed"
-  type        = string
-}
-
 variable "security_groups" {
   description = "Provide a list of security groups to apply to elb"
   type        = list(string)
@@ -33,12 +28,6 @@ variable "security_groups" {
 variable "subnets" {
   description = "Provide a list of subnets to apply to elb"
   type        = list(string)
-}
-
-variable "enable_stickiness" {
-  description = "Set to true to enable sticky sessions"
-  type        = bool
-  default     = false
 }
 
 variable "target_group_port" {
@@ -51,6 +40,29 @@ variable "target_group_protocol" {
   description = "Specify the protocol to poll target group members"
   type        = string
   default     = "HTTP"
+}
+
+variable "vpc_id" {
+  description = "Specify the vpc where this alb should be deployed"
+  type        = string
+}
+
+variable "deregistration_delay" {
+  description = "Specify how long an instance should drain before removing from ALB"
+  type        = number
+  default     = 300
+}
+
+variable "enable_stickiness" {
+  description = "Set to true to enable sticky sessions"
+  type        = bool
+  default     = false
+}
+
+variable "healthcheck_path" {
+  description = "Specify the url path to perform a healthcheck on target instances"
+  type        = string
+  default     = "/"
 }
 
 variable "alb_listener_port" {
