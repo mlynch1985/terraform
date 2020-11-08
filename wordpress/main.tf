@@ -28,6 +28,19 @@ module "ec2_role" {
   default_tags = local.default_tags
 }
 
+module "efs" {
+  source = "../modules/efs"
+
+  namespace        = var.namespace
+  name             = var.name
+  default_tags     = local.default_tags
+  is_encrypted     = true
+  performance_mode = "generalPurpose"
+  throughput_mode  = "bursting"
+  security_groups  = [aws_security_group.efs.id]
+  subnets          = data.aws_subnet_ids.private.ids
+}
+
 module "alb" {
   source = "../modules/alb"
 
@@ -67,14 +80,40 @@ module "rds" {
   namespace          = var.namespace
   name               = var.name
   default_tags       = local.default_tags
-  availability_zones = [data.aws_availability_zones.available.names[0],data.aws_availability_zones.available.names[1],data.aws_availability_zones.available.names[2]]
+  availability_zones = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1], data.aws_availability_zones.available.names[2]]
   security_groups    = [aws_security_group.rds.id]
   rds_subnets        = data.aws_subnet_ids.private.ids
 }
 
 
+resource "aws_security_group" "efs" {
+  name_prefix = "${var.namespace}_${var.name}_efs_"
+  vpc_id      = data.aws_vpc.this.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 2049
+    to_port         = 2049
+    security_groups = [aws_security_group.asg.id]
+  }
+
+  egress {
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(
+    local.default_tags,
+    map(
+      "Name", "${var.namespace}_${var.name}_efs"
+    )
+  )
+}
+
 resource "aws_security_group" "alb" {
-  name_prefix = "${var.namespace}_${var.name}_alb"
+  name_prefix = "${var.namespace}_${var.name}_alb_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -100,7 +139,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_security_group" "asg" {
-  name_prefix = "${var.namespace}_${var.name}_asg"
+  name_prefix = "${var.namespace}_${var.name}_asg_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -126,7 +165,7 @@ resource "aws_security_group" "asg" {
 }
 
 resource "aws_security_group" "rds" {
-  name_prefix = "${var.namespace}_${var.name}_rds"
+  name_prefix = "${var.namespace}_${var.name}_rds_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "this" {
-  name_prefix           = "${var.namespace}_${var.name}_role"
+  name_prefix           = "${var.namespace}_${var.name}_role_"
   force_detach_policies = true
   path                  = var.path
   description           = var.description
@@ -34,7 +34,7 @@ resource "aws_iam_role_policy_attachment" "cloudwatch-policy" {
 }
 
 resource "aws_iam_instance_profile" "this" {
-  name_prefix = "${var.namespace}_${var.name}_role"
+  name_prefix = "${var.namespace}_${var.name}_role_"
   role        = aws_iam_role.this.name
 }
 
@@ -83,7 +83,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "secrets_manager" {
-  name_prefix = "GrantSecretsManager"
+  name_prefix = "GrantSecretsManager_"
   role        = aws_iam_role.this.id
 
   policy = <<EOF
@@ -97,7 +97,7 @@ resource "aws_iam_role_policy" "secrets_manager" {
                 "secretsmanager:DescribeSecret",
                 "secretsmanager:GetSecretValue"
             ],
-            "Resource": "arn:aws:secretsmanager:*:*:secret/${var.namespace}_${var.name}_*"
+            "Resource": "arn:aws:secretsmanager:*:*:secret:${var.namespace}_${var.name}_*"
         }
     ]
 }

@@ -10,7 +10,7 @@ resource "random_password" "password" {
 }
 
 resource "aws_db_subnet_group" "this" {
-  name_prefix = "${var.namespace}_${var.name}_subnet_group"
+  name_prefix = "${var.namespace}_${var.name}_subnet_group_"
   subnet_ids  = var.rds_subnets
 
   tags = merge(
@@ -49,12 +49,12 @@ resource "aws_rds_cluster" "this" {
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name_prefix = "${var.namespace}_${var.name}_rds_secret"
+  name = "${var.namespace}_${var.name}_rds"
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}_rds_secret"
+      "Name", "${var.namespace}_${var.name}_rds"
     )
   )
 }
