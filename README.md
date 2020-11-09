@@ -1,47 +1,71 @@
-# Terraform Demo on AWS
+AWS Terraform Examples
+===========
 
-## Description
-This project will create a standard AWS VPC, a basic Wordpress site and RDS database using multiple CloudFormation Templates.  Over time it will include common components that should be used in Production-like environments to enhance your understanding of real life implementations.
+This repository contains Terraform code snippets that can be reused and applied to varrying AWS deployments. It provides a starting point to launching new complex applications using Terraform.
 
-## Prerequisites
-- Install the [AWS ClI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) tools for your platform
-- Install the [Isengard CLI tools](https://drive-render.corp.amazon.com/view/rizra@/Isengard-cli/docs/README.html#quickstart)
-- Connect to your Isengard account
+Prerequisites
+----------------------
+
+- `AWS CLI` - Install the latest [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) version for your operating system.
+- `GIT` - Install the latest version of [GIT](https://git-scm.com/downloads) for your operating system.
+- `VS Code` - Install the latest verion of [VS Code](https://code.visualstudio.com/download) for your operating systems.
+
+Configure Environment
+----------------------
 
 ```bash
-## List your current Isengard accounts
-isengard ls
+# Configure AWS CLI Profile
+aws configure --profile sandbox
 
-## Create temporary session credentials
-isengard assume
+# Configure Default Region
+export AWS_DEFUAULT_REGION="us-east-1"
 
-## Open your web browser to the AWS Console
-isengard open
+# Set Current Session Profile
+export AWS_PROFILE="sandbox"
 
-## Examples
-isengard assume awsml+terraform
-isengard open awsml+terraform
+# Configure Default Profile
+export AWS_DEFAULT_PROFILE="sandbox"
+
+# Configure Proxy Server
+export HTTPS_PROXY="proxy.example.com:8443"
+
+# Setup AWS SSO Login Profiles
+# Ref: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html
+aws configure sso
+aws sso login --profile sandbox
+aws sso logout
+
+# Setup Okta SAML Login
+# Ref: https://github.com/Versent/saml2aws
+saml2aws configure --idp-provider=Okta --mfa=PUSH --username=developer --url https://sandbox.okta.com/ --skip-prompt
+saml2aws login
 ```
 
-## Deployment
-- Switch into the root directory where you checked out this code
-- Update the variables file for your environment
+Deployment
+----------------------
 
-### Deploy Base first
+- Open VS Code and set your default shell to `bash`.
+- Configure Github [ssh credentials](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/connecting-to-github-with-ssh)
+- Clone this repository to your local computer
+- Switch into the cloned repository folder of the stack you wish to deploy
+- Create or update the .tfvars to include the required parameters
+- Refernce the below commands to deploy your stack
+
 ```bash
-$Env:AWS_SDK_LOAD_CONFIG="1"
-cd "base"
+# Initialize your environment first
 terraform init
-terraform apply -var-file="C:\Git\tf\useast1d.tfvars"
+
+# Review the proposed changes and fix errors when needed
+terraform plan -var-file="./useast1d.tfvars"
+
+# Deploy the proposed changes into your AWS Account
+terraform apply -var-file="./useast1d.tfvars"
+
+# Remove the stack from your AWS Account
+terraform destroy -var-file="./useast1d.tfvars"
 ```
 
-## Remove each stack
-```bash
-cd "..\linux-wordpress"
-terraform destroy -var-file="C:\Git\tf\useast1d.tfvars"
-```
+Authors
+----------------------
 
-## References
-- [AWS ClI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
-- [Isengard CLI tools](https://drive-render.corp.amazon.com/view/rizra@/Isengard-cli/docs/README.html#quickstart)
-- [Cloudformation API](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/index.html)
+awsml@amazon.com
