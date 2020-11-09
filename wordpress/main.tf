@@ -1,4 +1,11 @@
 terraform {
+  backend "s3" {
+    bucket = "mltemp-sandbox-tfstate"
+    region = "us-east-1"
+    key = "/wordpress"
+    encrypt = true
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -24,7 +31,7 @@ module "ec2_role" {
   source = "../modules/ec2_role"
 
   namespace    = var.namespace
-  name         = var.name
+  app_role     = var.name
   default_tags = local.default_tags
 }
 
@@ -32,7 +39,7 @@ module "efs" {
   source = "../modules/efs"
 
   namespace        = var.namespace
-  name             = var.name
+  app_role         = var.name
   default_tags     = local.default_tags
   is_encrypted     = true
   performance_mode = "generalPurpose"
@@ -44,7 +51,7 @@ module "alb" {
   source = "../modules/alb"
 
   namespace            = var.namespace
-  name                 = var.name
+  app_role             = var.name
   default_tags         = local.default_tags
   is_internal          = false
   security_groups      = [aws_security_group.alb.id]
@@ -58,7 +65,7 @@ module "asg" {
   source = "../modules/asg"
 
   namespace                  = var.namespace
-  name                       = var.name
+  app_role                   = var.name
   default_tags               = local.default_tags
   image_id                   = data.aws_ami.amazon_linux_2.image_id
   instance_type              = "t3.large"
@@ -78,7 +85,7 @@ module "rds" {
   source = "../modules/rds"
 
   namespace          = var.namespace
-  name               = var.name
+  app_role           = var.name
   default_tags       = local.default_tags
   subnets            = data.aws_subnet_ids.private.ids
   availability_zones = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1], data.aws_availability_zones.available.names[2]]
@@ -89,7 +96,7 @@ module "ec2_instance" {
   source = "../modules/ec2_instance"
 
   namespace                   = var.namespace
-  name                        = "app"
+  app_role                    = "demoapp"
   default_tags                = local.default_tags
   image_id                    = data.aws_ami.amazon_linux_2.image_id
   instance_type               = "t3.large"
