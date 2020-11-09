@@ -31,7 +31,7 @@ module "ec2_role" {
   source = "../modules/ec2_role"
 
   namespace    = var.namespace
-  app_role     = var.name
+  app_role     = var.app_role
   default_tags = local.default_tags
 }
 
@@ -39,7 +39,7 @@ module "efs" {
   source = "../modules/efs"
 
   namespace        = var.namespace
-  app_role         = var.name
+  app_role         = var.app_role
   default_tags     = local.default_tags
   is_encrypted     = true
   performance_mode = "generalPurpose"
@@ -51,7 +51,7 @@ module "alb" {
   source = "../modules/alb"
 
   namespace            = var.namespace
-  app_role             = var.name
+  app_role             = var.app_role
   default_tags         = local.default_tags
   is_internal          = false
   security_groups      = [aws_security_group.alb.id]
@@ -65,7 +65,7 @@ module "asg" {
   source = "../modules/asg"
 
   namespace                  = var.namespace
-  app_role                   = var.name
+  app_role                   = var.app_role
   default_tags               = local.default_tags
   image_id                   = data.aws_ami.amazon_linux_2.image_id
   instance_type              = "t3.large"
@@ -85,7 +85,7 @@ module "rds" {
   source = "../modules/rds"
 
   namespace          = var.namespace
-  app_role           = var.name
+  app_role           = var.app_role
   default_tags       = local.default_tags
   subnets            = data.aws_subnet_ids.private.ids
   availability_zones = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1], data.aws_availability_zones.available.names[2]]
@@ -96,7 +96,7 @@ module "ec2_instance" {
   source = "../modules/ec2_instance"
 
   namespace                   = var.namespace
-  app_role                    = "demoapp"
+  app_role                    = var.app_role
   default_tags                = local.default_tags
   image_id                    = data.aws_ami.amazon_linux_2.image_id
   instance_type               = "t3.large"
@@ -111,7 +111,7 @@ module "ec2_instance" {
 
 
 resource "aws_security_group" "efs" {
-  name_prefix = "${var.namespace}_${var.name}_efs_"
+  name_prefix = "${var.namespace}_${var.app_role}_efs_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -131,13 +131,13 @@ resource "aws_security_group" "efs" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}_efs"
+      "Name", "${var.namespace}_${var.app_role}_efs"
     )
   )
 }
 
 resource "aws_security_group" "alb" {
-  name_prefix = "${var.namespace}_${var.name}_alb_"
+  name_prefix = "${var.namespace}_${var.app_role}_alb_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -157,13 +157,13 @@ resource "aws_security_group" "alb" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}_alb"
+      "Name", "${var.namespace}_${var.app_role}_alb"
     )
   )
 }
 
 resource "aws_security_group" "asg" {
-  name_prefix = "${var.namespace}_${var.name}_asg_"
+  name_prefix = "${var.namespace}_${var.app_role}_asg_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -183,13 +183,13 @@ resource "aws_security_group" "asg" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}_asg"
+      "Name", "${var.namespace}_${var.app_role}_asg"
     )
   )
 }
 
 resource "aws_security_group" "rds" {
-  name_prefix = "${var.namespace}_${var.name}_rds_"
+  name_prefix = "${var.namespace}_${var.app_role}_rds_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -209,7 +209,7 @@ resource "aws_security_group" "rds" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}_rds"
+      "Name", "${var.namespace}_${var.app_role}_rds"
     )
   )
 }

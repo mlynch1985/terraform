@@ -1,5 +1,5 @@
 namespace = "useast1d"
-name = "wordpress"
+app_role = "blog"
 region = "us-east-1"
 lob = "it_operations"
 team = "sysops"

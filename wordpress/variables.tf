@@ -1,5 +1,5 @@
 variable "namespace" {}
-variable "name" {}
+variable "app_role" {}
 variable "region" {}
 variable "lob" {}
 variable "team" {}
@@ -8,7 +8,7 @@ variable "environment" {}
 locals {
   default_tags = {
     namespace : var.namespace,
-    name : var.name,
+    app_role : var.app_role,
     lob : var.lob,
     team : var.team,
     environment : var.environment

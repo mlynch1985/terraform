@@ -1,4 +1,11 @@
 terraform {
+  backend "s3" {
+    bucket = "mltemp-sandbox-tfstate"
+    region = "us-east-1"
+    key = "vpc"
+    encrypt = true
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
