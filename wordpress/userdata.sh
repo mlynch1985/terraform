@@ -100,12 +100,16 @@ then
     rm -rf amazon-cloudwatch-agent.rpm
 fi
 
-## Configure the CloudWatchAgent and start it up
+## Define CloudWatchAgent variables
 CWA_SOURCE=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/cwa_linux_config" --region $REGION --output text --query Parameter.Value)
 CWA_CONFIG="/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
 CWA_BINARY="/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl"
 
+## Setup the CloudWatchAgnet configuration
 echo $CWA_SOURCE > $CWA_CONFIG
+sed -i "s/NAMESPACE/${NAMESPACE}_${APPROLE}/g" $CWA_CONFIG
+
+## Start the CloudWatchAgent
 $CWA_BINARY -a fetch-config -m ec2 -c file:$CWA_CONFIG -s
 
 ## Perform a full system update

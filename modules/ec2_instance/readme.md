@@ -64,7 +64,7 @@ module "ec2_instance" {
   }
 
   ebs_block_device = {
-    device_name: "/dev/xvda/"
+    device_name: "/dev/xvdb/"
     volume_type: "gp2"
     volume_size: "50"
     delete_on_termination: false
