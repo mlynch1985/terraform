@@ -107,7 +107,7 @@ CWA_BINARY="/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl"
 
 ## Setup the CloudWatchAgnet configuration
 echo $CWA_SOURCE > $CWA_CONFIG
-sed -i "s/NAMESPACE/${NAMESPACE}_${APPROLE}/g" $CWA_CONFIG
+sed -i "s/NAME_SPACE/${NAMESPACE}_${APPROLE}/g" $CWA_CONFIG
 
 ## Start the CloudWatchAgent
 $CWA_BINARY -a fetch-config -m ec2 -c file:$CWA_CONFIG -s

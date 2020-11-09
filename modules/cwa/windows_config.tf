@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "windows" {
     "logfile": "C:\\ProgramData\\Amazon\\AmazonCloudWatchAgent\\Logs\\amazon-cloudwatch-agent.log"
   },
   "metrics": {
-    "namespace": "NAMESPACE",
+    "namespace": "NAME_SPACE",
     "metrics_collected": {
       "Processor": {
         "measurement": [

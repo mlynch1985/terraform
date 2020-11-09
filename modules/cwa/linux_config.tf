@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "linux" {
     "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
   },
   "metrics": {
-    "namespace": "NAMESPACE",
+    "namespace": "NAME_SPACE",
     "metrics_collected": {
       "cpu": {
         "measurement": [

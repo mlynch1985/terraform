@@ -26,7 +26,7 @@ try {
 
     # Setup the CloudWatch Agent Config
     $CWA_CONFIG_SOURCE | Set-Content -Path $CWA_CONFIG_DESTINATION
-    (Get-Content -Path $CWA_CONFIG_DESTINATION) | ForEach-Object { $_ -Replace "NAMESPACE", "$($NAMESPACE)_$($APP_ROLE)"} | Set-Content -Path $CWA_CONFIG_DESTINATION
+    (Get-Content -Path $CWA_CONFIG_DESTINATION) | ForEach-Object { $_ -Replace "NAME_SPACE", "$($NAMESPACE)_$($APP_ROLE)"} | Set-Content -Path $CWA_CONFIG_DESTINATION
 
     # Start the CloudWatch Agent
     & $AGENT_BINARY -Action fetch-config -Mode ec2 -ConfigLocation file:$CWA_CONFIG_DESTINATION -Start
