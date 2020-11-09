@@ -28,10 +28,9 @@ resource "aws_directory_service_directory" "this" {
 resource "aws_ssm_association" "this" {
   count = var.enable_auto_join ? 1 : 0
 
-  depends_on          = [aws_directory_service_directory.this]
-  name                = "AWS-JoinDirectoryServiceDomain"
-  association_name    = "${var.namespace}_${var.app_role}_ad_autojoin"
-  schedule_expression = "cron(0 0 ? * * *)"
+  depends_on       = [aws_directory_service_directory.this]
+  name             = "AWS-JoinDirectoryServiceDomain"
+  association_name = "${var.namespace}_${var.app_role}_ad_autojoin"
   compliance_severity = "HIGH"
   max_errors          = 5
 
@@ -42,7 +41,6 @@ resource "aws_ssm_association" "this" {
   parameters = {
     directoryId   = aws_directory_service_directory.this.id
     directoryName = aws_directory_service_directory.this.name
-    # dnsIpAddresses = tolist(aws_directory_service_directory.this.dns_ip_addresses)[0]
   }
 }
 
