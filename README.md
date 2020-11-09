@@ -8,7 +8,8 @@ Prerequisites
 
 - `AWS CLI` - Install the latest [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) version for your operating system.
 - `GIT` - Install the latest version of [GIT](https://git-scm.com/downloads) for your operating system.
-- `VS Code` - Install the latest verion of [VS Code](https://code.visualstudio.com/download) for your operating systems.
+- `VS Code` - Install the latest verion of [VS Code](https://code.visualstudio.com/download) for your operating system.
+- `Terraform` - Install the latest version of [Terraform](https://www.terraform.io/downloads.html) for your operating system.
 
 Configure Environment
 ----------------------
