@@ -21,7 +21,7 @@ resource "aws_instance" "root_only" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}"
+      "Name", "${var.namespace}_${var.app_role}"
     )
   )
 }
@@ -56,7 +56,7 @@ resource "aws_instance" "with_ebs" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}"
+      "Name", "${var.namespace}_${var.app_role}"
     )
   )
 }

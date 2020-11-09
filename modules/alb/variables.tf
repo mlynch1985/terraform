@@ -3,8 +3,8 @@ variable "namespace" {
   type        = string
 }
 
-variable "name" {
-  description = "Provide a name to label each resource within this module"
+variable "app_role" {
+  description = "Provide an app role to label each resource within this module"
   type        = string
 }
 

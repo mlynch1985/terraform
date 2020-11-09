@@ -1,5 +1,5 @@
 resource "aws_launch_template" "this" {
-  name_prefix            = "${var.namespace}_${var.name}_"
+  name_prefix            = "${var.namespace}_${var.app_role}_"
   image_id               = var.image_id
   instance_type          = var.instance_type
   key_name               = var.key_name
@@ -31,14 +31,14 @@ resource "aws_launch_template" "this" {
     tags = merge(
       var.default_tags,
       map(
-        "Name", "${var.namespace}_${var.name}"
+        "Name", "${var.namespace}_${var.app_role}"
       )
     )
   }
 }
 
 resource "aws_autoscaling_group" "this" {
-  name_prefix         = "${var.namespace}_${var.name}_asg_"
+  name_prefix         = "${var.namespace}_${var.app_role}_asg_"
   min_size            = var.asg_min
   max_size            = var.asg_max
   desired_capacity    = var.asg_desired

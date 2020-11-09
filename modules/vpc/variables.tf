@@ -36,7 +36,7 @@ variable "target_az_count" {
 variable "deploy_private_subnets" {
   description = "Set to true to create private subnets with route to nat gateways"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "deploy_protected_subnets" {

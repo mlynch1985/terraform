@@ -9,7 +9,7 @@ resource "aws_efs_file_system" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}"
+      "Name", "${var.namespace}_${var.app_role}"
     )
   )
 }
@@ -23,7 +23,7 @@ resource "aws_efs_mount_target" "this" {
 }
 
 resource "aws_ssm_parameter" "this" {
-  name  = "/${var.namespace}/${var.name}/efs_mount"
+  name  = "/${var.namespace}/${var.app_role}/efs_mount"
   type  = "String"
   value = aws_efs_file_system.this.id
 }

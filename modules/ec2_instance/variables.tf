@@ -3,8 +3,8 @@ variable "namespace" {
   type        = string
 }
 
-variable "name" {
-  description = "Provide a name to label each resource within this module"
+variable "app_role" {
+  description = "Provide an application role to label each resource within this module"
   type        = string
 }
 
@@ -40,7 +40,6 @@ variable "enable_detailed_monitoring" {
 variable "security_groups" {
   description = "Provide a list of security group IDs to attach to this instance"
   type        = list(string)
-  default     = []
 }
 
 variable "subnet_id" {

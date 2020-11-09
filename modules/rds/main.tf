@@ -10,21 +10,21 @@ resource "random_password" "password" {
 }
 
 resource "aws_db_subnet_group" "this" {
-  name_prefix = "${var.namespace}_${var.name}_subnet_group_"
+  name_prefix = "${var.namespace}_${var.app_role}_subnet_group_"
   subnet_ids  = var.subnets
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}_subnet_group"
+      "Name", "${var.namespace}_${var.app_role}_subnet_group"
     )
   )
 }
 
 resource "aws_rds_cluster" "this" {
   availability_zones        = var.availability_zones
-  cluster_identifier_prefix = "${var.namespace}-${var.name}-"
-  database_name             = "${var.name}DB"
+  cluster_identifier_prefix = "${var.namespace}-${var.app_role}-"
+  database_name             = "${var.app_role}DB"
   db_subnet_group_name      = aws_db_subnet_group.this.id
   engine_mode               = "serverless"
   engine                    = "aurora"
@@ -43,18 +43,18 @@ resource "aws_rds_cluster" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}_rds_cluster"
+      "Name", "${var.namespace}_${var.app_role}_rds_cluster"
     )
   )
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name = "${var.namespace}_${var.name}_rds"
+  name = "${var.namespace}_${var.app_role}_rds_secret"
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.name}_rds"
+      "Name", "${var.namespace}_${var.app_role}_rds_secret"
     )
   )
 }

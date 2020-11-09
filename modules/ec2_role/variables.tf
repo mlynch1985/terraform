@@ -3,8 +3,8 @@ variable "namespace" {
   type        = string
 }
 
-variable "name" {
-  description = "Provide a name to label each resource within this module"
+variable "app_role" {
+  description = "Provide an application role to label each resource within this module"
   type        = string
 }
 
@@ -27,7 +27,7 @@ variable "description" {
 }
 
 variable "max_session_duration" {
-  description = "Provide a name to label each resource within this module"
+  description = "Provide the number of seconds to allow sessions to last"
   type        = number
   default     = 3600
 }

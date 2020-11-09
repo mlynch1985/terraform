@@ -1,5 +1,5 @@
 resource "aws_iam_role" "this" {
-  name_prefix           = "${var.namespace}_${var.name}_role_"
+  name_prefix           = "${var.namespace}_${var.app_role}_role_"
   force_detach_policies = true
   path                  = var.path
   description           = var.description
@@ -34,7 +34,7 @@ resource "aws_iam_role_policy_attachment" "cloudwatch-policy" {
 }
 
 resource "aws_iam_instance_profile" "this" {
-  name_prefix = "${var.namespace}_${var.name}_role_"
+  name_prefix = "${var.namespace}_${var.app_role}_role_"
   role        = aws_iam_role.this.name
 }
 
@@ -50,8 +50,8 @@ resource "aws_iam_role_policy" "s3" {
             "Effect": "Allow",
             "Action": "s3:*",
             "Resource": [
-                "arn:aws:s3:::${var.namespace}-${var.name}-*",
-                "arn:aws:s3:::${var.namespace}-${var.name}-*/*"
+                "arn:aws:s3:::${var.namespace}-${var.app_role}-*",
+                "arn:aws:s3:::${var.namespace}-${var.app_role}-*/*"
             ]
         }
     ]
@@ -75,7 +75,7 @@ resource "aws_iam_role_policy" "parameter_store" {
                 "ssm:PutParameter*",
                 "ssm:DeleteParameter*"
             ],
-            "Resource": "arn:aws:ssm:*:*:parameter/${var.namespace}/${var.name}/*"
+            "Resource": "arn:aws:ssm:*:*:parameter/${var.namespace}/${var.app_role}/*"
         }
     ]
 }
@@ -97,7 +97,7 @@ resource "aws_iam_role_policy" "secrets_manager" {
                 "secretsmanager:DescribeSecret",
                 "secretsmanager:GetSecretValue"
             ],
-            "Resource": "arn:aws:secretsmanager:*:*:secret:${var.namespace}_${var.name}_*"
+            "Resource": "arn:aws:secretsmanager:*:*:secret:${var.namespace}_${var.app_role}_*"
         }
     ]
 }
