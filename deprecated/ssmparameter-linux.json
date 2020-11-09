@@ -100,19 +100,6 @@
         ]
       }
     },
-    "aggregation_dimensions": [
-      [
-        "ImageId"
-      ],
-      [
-        "InstanceId",
-        "InstanceType"
-      ],
-      [
-        "d1"
-      ],
-      []
-    ],
     "force_flush_interval": 30
   },
   "logs": {

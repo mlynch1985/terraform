@@ -49,12 +49,12 @@ resource "aws_rds_cluster" "this" {
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name = "${var.namespace}_${var.app_role}_rds_secret"
+  name = "${var.namespace}_${var.app_role}_rds"
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_rds_secret"
+      "Name", "${var.namespace}_${var.app_role}_rds"
     )
   )
 }

@@ -11,6 +11,14 @@ NAMESPACE=$(aws ec2 describe-tags --filters \
     --output text \
     --query Tags[0].Value)
 
+APPROLE=$(aws ec2 describe-tags --filters \
+    "Name=resource-type,Values=instance" \
+    "Name=resource-id,Values=${INSTANCE_ID}" \
+    "Name=key,Values=app_role" \
+    --region ${REGION} \
+    --output text \
+    --query Tags[0].Value)
+
 EFSMOUNT=$(aws ssm get-parameter --name "/${NAMESPACE}/wordpress/efs_mount" --region $REGION --output text --query Parameter.Value)
 
 
@@ -23,10 +31,9 @@ mkdir -p /var/www/html
 echo "${EFSMOUNT}:/ /var/www/html efs _netdev,tls,iam 0 0" >> /etc/fstab
 mount -a
 
-## Install out application components and perform a full system update
+## Install out application components
 yum install httpd mysql jq -y
 amazon-linux-extras install php7.2
-yum update -y
 
 ## Check if Wordpress has been downloaded and configured already
 if [[ ! -f /var/www/html/wp-config.php ]]
@@ -34,16 +41,8 @@ then
     ## Quickly create the wp-config.php file before any other instances can
     touch /var/www/html/wp-config.php
 
-    NAME=$(aws ec2 describe-tags --filters \
-        "Name=resource-type,Values=instance" \
-        "Name=resource-id,Values=${INSTANCE_ID}" \
-        "Name=key,Values=Name" \
-        --region ${REGION} \
-        --output text \
-        --query Tags[0].Value)
-
     ## Query Secrets Manager for our RDS credentials
-    RDS_SECRET=$(aws secretsmanager get-secret-value --secret-id "${NAME}_rds" --region $REGION --output text --query SecretString)
+    RDS_SECRET=$(aws secretsmanager get-secret-value --secret-id "${NAMESPACE}_${APPROLE}_rds" --region $REGION --output text --query SecretString)
     DBNAME=$(echo $RDS_SECRET | jq -r .database_name)
     ENDPOINT=$(echo $RDS_SECRET | jq -r .endpoint)
     USERNAME=$(echo $RDS_SECRET | jq -r .username)
@@ -53,7 +52,7 @@ then
     i=0
     until [ ! -z $ALBDNS ]
     do
-        ALBDNS=$(aws ssm get-parameter --name "/${NAMESPACE}/wordpress/alb_dns1" --region $REGION --output text --query Parameter.Value)
+        ALBDNS=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/alb_dns" --region $REGION --output text --query Parameter.Value)
         ((i=i+1))
         sleep 30
 
@@ -77,8 +76,37 @@ then
     sed -i "s/username_here/${USERNAME}/g" wp-config.php
     sed -i "s/password_here/${PASSWORD}/g" wp-config.php
     sed -i "s#<?php#<?php\ndefine( 'WP_HOME', '$ALBDNS' );\ndefine( 'WP_SITEURL', '$ALBDNS' );#g" wp-config.php
+
+    ## Generate new Cookie Seed Keys and update the WP Config file
+    echo "" >> wp-config.php
+    curl -s 'https://api.wordpress.org/secret-key/1.1/salt/' >> wp-config.php
 fi
+
+## Reset permissions on the HTTPD WebRoot
+chown -R apache:apache /var/www
+chmod 2775 /var/www
+find /var/www -type d -exec chmod 2775 {} \;
+find /var/www -type f -exec chmod 0664 {} \;
 
 ## Enable autostart and startup the HTTPD service
 chkconfig httpd on
 service httpd start
+
+## Install the CloudwatchAgent if not already present
+if [ ! -d "/opt/aws/amazon-cloudwatch-agent" ]
+then
+    wget https://s3.${REGION}.amazonaws.com/amazoncloudwatch-agent-${REGION}/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
+    rpm -U ./amazon-cloudwatch-agent.rpm
+    rm -rf amazon-cloudwatch-agent.rpm
+fi
+
+## Configure the CloudWatchAgent and start it up
+CWA_SOURCE=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/cwa_linux_config" --region $REGION --output text --query Parameter.Value)
+CWA_CONFIG="/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+CWA_BINARY="/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl"
+
+echo $CWA_SOURCE > $CWA_CONFIG
+$CWA_BINARY -a fetch-config -m ec2 -c file:$CWA_CONFIG -s
+
+## Perform a full system update
+yum update -y

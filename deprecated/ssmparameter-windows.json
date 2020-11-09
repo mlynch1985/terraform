@@ -1,7 +1,7 @@
 {
   "agent": {
     "metrics_collection_interval": 60,
-    "logfile": "c:\\ProgramData\\Amazon\\AmazonCloudWatchAgent\\Logs\\amazon-cloudwatch-agent.log"
+    "logfile": "C:\\ProgramData\\Amazon\\AmazonCloudWatchAgent\\Logs\\amazon-cloudwatch-agent.log"
   },
   "metrics": {
     "namespace": "sample-winiis-metrics",
@@ -71,20 +71,7 @@
       "InstanceId": "${aws:InstanceId}",
       "InstanceType": "${aws:InstanceType}",
       "AutoScalingGroupName": "${aws:AutoScalingGroupName}"
-    },
-    "aggregation_dimensions": [
-      [
-        "ImageId"
-      ],
-      [
-        "InstanceId",
-        "InstanceType"
-      ],
-      [
-        "d1"
-      ],
-      []
-    ]
+    }
   },
   "logs": {
     "logs_collected": {
