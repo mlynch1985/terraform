@@ -45,3 +45,21 @@ variable "subnet_2" {
   description = "Provide a subnet ID to deploy EC2 instances into"
   type        = string
 }
+
+variable "enable_auto_join" {
+  description = "Set to true to create an SSM Association that will auto-join instances to AD"
+  type        = bool
+  default     = false
+}
+
+variable "ad_target_tag_name" {
+  description = "Specify the target TAG name used for auto-join"
+  type        = string
+  default     = "namespace"
+}
+
+variable "ad_target_tag_value" {
+  description = "Specify the target TAG value used for auto-join"
+  type        = string
+  default     = ""
+}

@@ -25,6 +25,50 @@ resource "aws_directory_service_directory" "this" {
   )
 }
 
+resource "aws_ssm_association" "this" {
+  count = var.enable_auto_join ? 1 : 0
+
+  depends_on          = [aws_directory_service_directory.this]
+  name                = "AWS-JoinDirectoryServiceDomain"
+  association_name    = "${var.namespace}_${var.app_role}_ad_autojoin"
+  schedule_expression = "cron(0 0 ? * * *)"
+  compliance_severity = "HIGH"
+  max_errors          = 5
+
+  targets {
+    key    = "tag:${var.ad_target_tag_name}"
+    values = [var.ad_target_tag_value]
+  }
+  parameters = {
+    directoryId   = aws_directory_service_directory.this.id
+    directoryName = aws_directory_service_directory.this.name
+    # dnsIpAddresses = tolist(aws_directory_service_directory.this.dns_ip_addresses)[0]
+  }
+}
+
+resource "aws_vpc_dhcp_options" "this" {
+  count = var.enable_auto_join ? 1 : 0
+
+  depends_on          = [aws_directory_service_directory.this]
+  domain_name         = var.domain_name
+  domain_name_servers = aws_directory_service_directory.this.dns_ip_addresses
+
+  tags = merge(
+    var.default_tags,
+    map(
+      "Name", "${var.namespace}_${var.app_role}_dhcp_options"
+    )
+  )
+}
+
+resource "aws_vpc_dhcp_options_association" "this" {
+  count = var.enable_auto_join ? 1 : 0
+
+  depends_on      = [aws_directory_service_directory.this]
+  vpc_id          = var.vpc_id
+  dhcp_options_id = aws_vpc_dhcp_options.this[0].id
+}
+
 resource "aws_secretsmanager_secret" "this" {
   name = "${var.namespace}_${var.app_role}_msad"
 
@@ -40,9 +84,12 @@ resource "aws_secretsmanager_secret_version" "this" {
   secret_id     = aws_secretsmanager_secret.this.id
   secret_string = <<EOF
 {
+  "root_password": "${random_password.password.result}",
   "directory_id": "${aws_directory_service_directory.this.id},
-  "dns_ip_addresses": "${aws_directory_service_directory.this.dns_ip_addresses},
-  "root_password": "${random_password.password.result}"
+  "dns_ip_addresses": [
+    "${tolist(aws_directory_service_directory.this.dns_ip_addresses)[0]}",
+    "${tolist(aws_directory_service_directory.this.dns_ip_addresses)[1]}"
+  ]
 }
 EOF
 }
