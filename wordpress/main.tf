@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket = "mltemp-sandbox-tfstate"
     region = "us-east-1"
-    key = "/wordpress"
+    key = "wordpress"
     encrypt = true
   }
 
