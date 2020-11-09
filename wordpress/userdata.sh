@@ -62,7 +62,7 @@ then
             break
         fi
     done
-    
+
     ## Download and install the latest version of Wordpress
     cd /var/www/html
     wget https://wordpress.org/latest.tar.gz
@@ -75,7 +75,7 @@ then
     sed -i "s/localhost/${ENDPOINT}/g" wp-config.php
     sed -i "s/username_here/${USERNAME}/g" wp-config.php
     sed -i "s/password_here/${PASSWORD}/g" wp-config.php
-    sed -i "s#<?php#<?php\ndefine( 'WP_HOME', '$ALBDNS' );\ndefine( 'WP_SITEURL', '$ALBDNS' );#g" wp-config.php
+    sed -i "s#<?php#<?php\ndefine( 'WP_HOME', 'http://$ALBDNS' );\ndefine( 'WP_SITEURL', 'http://$ALBDNS' );#g" wp-config.php
 
     ## Generate new Cookie Seed Keys and update the WP Config file
     echo "" >> wp-config.php
