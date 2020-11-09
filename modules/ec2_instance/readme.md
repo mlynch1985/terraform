@@ -38,7 +38,7 @@ module "ec2_instance" {
   app_role                    = "appdemo1"
   image_id                    = data.aws_ami.amazon_linux_2.image_id
   security_groups             = [aws_security_group.ec2.id]
-  subnet_id                   = data.aws_subnet_ids.private.ids
+  subnet_id                   = tolist(data.aws_subnet_ids.private.ids)[0]
   instance_type               = "t3.large"
   key_name                    = "appdemo01-key"
   enable_detailed_monitoring  = true

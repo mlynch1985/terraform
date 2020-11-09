@@ -61,9 +61,9 @@ module "nlb" {
 Outputs
 ----------------------
 
-- `nlb` - Outputs the aws_lb object (Ref: <https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb>)
-- `target_group` - Outputs the aws_lb_target_group object (Ref: <https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group>)
-- `listener` - Outputs the aws_lb_listener object (Ref: <https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener>)
+- `nlb` - Outputs the [aws_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) object.
+- `target_group` - Outputs the [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) object.
+- `listener` - Outputs the [aws_lb_listener](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) object.
 
 Authors
 ----------------------

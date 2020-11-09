@@ -49,10 +49,10 @@ module "vpc" {
 Outputs
 ----------------------
 
-- `vpc` - Outputs the aws_vpc object (Ref: <https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc>)
-- `default_security_group` - Outputs the aws_vpc object (Ref: <https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group>)
-- `public_subnets` - Outputs the aws_subnet.public object (Ref: <https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet>)
-- `private_subnets` - Outputs the aws_subnet.private object (Ref: <https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet>)
+- `vpc` - Outputs the [aws_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) object.
+- `default_security_group` - Outputs the [aws_default_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group) object.
+- `public_subnets` - Outputs the [aws_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) object.
+- `private_subnets` - Outputs the [aws_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) object.
 
 Authors
 ----------------------

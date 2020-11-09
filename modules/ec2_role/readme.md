@@ -44,8 +44,8 @@ module "ec2_role" {
 Outputs
 ----------------------
 
-- `role` - Outputs the aws_iam_role object (<https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role>)
-- `profile` - Outputs the aws_iam_instance_profile object (<https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile>)
+- `role` - Outputs the [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) object.
+- `profile` - Outputs the [aws_iam_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) object.
 
 Authors
 ----------------------

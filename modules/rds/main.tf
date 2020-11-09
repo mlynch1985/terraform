@@ -70,5 +70,4 @@ resource "aws_secretsmanager_secret_version" "this" {
   "database_name": "${aws_rds_cluster.this.database_name}"
 }
 EOF
-
 }
