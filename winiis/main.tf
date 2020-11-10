@@ -47,8 +47,8 @@ module "msad" {
   edition             = "Enterprise"
   enable_sso          = false
   enable_auto_join    = true
-  ad_target_tag_name  = "app_role"
-  ad_target_tag_value = "winiis"
+  ad_target_tag_name  = "ad_join"
+  ad_target_tag_value = "true"
   default_tags        = local.default_tags
 }
 
@@ -57,6 +57,8 @@ module "cwa" {
 
   namespace    = "useast1d"
   app_role     = "winiis"
+  platform     = "windows"
+  config_json  = file("${path.module}/cwa_config.json")
   default_tags = local.default_tags
 }
 
@@ -75,7 +77,13 @@ module "ec2_instance" {
   user_data                   = filebase64("${path.module}/userdata.ps1")
   iam_instance_profile        = module.ec2_role.profile.name
   enable_second_drive         = true
-  default_tags                = local.default_tags
+
+  default_tags = merge(
+    local.default_tags,
+    map(
+      "ad_join", "true"
+    )
+  )
 
   root_block_device = {
     device_name : "/dev/sda1/"

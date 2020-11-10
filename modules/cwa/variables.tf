@@ -13,3 +13,13 @@ variable "default_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "platform" {
+  description = "Specify either windows or linux"
+  type        = string
+}
+
+variable "config_json" {
+  description = "Provide the path to the CWA config json file"
+  type        = string
+}

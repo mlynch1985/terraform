@@ -1,0 +1,69 @@
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "logfile": "C:\\ProgramData\\Amazon\\AmazonCloudWatchAgent\\Logs\\amazon-cloudwatch-agent.log"
+  },
+  "metrics": {
+    "namespace": "NAME_SPACE",
+    "metrics_collected": {
+      "Processor": {
+        "resources": ["*"],
+        "measurement": [
+          "% Idle Time",
+          "% Interrupt Time",
+          "% Processor Time"
+        ]
+      },
+      "LogicalDisk": {
+        "resources": ["*"],
+        "measurement": [
+          "% Disk Read Time",
+          "% Disk Write Time",
+          "% Free Space",
+          "Avg. Disk Queue Length",
+          "Avg. Disk Read Queue Length",
+          "Avg. Disk Write Queue Length",
+          "Split IO/Sec"
+        ]
+      },
+      "Memory": {
+        "measurement": [
+          "Available MBytes",
+          "Page Faults/sec",
+          "Pages/sec"
+        ]
+      },
+      "System": {
+        "measurement": [
+          "Processor Queue Length",
+          "Context Switches/sec",
+          "System Calls/sec",
+          "Threads"
+        ]
+      }
+    },
+    "append_dimensions": {
+      "InstanceId": "${aws:InstanceId}",
+      "IntanceType": "${aws:Instancetype}",
+      "AutoScalingGroupName": "${aws:AutoScalingGroupName}"
+    }
+  },
+  "logs": {
+    "logs_collected": {
+      "windows_events": {
+        "collect_list": [
+          {
+            "event_name": "System",
+            "log_group_name": "NAME_SPACE_event_logs",
+            "log_stream_name": "{instance_id}",
+            "event_levels": [
+              "CRITICAL",
+              "ERROR",
+              "WARNING"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
