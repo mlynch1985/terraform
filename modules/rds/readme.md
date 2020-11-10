@@ -31,7 +31,7 @@ module "rds" {
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
   security_groups    = [aws_security_group.ec2.id]
 
-  default_tags =  {
+  default_tags = {
     namespace: "useast1d"
     app_role: "appdemo01"
     lob: "business"

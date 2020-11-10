@@ -37,8 +37,9 @@ module "vpc" {
   deploy_protected_subnets = false
   enable_flow_logs         = true
 
-  default_tags =  {
+  default_tags = {
     namespace: "useast1d"
+    app_role: "appdemo01"
     lob: "business"
     team: "operations"
     environemnt: "developement"

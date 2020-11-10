@@ -31,7 +31,7 @@ module "ec2_role" {
   description          = ""
   max_session_duration = 3600
 
-  default_tags =  {
+  default_tags = {
     namespace: "useast1d"
     app_role: "appdemo01"
     lob: "business"

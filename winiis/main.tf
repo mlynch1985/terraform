@@ -62,6 +62,14 @@ module "cwa" {
   default_tags = local.default_tags
 }
 
+module "patching" {
+  source = "../modules/patching"
+
+  namespace    = "useast1d"
+  app_role     = "appdemo1"
+  default_tags = local.default_tags
+}
+
 module "ec2_instance" {
   source = "../modules/ec2_instance"
 
@@ -81,7 +89,8 @@ module "ec2_instance" {
   default_tags = merge(
     local.default_tags,
     map(
-      "ad_join", "true"
+      "ad_join", "true",
+      "enable_patching", "true"
     )
   )
 
@@ -124,7 +133,7 @@ resource "aws_security_group" "ec2" {
     protocol    = "tcp"
     from_port   = 3389
     to_port     = 3389
-    cidr_blocks = ["100.34.0.0/16","72.21.196.0/24"]
+    cidr_blocks = ["100.34.0.0/16", "72.21.196.0/24"]
   }
 
   egress {

@@ -48,12 +48,12 @@ module "nlb" {
   nlb_listener_protocol = "HTTP"
   nlb_listener_cert     = ""
 
-  default_tags         =  {
-      namespace: "useast1d"
-      app_role: "appdemo01"
-      lob: "business"
-      team: "operations"
-      environemnt: "developement"
+  default_tags = {
+    namespace: "useast1d"
+    app_role: "appdemo01"
+    lob: "business"
+    team: "operations"
+    environemnt: "developement"
   }
 }
 ```

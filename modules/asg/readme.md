@@ -52,7 +52,7 @@ module "asg" {
   asg_desired                = 3
   asg_healthcheck_type       = "ELB"
 
-  default_tags =  {
+  default_tags = {
     namespace: "useast1d"
     app_role: "appdemo01"
     lob: "business"

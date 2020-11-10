@@ -47,7 +47,7 @@ module "ec2_instance" {
   iam_instance_profile        = module.ec2_role.profile.name
   enable_second_drive         = true
 
-  default_tags =  {
+  default_tags = {
     namespace: "useast1d"
     app_role: "appdemo01"
     lob: "business"
