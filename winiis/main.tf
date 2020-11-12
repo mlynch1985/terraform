@@ -133,7 +133,7 @@ resource "aws_security_group" "ec2" {
     protocol    = "tcp"
     from_port   = 3389
     to_port     = 3389
-    cidr_blocks = ["100.34.0.0/16", "72.21.196.0/24"]
+    cidr_blocks = ["100.34.0.0/16"]
   }
 
   egress {
