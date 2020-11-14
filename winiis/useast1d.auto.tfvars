@@ -1,6 +1,6 @@
-namespace = "useast1d"
+namespace = "useast1t"
 app_role = "winiis"
 region = "us-east-1"
 lob = "it_operations"
 team = "sysops"
-environment = "dev"
+environment = "prd"

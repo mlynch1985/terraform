@@ -39,7 +39,7 @@ resource "aws_iam_instance_profile" "this" {
 }
 
 resource "aws_iam_role_policy" "s3" {
-  name_prefix = "GrantS3_"
+  name = "GrantS3"
   role        = aws_iam_role.this.id
 
   policy = <<EOF
@@ -60,7 +60,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "parameter_store" {
-  name_prefix = "GrantParameterStore_"
+  name = "GrantParameterStore"
   role        = aws_iam_role.this.id
 
   policy = <<EOF
@@ -83,7 +83,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "secrets_manager" {
-  name_prefix = "GrantSecretsManager_"
+  name = "GrantSecretsManager"
   role        = aws_iam_role.this.id
 
   policy = <<EOF

@@ -49,7 +49,8 @@ resource "aws_rds_cluster" "this" {
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name = "${var.namespace}_${var.app_role}_rds"
+  name                    = "${var.namespace}_${var.app_role}_rds"
+  recovery_window_in_days = 0
 
   tags = merge(
     var.default_tags,

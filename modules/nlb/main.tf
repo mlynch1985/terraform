@@ -57,7 +57,8 @@ resource "aws_lb_listener" "this" {
 }
 
 resource "aws_ssm_parameter" "this" {
-  name  = "/${var.namespace}/${var.app_role}/nlb_dns"
-  type  = "String"
-  value = aws_lb.this.dns_name
+  name      = "/${var.namespace}/${var.app_role}/nlb_dns"
+  type      = "String"
+  overwrite = true
+  value     = aws_lb.this.dns_name
 }

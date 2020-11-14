@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket = "mltemp-sandbox-tfstate"
-    region = "us-east-1"
+    bucket  = "mltemp-sandbox-tfstate"
+    region  = "us-east-1"
     encrypt = true
-    key = "wordpress"
+    key     = "useast1t_wordpress"
   }
 
   required_providers {
@@ -29,6 +29,24 @@ provider "random" {
 
 module "ec2_role" {
   source = "../modules/ec2_role"
+
+  namespace    = var.namespace
+  app_role     = var.app_role
+  default_tags = local.default_tags
+}
+
+module "cwa" {
+  source = "../modules/cwa"
+
+  namespace    = var.namespace
+  app_role     = var.app_role
+  platform     = "linux"
+  config_json  = file("${path.module}/cwa_config.json")
+  default_tags = local.default_tags
+}
+
+module "patching" {
+  source = "../modules/patching"
 
   namespace    = var.namespace
   app_role     = var.app_role
@@ -66,7 +84,6 @@ module "asg" {
 
   namespace                  = var.namespace
   app_role                   = var.app_role
-  default_tags               = local.default_tags
   image_id                   = data.aws_ami.amazon_linux_2.image_id
   instance_type              = "t3.large"
   security_groups            = [aws_security_group.asg.id]
@@ -79,6 +96,14 @@ module "asg" {
   asg_healthcheck_type       = "ELB"
   asg_subnets                = data.aws_subnet_ids.private.ids
   target_group_arns          = [module.alb.target_group.arn]
+
+  default_tags = merge(
+    local.default_tags,
+    map(
+      "ad_join", "true",
+      "enable_patching", "true"
+    )
+  )
 }
 
 module "rds" {

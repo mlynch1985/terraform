@@ -3,7 +3,7 @@ terraform {
     bucket  = "mltemp-sandbox-tfstate"
     region  = "us-east-1"
     encrypt = true
-    key     = "wordpress"
+    key     = "useast1t_winiis"
   }
 
   required_providers {
@@ -38,9 +38,9 @@ module "ec2_role" {
 module "msad" {
   source = "../modules/msad"
 
-  namespace           = "useast1d"
-  app_role            = "winiis"
-  domain_name         = "example.com"
+  namespace           = var.namespace
+  app_role            = var.app_role
+  domain_name         = "example.local"
   vpc_id              = data.aws_vpc.this.id
   subnet_1            = tolist(data.aws_subnet_ids.private.ids)[0]
   subnet_2            = tolist(data.aws_subnet_ids.private.ids)[1]
@@ -55,8 +55,8 @@ module "msad" {
 module "cwa" {
   source = "../modules/cwa"
 
-  namespace    = "useast1d"
-  app_role     = "winiis"
+  namespace    = var.namespace
+  app_role     = var.app_role
   platform     = "windows"
   config_json  = file("${path.module}/cwa_config.json")
   default_tags = local.default_tags
@@ -65,16 +65,16 @@ module "cwa" {
 module "patching" {
   source = "../modules/patching"
 
-  namespace    = "useast1d"
-  app_role     = "appdemo1"
+  namespace    = var.namespace
+  app_role     = var.app_role
   default_tags = local.default_tags
 }
 
 module "ec2_instance" {
   source = "../modules/ec2_instance"
 
-  namespace                   = "useast1d"
-  app_role                    = "winiis"
+  namespace                   = var.namespace
+  app_role                    = var.app_role
   image_id                    = data.aws_ami.windows_2019.image_id
   security_groups             = [aws_security_group.ec2.id]
   subnet_id                   = tolist(data.aws_subnet_ids.public.ids)[0]
@@ -106,7 +106,7 @@ module "ec2_instance" {
     device_name : "xvdb"
     volume_type : "gp2"
     volume_size : "50"
-    delete_on_termination : false
+    delete_on_termination : true
     encrypted : true
   }
 }

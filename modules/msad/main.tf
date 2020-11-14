@@ -28,9 +28,9 @@ resource "aws_directory_service_directory" "this" {
 resource "aws_ssm_association" "this" {
   count = var.enable_auto_join ? 1 : 0
 
-  depends_on       = [aws_directory_service_directory.this]
-  name             = "AWS-JoinDirectoryServiceDomain"
-  association_name = "${var.namespace}_${var.app_role}_ad_autojoin"
+  depends_on          = [aws_directory_service_directory.this]
+  name                = "AWS-JoinDirectoryServiceDomain"
+  association_name    = "${var.namespace}_${var.app_role}_ad_autojoin"
   compliance_severity = "HIGH"
   max_errors          = 5
 
@@ -68,7 +68,8 @@ resource "aws_vpc_dhcp_options_association" "this" {
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name = "${var.namespace}_${var.app_role}_msad"
+  name                    = "${var.namespace}_${var.app_role}_msad"
+  recovery_window_in_days = 0
 
   tags = merge(
     var.default_tags,
