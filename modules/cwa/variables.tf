@@ -23,3 +23,8 @@ variable "config_json" {
   description = "Provide the path to the CWA config json file"
   type        = string
 }
+
+variable "auto_scaling_group_name" {
+  description = "Provide the friendly name of the AutoScalingGroup to monitor"
+  type        = string
+}

@@ -55,11 +55,12 @@ module "msad" {
 module "cwa" {
   source = "../modules/cwa"
 
-  namespace    = var.namespace
-  app_role     = var.app_role
-  platform     = "windows"
-  config_json  = file("${path.module}/cwa_config.json")
-  default_tags = local.default_tags
+  namespace               = var.namespace
+  app_role                = var.app_role
+  platform                = "windows"
+  config_json             = file("${path.module}/cwa_config.json")
+  default_tags            = local.default_tags
+  auto_scaling_group_name = "NULL"
 }
 
 module "patching" {

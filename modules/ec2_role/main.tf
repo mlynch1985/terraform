@@ -1,5 +1,5 @@
 resource "aws_iam_role" "this" {
-  name_prefix           = "${var.namespace}_${var.app_role}_role_"
+  name_prefix           = "${var.namespace}_${var.app_role}_ec2_"
   force_detach_policies = true
   path                  = var.path
   description           = var.description
@@ -40,7 +40,7 @@ resource "aws_iam_instance_profile" "this" {
 
 resource "aws_iam_role_policy" "s3" {
   name = "GrantS3"
-  role        = aws_iam_role.this.id
+  role = aws_iam_role.this.id
 
   policy = <<EOF
 {
@@ -61,7 +61,7 @@ EOF
 
 resource "aws_iam_role_policy" "parameter_store" {
   name = "GrantParameterStore"
-  role        = aws_iam_role.this.id
+  role = aws_iam_role.this.id
 
   policy = <<EOF
 {
@@ -84,7 +84,7 @@ EOF
 
 resource "aws_iam_role_policy" "secrets_manager" {
   name = "GrantSecretsManager"
-  role        = aws_iam_role.this.id
+  role = aws_iam_role.this.id
 
   policy = <<EOF
 {
