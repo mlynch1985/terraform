@@ -15,7 +15,7 @@ try {
     $AGENT_SOURCE = "https://s3.$($REGION).amazonaws.com/amazoncloudwatch-agent-$($REGION)/windows/amd64/latest/amazon-cloudwatch-agent.msi"
     $AGENT_DESTINATION = "C:\amazon-cloudwatch-agent.msi"
     $AGENT_BINARY = "C:\Program Files\Amazon\AmazonCloudWatchAgent\amazon-cloudwatch-agent-ctl.ps1"
-    $CWA_CONFIG_SOURCE = (Get-SSMParameterValue -Name "/$($NAMESPACE)/$($APP_ROLE)/cwa_windows_config" -Region $REGION).Parameters.Value
+    $CWA_CONFIG_SOURCE = (Get-SSMParameterValue -Name "/$($NAMESPACE)/$($APP_ROLE)/cwa/windows" -Region $REGION).Parameters.Value
     $CWA_CONFIG_DESTINATION = "C:\ProgramData\Amazon\AmazonCloudWatchAgent\amazon-cloudwatch-agent.json"
 
     # Download the latest version of the CloudWatch Agent for Windows

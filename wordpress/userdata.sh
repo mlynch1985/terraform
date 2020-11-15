@@ -42,7 +42,7 @@ then
     touch /var/www/html/wp-config.php
 
     ## Query Secrets Manager for our RDS credentials
-    RDS_SECRET=$(aws secretsmanager get-secret-value --secret-id "${NAMESPACE}_${APPROLE}_rds" --region $REGION --output text --query SecretString)
+    RDS_SECRET=$(aws secretsmanager get-secret-value --secret-id "/${NAMESPACE}/${APPROLE}/rds" --region $REGION --output text --query SecretString)
     DBNAME=$(echo $RDS_SECRET | jq -r .database_name)
     ENDPOINT=$(echo $RDS_SECRET | jq -r .endpoint)
     USERNAME=$(echo $RDS_SECRET | jq -r .username)
@@ -101,7 +101,7 @@ then
 fi
 
 ## Define CloudWatchAgent variables
-CWA_SOURCE=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/cwa_linux_config" --region $REGION --output text --query Parameter.Value)
+CWA_SOURCE=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/cwa/linux" --region $REGION --output text --query Parameter.Value)
 CWA_CONFIG="/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
 CWA_BINARY="/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl"
 

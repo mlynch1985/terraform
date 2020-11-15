@@ -6,7 +6,7 @@ locals {
   team          = "web_hosting"
   environment   = "development"
   instance_type = "t3.large"
-  asg_size      = 1
+  asg_size      = 3
 
   default_tags = {
     namespace : local.namespace,
