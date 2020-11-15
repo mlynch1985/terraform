@@ -14,14 +14,16 @@ variable "default_tags" {
   default     = {}
 }
 
-variable "platform" {
-  description = "Specify either windows or linux"
+variable "linux_config" {
+  description = "Provide the path to the Linux CWA config json file"
   type        = string
+  default     = ""
 }
 
-variable "config_json" {
-  description = "Provide the path to the CWA config json file"
+variable "windows_config" {
+  description = "Provide the path to the Windows CWA config json file"
   type        = string
+  default     = ""
 }
 
 variable "auto_scaling_group_name" {

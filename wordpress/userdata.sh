@@ -19,7 +19,7 @@ APPROLE=$(aws ec2 describe-tags --filters \
     --output text \
     --query Tags[0].Value)
 
-EFSMOUNT=$(aws ssm get-parameter --name "/${NAMESPACE}/wordpress/efs_mount" --region $REGION --output text --query Parameter.Value)
+EFSMOUNT=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/efs_mount" --region $REGION --output text --query Parameter.Value)
 
 
 ## Install AWS EFS tools

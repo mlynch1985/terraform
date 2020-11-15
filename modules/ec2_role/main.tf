@@ -97,7 +97,7 @@ resource "aws_iam_role_policy" "secrets_manager" {
                 "secretsmanager:DescribeSecret",
                 "secretsmanager:GetSecretValue"
             ],
-            "Resource": "arn:aws:secretsmanager:*:*:secret:${var.namespace}_${var.app_role}_*"
+            "Resource": "arn:aws:secretsmanager:*:*:secret:/${var.namespace}/${var.app_role}/*"
         }
     ]
 }

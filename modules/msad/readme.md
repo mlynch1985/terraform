@@ -56,8 +56,7 @@ module "msad" {
 Outputs
 ----------------------
 
-- `directory_id` - Outputs the aws_directory_service_directory object's [directory_id](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/directory_service_directory) attribute.
-- `dns_ip_addresses` - Outputs the aws_directory_service_directory object's [dns_ip_addresses](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/directory_service_directory) attribute.
+- `directory` - Outputs the aws_directory_service_directory object [directory](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/directory_service_directory) attribute.
 
 Authors
 ----------------------

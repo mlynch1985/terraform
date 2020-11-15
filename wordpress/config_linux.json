@@ -7,7 +7,9 @@
     "namespace": "NAME_SPACE",
     "metrics_collected": {
       "cpu": {
-        "resources": ["*"],
+        "resources": [
+          "*"
+        ],
         "totalcpu": true,
         "measurement": [
           "time_active",
@@ -19,7 +21,9 @@
         ]
       },
       "disk": {
-        "resources": ["*"],
+        "resources": [
+          "*"
+        ],
         "ignore_file_system_types": [
           "sysfs",
           "devtmpfs"
@@ -32,7 +36,9 @@
         ]
       },
       "diskio": {
-        "resources": ["*"],
+        "resources": [
+          "*"
+        ],
         "measurement": [
           "reads",
           "writes",
@@ -45,7 +51,9 @@
         ]
       },
       "swap": {
-        "resources": ["*"],
+        "resources": [
+          "*"
+        ],
         "measurement": [
           "free",
           "used",

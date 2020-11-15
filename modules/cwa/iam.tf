@@ -41,7 +41,7 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
-            "Resource": ["${aws_cloudwatch_log_group.ec2_state_alarm.arn}"]
+            "Resource": ["*"]
         }
     ]
 }

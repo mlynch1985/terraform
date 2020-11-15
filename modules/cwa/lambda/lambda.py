@@ -1,6 +1,7 @@
 import json
 import boto3
 
+
 def lambda_handler(event, context):
     # Initialize boto3 modules
     ec2 = boto3.client('ec2')
@@ -13,7 +14,7 @@ def lambda_handler(event, context):
 
     # Capture details about the EC2 instance
     instance_object = ec2.describe_instances(
-        InstanceIds = [instance_id]
+        InstanceIds=[instance_id]
     )
 
     # Loop through the EC2 instance tags and set them variables
@@ -23,8 +24,8 @@ def lambda_handler(event, context):
         elif tag['Key'] == 'app_role':
             app_role = tag['Value']
 
-
-    if 'Platform' in instance_object['Reservations'][0]['Instances'][0]: # If the Platform Key exists, we assume the EC2 instance is Windows
+    # If the Platform Key exists, we assume the EC2 instance is Windows
+    if 'Platform' in instance_object['Reservations'][0]['Instances'][0]:
         import windows
         alarms = windows.windows_alarms()
     else:

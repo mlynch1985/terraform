@@ -29,6 +29,7 @@ resource "aws_ssm_maintenance_window_task" "this" {
   window_id        = aws_ssm_maintenance_window.this.id
   max_concurrency  = var.max_concurrency
   max_errors       = var.max_errors
+  priority         = 1
   task_type        = "RUN_COMMAND"
   task_arn         = "AWS-RunPatchBaseline"
   service_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM"

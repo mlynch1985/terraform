@@ -16,7 +16,7 @@ resource "aws_db_subnet_group" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_subnet_group"
+      "Name", "${var.namespace}/${var.app_role}/subnet_group"
     )
   )
 }
@@ -43,19 +43,19 @@ resource "aws_rds_cluster" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_rds_cluster"
+      "Name", "${var.namespace}/${var.app_role}/rds_cluster"
     )
   )
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name                    = "${var.namespace}_${var.app_role}_rds"
+  name                    = "/${var.namespace}/${var.app_role}/rds"
   recovery_window_in_days = 0
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_rds"
+      "Name", "${var.namespace}/${var.app_role}/rds"
     )
   )
 }

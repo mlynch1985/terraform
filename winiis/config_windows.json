@@ -7,7 +7,9 @@
     "namespace": "NAME_SPACE",
     "metrics_collected": {
       "Processor": {
-        "resources": ["*"],
+        "resources": [
+          "*"
+        ],
         "measurement": [
           "% Idle Time",
           "% Interrupt Time",
@@ -15,7 +17,9 @@
         ]
       },
       "LogicalDisk": {
-        "resources": ["*"],
+        "resources": [
+          "*"
+        ],
         "measurement": [
           "% Disk Read Time",
           "% Disk Write Time",

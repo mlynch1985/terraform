@@ -7,7 +7,7 @@ resource "aws_lb" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_alb"
+      "Name", "${var.namespace}/${var.app_role}/alb"
     )
   )
 }
@@ -37,7 +37,7 @@ resource "aws_lb_target_group" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_target_group"
+      "Name", "${var.namespace}/${var.app_role}/target_group"
     )
   )
 }

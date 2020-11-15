@@ -1,11 +1,4 @@
 terraform {
-  backend "s3" {
-    bucket  = "mltemp-sandbox-tfstate"
-    region  = "us-east-1"
-    encrypt = true
-    key     = "useast1t_vpc"
-  }
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -15,13 +8,13 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region = local.region
 }
 
 module "vpc" {
   source = "../modules/vpc"
 
-  namespace                = var.namespace
+  namespace                = local.namespace
   default_tags             = local.default_tags
   cidr_block               = "10.0.0.0/16"
   deploy_private_subnets   = true

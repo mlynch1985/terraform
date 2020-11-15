@@ -9,7 +9,7 @@ resource "aws_efs_file_system" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}"
+      "Name", "${var.namespace}/${var.app_role}"
     )
   )
 }

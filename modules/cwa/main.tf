@@ -1,37 +1,35 @@
 resource "aws_ssm_parameter" "linux_parameter" {
-  count = var.platform == "linux" ? 1 : 0
+  count = var.linux_config != "" ? 1 : 0
 
-  name        = "/${var.namespace}/${var.app_role}/cwa_linux_config"
+  name        = "/${var.namespace}/${var.app_role}/cwa/linux"
   type        = "String"
   description = "CloudWatch Agent configuration file for Linux servers"
   overwrite   = true
+  value       = var.linux_config
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_cwa_linux"
+      "Name", "${var.namespace}/${var.app_role}/cwa/linux"
     )
   )
-
-  value = var.config_json
 }
 
 resource "aws_ssm_parameter" "windows_parameter" {
-  count = var.platform == "windows" ? 1 : 0
+  count = var.windows_config != "" ? 1 : 0
 
-  name        = "/${var.namespace}/${var.app_role}/cwa_windows_config"
+  name        = "/${var.namespace}/${var.app_role}/cwa/windows"
   type        = "String"
   description = "CloudWatch Agent configuration file for Wnidows servers"
   overwrite   = true
+  value       = var.windows_config
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_cwa_windows"
+      "Name", "${var.namespace}/${var.app_role}/cwa_windows"
     )
   )
-
-  value = var.config_json
 }
 
 resource "aws_cloudwatch_log_group" "ec2_state_alarm" {
@@ -41,7 +39,7 @@ resource "aws_cloudwatch_log_group" "ec2_state_alarm" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_ec2_state_alarm"
+      "Name", "${var.namespace}/${var.app_role}/ec2_state_alarm"
     )
   )
 }
@@ -63,7 +61,7 @@ EOF
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_ec2_state_alarm"
+      "Name", "${var.namespace}/${var.app_role}/ec2_state_alarm"
     )
   )
 }
@@ -89,7 +87,7 @@ EOF
 }
 
 resource "aws_lambda_function" "ec2_state_alarm" {
-  filename      = "${path.module}/lambda.zip"
+  filename      = "${path.module}/lambda/lambda.zip"
   function_name = "${var.namespace}_${var.app_role}_ec2_state_alarm"
   handler       = "lambda.lambda_handler"
   role          = aws_iam_role.this.arn

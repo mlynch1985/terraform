@@ -1,14 +1,16 @@
-variable "namespace" {}
-variable "region" {}
-variable "lob" {}
-variable "team" {}
-variable "environment" {}
-
 locals {
+  namespace   = "useast1d"
+  app_role    = "vpc"
+  region      = "us-east-1"
+  lob         = "it_operations"
+  team        = "web_hosting"
+  environment = "development"
+
   default_tags = {
-    namespace : var.namespace,
-    lob : var.lob,
-    team : var.team,
-    environment : var.environment
+    namespace : local.namespace,
+    app_role : local.app_role,
+    lob : local.lob,
+    team : local.team,
+    environment : local.environment
   }
 }

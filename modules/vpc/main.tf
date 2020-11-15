@@ -251,13 +251,13 @@ EOF
 resource "aws_cloudwatch_log_group" "this" {
   count = var.enable_flow_logs ? 1 : 0
 
-  name_prefix       = "${var.namespace}_flow_logs"
+  name_prefix       = "/${var.namespace}/vpc/flow_logs"
   retention_in_days = 30
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_flow_logs"
+      "Name", "${var.namespace}/vpc/flow_logs"
     )
   )
 }
@@ -273,7 +273,7 @@ resource "aws_flow_log" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_flow_logs"
+      "Name", "${var.namespace}/vpc/flow_logs"
     )
   )
 }

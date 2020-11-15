@@ -20,7 +20,7 @@ resource "aws_directory_service_directory" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_directory"
+      "Name", "${var.namespace}/${var.app_role}/directory"
     )
   )
 }
@@ -54,7 +54,7 @@ resource "aws_vpc_dhcp_options" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_dhcp_options"
+      "Name", "${var.namespace}/${var.app_role}/dhcp_options"
     )
   )
 }
@@ -68,13 +68,13 @@ resource "aws_vpc_dhcp_options_association" "this" {
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name                    = "${var.namespace}_${var.app_role}_msad"
+  name                    = "/${var.namespace}/${var.app_role}/msad"
   recovery_window_in_days = 0
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_msad"
+      "Name", "${var.namespace}/${var.app_role}/msad"
     )
   )
 }

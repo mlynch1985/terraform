@@ -1,5 +1,5 @@
 resource "aws_launch_template" "this" {
-  name_prefix            = "${var.namespace}_${var.app_role}_"
+  name_prefix            = "${var.namespace}/${var.app_role}/"
   image_id               = var.image_id
   instance_type          = var.instance_type
   key_name               = var.key_name
@@ -38,7 +38,7 @@ resource "aws_launch_template" "this" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  name_prefix         = "${var.namespace}_${var.app_role}_asg_"
+  name_prefix         = "${var.namespace}/${var.app_role}/"
   min_size            = var.asg_min
   max_size            = var.asg_max
   desired_capacity    = var.asg_desired

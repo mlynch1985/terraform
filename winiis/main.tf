@@ -1,11 +1,4 @@
 terraform {
-  backend "s3" {
-    bucket  = "mltemp-sandbox-tfstate"
-    region  = "us-east-1"
-    encrypt = true
-    key     = "useast1t_winiis"
-  }
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -19,28 +12,28 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region = local.region
 }
 
 provider "random" {
-  region = var.region
+  region = local.region
 }
 
 
 module "ec2_role" {
   source = "../modules/ec2_role"
 
-  namespace    = var.namespace
-  app_role     = var.app_role
+  namespace    = local.namespace
+  app_role     = local.app_role
   default_tags = local.default_tags
 }
 
 module "msad" {
   source = "../modules/msad"
 
-  namespace           = var.namespace
-  app_role            = var.app_role
-  domain_name         = "example.local"
+  namespace           = local.namespace
+  app_role            = local.app_role
+  domain_name         = local.domain_name
   vpc_id              = data.aws_vpc.this.id
   subnet_1            = tolist(data.aws_subnet_ids.private.ids)[0]
   subnet_2            = tolist(data.aws_subnet_ids.private.ids)[1]
@@ -55,31 +48,30 @@ module "msad" {
 module "cwa" {
   source = "../modules/cwa"
 
-  namespace               = var.namespace
-  app_role                = var.app_role
-  platform                = "windows"
-  config_json             = file("${path.module}/cwa_config.json")
+  namespace               = local.namespace
+  app_role                = local.app_role
   default_tags            = local.default_tags
+  windows_config          = file("${path.module}/config_windows.json")
   auto_scaling_group_name = "NULL"
 }
 
 module "patching" {
   source = "../modules/patching"
 
-  namespace    = var.namespace
-  app_role     = var.app_role
+  namespace    = local.namespace
+  app_role     = local.app_role
   default_tags = local.default_tags
 }
 
 module "ec2_instance" {
   source = "../modules/ec2_instance"
 
-  namespace                   = var.namespace
-  app_role                    = var.app_role
+  namespace                   = local.namespace
+  app_role                    = local.app_role
   image_id                    = data.aws_ami.windows_2019.image_id
   security_groups             = [aws_security_group.ec2.id]
   subnet_id                   = tolist(data.aws_subnet_ids.public.ids)[0]
-  instance_type               = "t3.xlarge"
+  instance_type               = local.instance_type
   key_name                    = ""
   enable_detailed_monitoring  = true
   associate_public_ip_address = true
@@ -120,7 +112,7 @@ resource "aws_iam_role_policy_attachment" "msad" {
 }
 
 resource "aws_security_group" "ec2" {
-  name_prefix = "${var.namespace}_${var.app_role}_ec2_"
+  name_prefix = "${local.namespace}_${local.app_role}_ec2_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -147,7 +139,7 @@ resource "aws_security_group" "ec2" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_ec2"
+      "Name", "${local.namespace}_${local.app_role}_ec2"
     )
   )
 }

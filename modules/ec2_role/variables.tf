@@ -31,4 +31,3 @@ variable "max_session_duration" {
   type        = number
   default     = 3600
 }
-
