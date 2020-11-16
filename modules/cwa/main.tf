@@ -87,13 +87,14 @@ EOF
 }
 
 resource "aws_lambda_function" "ec2_state_alarm" {
-  filename      = "${path.module}/lambda/lambda.zip"
-  function_name = "${var.namespace}_${var.component}_ec2_state_alarm"
-  handler       = "lambda.lambda_handler"
-  role          = aws_iam_role.this.arn
-  description   = "Creates Cloudwatch Metric Alarms when a new EC2 instance is launched or deletes them when terminated"
-  runtime       = "python3.7"
-  timeout       = 30
+  filename         = "${path.module}/lambda.zip"
+  source_code_hash = filebase64sha256(data.archive_file.this.output_path)
+  function_name    = "${var.namespace}_${var.component}_ec2_state_alarm"
+  handler          = "lambda.lambda_handler"
+  role             = aws_iam_role.this.arn
+  description      = "Creates Cloudwatch Metric Alarms when a new EC2 instance is launched or deletes them when terminated"
+  runtime          = "python3.7"
+  timeout          = 30
 
   tags = merge(
     var.default_tags,
