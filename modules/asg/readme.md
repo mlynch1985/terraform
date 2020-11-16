@@ -7,7 +7,7 @@ Required Input Variables
 ----------------------
 
 - `namespace` - Define a value in all lowercase number and letters only (ex. useast1d).
-- `app_role` - Specify the application role for the ASG and EC2 instances.
+- `component` - Specify the application role for the ASG and EC2 instances.
 - `image_id` - Specify an AMI ID used to launch EC2 instances.
 - `security_groups` - Provide a list(string) of security group IDs.
 - `asg_subnets` - Provide a list(string) of subnet IDs to deploy the ALB into.
@@ -36,7 +36,7 @@ module "asg" {
   source = "../modules/asg"
 
   namespace                  = "useast1d"
-  app_role                   = "appdemo1"
+  component                   = "appdemo1"
   image_id                   = "ami-0a1b2c3d4e5f6g7h8i9"
   security_groups            = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
   asg_subnets                = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k", "subnet-1l2m3n4o5p"]
@@ -53,7 +53,7 @@ module "asg" {
 
   default_tags = {
     namespace: "useast1d"
-    app_role: "appdemo01"
+    component: "appdemo01"
     lob: "business"
     team: "operations"
     environemnt: "developement"

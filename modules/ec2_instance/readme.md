@@ -7,7 +7,7 @@ Required Input Variables
 ----------------------
 
 - `namespace` - Define a value in all lowercase number and letters only (ex. useast1d).
-- `app_role` - Specify the application role for this instance.
+- `component` - Specify the application role for this instance.
 - `image_id` - Specify an AMI ID used to launch EC2 instances.
 - `security_groups` - Provide a list(string) of security group IDs to associate with this instance.
 - `subnet_id` - Provide a subnet ID of where this instance should be deployed.
@@ -34,7 +34,7 @@ module "ec2_instance" {
   source = "../modules/ec2_instance"
 
   namespace                   = "useast1d"
-  app_role                    = "appdemo1"
+  component                    = "appdemo1"
   image_id                    = "ami-0a1b2c3d4e5f6g7h8i9"
   security_groups             = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
   subnet_id                   = "subnet-1a2b3c4d5e"
@@ -48,7 +48,7 @@ module "ec2_instance" {
 
   default_tags = {
     namespace: "useast1d"
-    app_role: "appdemo01"
+    component: "appdemo01"
     lob: "business"
     team: "operations"
     environemnt: "developement"

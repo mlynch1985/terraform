@@ -1,19 +1,23 @@
+variable region {}
+variable namespace {}
+variable bucket {}
+variable lob {}
+variable team {}
+variable environment {}
+
 locals {
-  namespace     = "useast1d"
-  app_role      = "wordpress"
-  region        = "us-east-1"
-  lob           = "it_operations"
-  team          = "web_hosting"
-  environment   = "development"
+  component     = "wordpress"
   instance_type = "t3.large"
-  asg_size      = 3
+  asg_min       = 3
+  asg_max       = 3
+  asg_desired   = 3
 
   default_tags = {
-    namespace : local.namespace,
-    app_role : local.app_role,
-    lob : local.lob,
-    team : local.team,
-    environment : local.environment
+    namespace : var.namespace,
+    component : local.component,
+    lob : var.lob,
+    team : var.team,
+    environment : var.environment
   }
 }
 
@@ -23,7 +27,7 @@ data "aws_availability_zones" "available" {
 
 data "aws_vpc" "this" {
   tags = {
-    Name = "${local.namespace}_vpc"
+    Name = "${var.namespace}_vpc"
   }
 }
 

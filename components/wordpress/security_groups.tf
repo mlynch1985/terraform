@@ -1,5 +1,5 @@
 resource "aws_security_group" "efs" {
-  name_prefix = "${local.namespace}_${local.app_role}_efs_"
+  name_prefix = "${var.namespace}_${local.component}_efs_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -19,13 +19,13 @@ resource "aws_security_group" "efs" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.app_role}_efs"
+      "Name", "${var.namespace}_${local.component}_efs"
     )
   )
 }
 
 resource "aws_security_group" "alb" {
-  name_prefix = "${local.namespace}_${local.app_role}_alb_"
+  name_prefix = "${var.namespace}_${local.component}_alb_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -45,13 +45,13 @@ resource "aws_security_group" "alb" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.app_role}_alb"
+      "Name", "${var.namespace}_${local.component}_alb"
     )
   )
 }
 
 resource "aws_security_group" "asg" {
-  name_prefix = "${local.namespace}_${local.app_role}_asg_"
+  name_prefix = "${var.namespace}_${local.component}_asg_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -71,13 +71,13 @@ resource "aws_security_group" "asg" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.app_role}_asg"
+      "Name", "${var.namespace}_${local.component}_asg"
     )
   )
 }
 
 resource "aws_security_group" "rds" {
-  name_prefix = "${local.namespace}_${local.app_role}_rds_"
+  name_prefix = "${var.namespace}_${local.component}_rds_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -97,7 +97,7 @@ resource "aws_security_group" "rds" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.app_role}_rds"
+      "Name", "${var.namespace}_${local.component}_rds"
     )
   )
 }

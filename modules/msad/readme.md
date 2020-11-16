@@ -7,7 +7,7 @@ Required Input Variables
 ----------------------
 
 - `namespace` - Define a value in all lowercase number and letters only (ex. useast1d).
-- `app_role` - Specify the application role for the ASG and EC2 instances.
+- `component` - Specify the application role for the ASG and EC2 instances.
 - `domain_name` - Specify a fully qualified domain name such as corp.example.com.
 - `vpc_id` - Provide a VPC ID to target for this directory.
 - `subnet_1` - Provide a subnet ID to deploy EC2 instances into.
@@ -31,7 +31,7 @@ module "msad" {
   source = "../modules/msad"
 
   namespace           = "useast1d"
-  app_role            = "appdemo1"
+  component            = "appdemo1"
   domain_name         = "example.com"
   vpc_id              = "vpc-1a2b3c4d"
   subnet_1            = "subnet-1a2b3c4d5e"
@@ -44,7 +44,7 @@ module "msad" {
 
   default_tags = {
     namespace: "useast1d"
-    app_role: "appdemo01"
+    component: "appdemo01"
     lob: "business"
     team: "operations"
     environemnt: "developement"

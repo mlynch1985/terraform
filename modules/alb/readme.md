@@ -7,7 +7,7 @@ Required Input Variables
 ----------------------
 
 - `namespace` - Define a value in all lowercase number and letters only (ex. useast1d).
-- `app_role` - Specify the application role for this ALB.
+- `component` - Specify the application role for this ALB.
 - `security_groups` - Provide a list(string) of security group IDs.
 - `subnets` - Provide a list(string) of subnet IDs to deploy the ALB into.
 - `vpc_id` - The vpc ID where this ALB instance should be deployed.
@@ -34,7 +34,7 @@ module "alb" {
   source = "../modules/alb"
 
   namespace             = "useast1d"
-  app_role              = "appdemo1"
+  component              = "appdemo1"
   security_groups       = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
   subnets               = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k", "subnet-1l2m3n4o5p"]
   vpc_id                = "vpc-1a2b3c4d"
@@ -50,7 +50,7 @@ module "alb" {
 
   default_tags = {
     namespace: "useast1d"
-    app_role: "appdemo01"
+    component: "appdemo01"
     lob: "business"
     team: "operations"
     environemnt: "developement"

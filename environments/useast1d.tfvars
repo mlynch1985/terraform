@@ -1,0 +1,6 @@
+region="us-east-1"
+namespace="useast1d"
+bucket="useast1d-tf-state-mltemp"
+lob="it_operations"
+team="web_hosting"
+environment="development"

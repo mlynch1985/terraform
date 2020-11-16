@@ -1,38 +1,30 @@
 terraform {
+  backend "s3" {}
+
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.0"
-    }
-    random = {
       source  = "hashicorp/aws"
       version = "~> 3.0"
     }
   }
 }
 
-provider "aws" {
-  region = local.region
-}
-
-provider "random" {
-  region = local.region
-}
-
+provider "aws" {}
+provider "random" {}
 
 module "ec2_role" {
-  source = "../modules/ec2_role"
+  source = "../../modules/ec2_role"
 
-  namespace    = local.namespace
-  app_role     = local.app_role
+  namespace    = var.namespace
+  component    = local.component
   default_tags = local.default_tags
 }
 
 module "msad" {
-  source = "../modules/msad"
+  source = "../../modules/msad"
 
-  namespace           = local.namespace
-  app_role            = local.app_role
+  namespace           = var.namespace
+  component           = local.component
   domain_name         = local.domain_name
   vpc_id              = data.aws_vpc.this.id
   subnet_1            = tolist(data.aws_subnet_ids.private.ids)[0]
@@ -46,28 +38,28 @@ module "msad" {
 }
 
 module "cwa" {
-  source = "../modules/cwa"
+  source = "../../modules/cwa"
 
-  namespace               = local.namespace
-  app_role                = local.app_role
+  namespace               = var.namespace
+  component               = local.component
   default_tags            = local.default_tags
   windows_config          = file("${path.module}/config_windows.json")
   auto_scaling_group_name = "NULL"
 }
 
 module "patching" {
-  source = "../modules/patching"
+  source = "../../modules/patching"
 
-  namespace    = local.namespace
-  app_role     = local.app_role
+  namespace    = var.namespace
+  component    = local.component
   default_tags = local.default_tags
 }
 
 module "ec2_instance" {
-  source = "../modules/ec2_instance"
+  source = "../../modules/ec2_instance"
 
-  namespace                   = local.namespace
-  app_role                    = local.app_role
+  namespace                   = var.namespace
+  component                   = local.component
   image_id                    = data.aws_ami.windows_2019.image_id
   security_groups             = [aws_security_group.ec2.id]
   subnet_id                   = tolist(data.aws_subnet_ids.public.ids)[0]
@@ -112,7 +104,7 @@ resource "aws_iam_role_policy_attachment" "msad" {
 }
 
 resource "aws_security_group" "ec2" {
-  name_prefix = "${local.namespace}_${local.app_role}_ec2_"
+  name_prefix = "${var.namespace}_${local.component}_ec2_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -139,7 +131,7 @@ resource "aws_security_group" "ec2" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.app_role}_ec2"
+      "Name", "${var.namespace}_${local.component}_ec2"
     )
   )
 }

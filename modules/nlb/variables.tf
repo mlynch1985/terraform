@@ -3,7 +3,7 @@ variable "namespace" {
   type        = string
 }
 
-variable "app_role" {
+variable "component" {
   description = "Provide an app role to label each resource within this module"
   type        = string
 }

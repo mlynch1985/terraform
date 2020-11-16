@@ -1,5 +1,5 @@
 resource "aws_lb" "this" {
-  name            = "${var.namespace}-${var.app_role}"
+  name            = "${var.namespace}-${var.component}"
   internal        = var.is_internal
   security_groups = var.security_groups
   subnets         = var.subnets
@@ -7,13 +7,13 @@ resource "aws_lb" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/alb"
+      "Name", "${var.namespace}/${var.component}/alb"
     )
   )
 }
 
 resource "aws_lb_target_group" "this" {
-  name                 = "${var.namespace}-${var.app_role}"
+  name                 = "${var.namespace}-${var.component}"
   port                 = var.target_group_port
   protocol             = var.target_group_protocol
   vpc_id               = var.vpc_id
@@ -37,7 +37,7 @@ resource "aws_lb_target_group" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/target_group"
+      "Name", "${var.namespace}/${var.component}/target_group"
     )
   )
 }
@@ -56,7 +56,7 @@ resource "aws_lb_listener" "this" {
 }
 
 resource "aws_ssm_parameter" "this" {
-  name      = "/${var.namespace}/${var.app_role}/alb_dns"
+  name      = "/${var.namespace}/${var.component}/alb_dns"
   type      = "String"
   overwrite = true
   value     = aws_lb.this.dns_name

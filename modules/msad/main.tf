@@ -7,7 +7,7 @@ resource "random_password" "password" {
 resource "aws_directory_service_directory" "this" {
   name       = var.domain_name
   password   = random_password.password.result
-  alias      = var.enable_sso ? var.app_role : null
+  alias      = var.enable_sso ? var.component : null
   enable_sso = var.enable_sso
   type       = "MicrosoftAD"
   edition    = var.edition
@@ -20,7 +20,7 @@ resource "aws_directory_service_directory" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/directory"
+      "Name", "${var.namespace}/${var.component}/directory"
     )
   )
 }
@@ -30,7 +30,7 @@ resource "aws_ssm_association" "this" {
 
   depends_on          = [aws_directory_service_directory.this]
   name                = "AWS-JoinDirectoryServiceDomain"
-  association_name    = "${var.namespace}_${var.app_role}_ad_autojoin"
+  association_name    = "${var.namespace}_${var.component}_ad_autojoin"
   compliance_severity = "HIGH"
   max_errors          = 5
 
@@ -54,7 +54,7 @@ resource "aws_vpc_dhcp_options" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/dhcp_options"
+      "Name", "${var.namespace}/${var.component}/dhcp_options"
     )
   )
 }
@@ -68,13 +68,13 @@ resource "aws_vpc_dhcp_options_association" "this" {
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name                    = "/${var.namespace}/${var.app_role}/msad"
+  name                    = "/${var.namespace}/${var.component}/msad"
   recovery_window_in_days = 0
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/msad"
+      "Name", "${var.namespace}/${var.component}/msad"
     )
   )
 }

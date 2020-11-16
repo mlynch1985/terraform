@@ -48,22 +48,49 @@ Deployment
 - Open VS Code and set your default shell to `bash`.
 - Configure Github [ssh credentials](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/connecting-to-github-with-ssh)
 - Clone this repository to your local computer
-- Switch into the cloned repository folder of the stack you wish to deploy
+- Switch into the cloned repository folder of the stack you wish to deploy or run the root level main.tf to deploy everything
 - Create or update the .tfvars to include the required parameters
-- Refernce the below commands to deploy your stack
+- Reference the below commands to deploy your stack
 
 ```bash
+# Defin AWS Environment Variabls
+export AWS_REGION="us-east-1"
+
+# Set local variables specific to this deployment
+NAMESPACE="useast1d"
+REGION="us-east-1"
+
+# Create S3 bucket to store Terraform state
+aws s3api create-bucket \
+    --bucket "${NAMESPACE}-tf-state-mltemp" \
+    --acl "private" \
+    --region $REGION
+
+# Enable versioning on the bucket
+aws s3api put-bucket-versioning \
+    --bucket "${NAMESPACE}-tf-state-mltemp" \
+    --versioning-configuration Status=Enabled \
+    --region $REGION
+
+# Create DynamoDB table to maintain Terraform locks
+aws dynamodb create-table \
+    --table-name "${NAMESPACE}-terraform-locks" \
+    --key-schema AttributeName=LockID,KeyType=HASH \
+    --attribute-definitions AttributeName=LockID,AttributeType=S \
+    --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --region $REGION
+
 # Initialize your environment first
-terraform init
+terraform init -backend-config="../../environments/useast1d.conf"
 
 # Review the proposed changes and fix errors when needed
-terraform plan -var-file="./useast1d.tfvars"
+terraform plan -var-file="../../environments/useast1d.tfvars"
 
 # Deploy the proposed changes into your AWS Account
-terraform apply -var-file="./useast1d.tfvars"
+terraform apply -var-file="../../environments/useast1d.tfvars"
 
 # Remove the stack from your AWS Account
-terraform destroy -var-file="./useast1d.tfvars"
+terraform destroy -var-file="../../environments/useast1d.tfvars"
 ```
 
 Authors

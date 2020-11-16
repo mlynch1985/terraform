@@ -1,55 +1,48 @@
 terraform {
+  backend "s3" {}
+
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.0"
-    }
-    random = {
       source  = "hashicorp/aws"
       version = "~> 3.0"
     }
   }
 }
 
-provider "aws" {
-  region = local.region
-}
-
-provider "random" {
-  region = local.region
-}
+provider "aws" {}
+provider "random" {}
 
 module "ec2_role" {
-  source = "../modules/ec2_role"
+  source = "../../modules/ec2_role"
 
-  namespace    = local.namespace
-  app_role     = local.app_role
+  namespace    = var.namespace
+  component    = local.component
   default_tags = local.default_tags
 }
 
 module "cwa" {
-  source = "../modules/cwa"
+  source = "../../modules/cwa"
 
-  namespace               = local.namespace
-  app_role                = local.app_role
+  namespace               = var.namespace
+  component               = local.component
   default_tags            = local.default_tags
   linux_config            = file("${path.module}/config_linux.json")
   auto_scaling_group_name = module.asg.asg.name
 }
 
 module "patching" {
-  source = "../modules/patching"
+  source = "../../modules/patching"
 
-  namespace    = local.namespace
-  app_role     = local.app_role
+  namespace    = var.namespace
+  component    = local.component
   default_tags = local.default_tags
 }
 
 module "efs" {
-  source = "../modules/efs"
+  source = "../../modules/efs"
 
-  namespace        = local.namespace
-  app_role         = local.app_role
+  namespace        = var.namespace
+  component        = local.component
   default_tags     = local.default_tags
   is_encrypted     = true
   performance_mode = "generalPurpose"
@@ -58,10 +51,10 @@ module "efs" {
 }
 
 module "alb" {
-  source = "../modules/alb"
+  source = "../../modules/alb"
 
-  namespace            = local.namespace
-  app_role             = local.app_role
+  namespace            = var.namespace
+  component            = local.component
   default_tags         = local.default_tags
   is_internal          = false
   security_groups      = [aws_security_group.alb.id]
@@ -72,19 +65,19 @@ module "alb" {
 }
 
 module "asg" {
-  source = "../modules/asg"
+  source = "../../modules/asg"
 
-  namespace                  = local.namespace
-  app_role                   = local.app_role
+  namespace                  = var.namespace
+  component                  = local.component
   image_id                   = data.aws_ami.amazon_linux_2.image_id
   instance_type              = local.instance_type
   security_groups            = [aws_security_group.asg.id]
   user_data                  = filebase64("${path.module}/userdata.sh")
   enable_detailed_monitoring = true
   iam_instance_profile       = module.ec2_role.profile.arn
-  asg_min                    = local.asg_size
-  asg_max                    = local.asg_size
-  asg_desired                = local.asg_size
+  asg_min                    = local.asg_min
+  asg_max                    = local.asg_max
+  asg_desired                = local.asg_desired
   asg_healthcheck_type       = "ELB"
   asg_subnets                = data.aws_subnet_ids.private.ids
   target_group_arns          = [module.alb.target_group.arn]
@@ -98,10 +91,10 @@ module "asg" {
 }
 
 module "rds" {
-  source = "../modules/rds"
+  source = "../../modules/rds"
 
-  namespace          = local.namespace
-  app_role           = local.app_role
+  namespace          = var.namespace
+  component          = local.component
   default_tags       = local.default_tags
   subnets            = data.aws_subnet_ids.private.ids
   availability_zones = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1], data.aws_availability_zones.available.names[2]]

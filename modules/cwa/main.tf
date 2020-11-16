@@ -1,7 +1,7 @@
 resource "aws_ssm_parameter" "linux_parameter" {
   count = var.linux_config != "" ? 1 : 0
 
-  name        = "/${var.namespace}/${var.app_role}/cwa/linux"
+  name        = "/${var.namespace}/${var.component}/cwa/linux"
   type        = "String"
   description = "CloudWatch Agent configuration file for Linux servers"
   overwrite   = true
@@ -10,7 +10,7 @@ resource "aws_ssm_parameter" "linux_parameter" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/cwa/linux"
+      "Name", "${var.namespace}/${var.component}/cwa/linux"
     )
   )
 }
@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "linux_parameter" {
 resource "aws_ssm_parameter" "windows_parameter" {
   count = var.windows_config != "" ? 1 : 0
 
-  name        = "/${var.namespace}/${var.app_role}/cwa/windows"
+  name        = "/${var.namespace}/${var.component}/cwa/windows"
   type        = "String"
   description = "CloudWatch Agent configuration file for Wnidows servers"
   overwrite   = true
@@ -27,25 +27,25 @@ resource "aws_ssm_parameter" "windows_parameter" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/cwa_windows"
+      "Name", "${var.namespace}/${var.component}/cwa_windows"
     )
   )
 }
 
 resource "aws_cloudwatch_log_group" "ec2_state_alarm" {
-  name              = "/aws/lambda/${var.namespace}_${var.app_role}_ec2_state_alarm"
+  name              = "/aws/lambda/${var.namespace}_${var.component}_ec2_state_alarm"
   retention_in_days = 7
 
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/ec2_state_alarm"
+      "Name", "${var.namespace}/${var.component}/ec2_state_alarm"
     )
   )
 }
 
 resource "aws_cloudwatch_event_rule" "ec2_state_alarm" {
-  name_prefix = "${var.namespace}_${var.app_role}_ec2_state_alarm_"
+  name_prefix = "${var.namespace}_${var.component}_ec2_state_alarm_"
   description = "Triggers the EC2 State Changed Alarm Lambda function when an EC2 instance is launched or terminated"
 
   event_pattern = <<EOF
@@ -61,7 +61,7 @@ EOF
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}/${var.app_role}/ec2_state_alarm"
+      "Name", "${var.namespace}/${var.component}/ec2_state_alarm"
     )
   )
 }
@@ -88,7 +88,7 @@ EOF
 
 resource "aws_lambda_function" "ec2_state_alarm" {
   filename      = "${path.module}/lambda/lambda.zip"
-  function_name = "${var.namespace}_${var.app_role}_ec2_state_alarm"
+  function_name = "${var.namespace}_${var.component}_ec2_state_alarm"
   handler       = "lambda.lambda_handler"
   role          = aws_iam_role.this.arn
   description   = "Creates Cloudwatch Metric Alarms when a new EC2 instance is launched or deletes them when terminated"
@@ -98,7 +98,7 @@ resource "aws_lambda_function" "ec2_state_alarm" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.app_role}_ec2_state_alarm"
+      "Name", "${var.namespace}_${var.component}_ec2_state_alarm"
     )
   )
 }

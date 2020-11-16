@@ -7,7 +7,7 @@ Required Input Variables
 ----------------------
 
 - `namespace` - Define a value in all lowercase number and letters only (ex. useast1d).
-- `app_role` - Specify the application role for this ALB.
+- `component` - Specify the application role for this ALB.
 
 Optional Input Variables
 ----------------------
@@ -31,7 +31,7 @@ module "patching" {
   source = "../modules/patching"
 
   namespace         = "useast1d"
-  app_role          = "appdemo1"
+  component          = "appdemo1"
   schedule_name     = "daily_patching"
   schedule_cron     = "cron(0 0 ? * * *)"
   schedule_timezone = "America/New_York"
@@ -44,7 +44,7 @@ module "patching" {
 
   default_tags = {
     namespace: "useast1d"
-    app_role: "appdemo01"
+    component: "appdemo01"
     lob: "business"
     team: "operations"
     environemnt: "developement"

@@ -7,7 +7,7 @@ Required Input Variables
 ----------------------
 
 - `namespace` - Define a value in all lowercase number and letters only (ex. useast1d).
-- `app_role` - Specify the application role for this IAM Role.
+- `component` - Specify the application role for this IAM Role.
 
 Optional Input Variables
 ----------------------
@@ -25,14 +25,14 @@ module "ec2_role" {
   source = "../modules/ec2_role"
 
   namespace            = "useast1d"
-  app_role             = "appdemo1"
+  component             = "appdemo1"
   path                 = "/"
   description          = ""
   max_session_duration = 3600
 
   default_tags = {
     namespace: "useast1d"
-    app_role: "appdemo01"
+    component: "appdemo01"
     lob: "business"
     team: "operations"
     environemnt: "developement"
