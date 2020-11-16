@@ -168,7 +168,8 @@ resource "aws_subnet" "protected" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_protected_${count.index}"
+      "Name", "${var.namespace}_protected_${count.index}",
+      "tier", "protected"
     )
   )
 }
