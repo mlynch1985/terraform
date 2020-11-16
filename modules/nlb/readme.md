@@ -35,15 +35,15 @@ module "nlb" {
 
   namespace             = "useast1d"
   app_role              = "appdemo1"
-  security_groups       = [aws_security_group.nlb.id]
-  subnets               = data.aws_subnet_ids.public.ids
-  vpc_id                = data.aws_vpc.this.id
+  security_groups       = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
+  subnets               = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k", "subnet-1l2m3n4o5p"]
+  vpc_id                = "vpc-1a2b3c4d"
   is_internal           = false
   target_group_port     = 80
   target_group_protocol = "HTTP"
   deregistration_delay  = 300
-  enable_stickiness     = true
-  healthcheck_path      = "/healthcheck.html"
+  enable_stickiness     = false
+  healthcheck_path      = "/"
   nlb_listener_port     = 80
   nlb_listener_protocol = "HTTP"
   nlb_listener_cert     = ""

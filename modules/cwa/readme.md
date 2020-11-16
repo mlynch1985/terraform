@@ -8,14 +8,14 @@ Required Input Variables
 
 - `namespace` - Define a value in all lowercase number and letters only (ex. useast1d).
 - `app_role` - Specify the application role for the ASG and EC2 instances.
-- `platform` - Specify either `"linux"` or `"windows"`.
-- `config_json` - Provide the path to a CWA config json file.
 
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
+- `linux_config` - Provide the path to a Linux CWA config json file.
+- `windows_config` - Provide the path to a Windows CWA config json file.
+- `auto_scaling_group_name` - Provide the friendly name of the AutoScalingGroup to monitor.
 
 Usage
 -----
@@ -26,8 +26,9 @@ module "cwa" {
 
   namespace   = "useast1d"
   app_role    = "appdemo1"
-  platform    = "linux"
-  config_json = "file("${path.module}/cwa_config.json")"
+  linux_config = "file("${path.module}/linux_config.json")"
+  windows_config = "file("${path.module}/windows_config.json")"
+  auto_scaling_group_name = "/useast1d/appdemo01/asg"
 
   default_tags = {
     namespace: "useast1d"

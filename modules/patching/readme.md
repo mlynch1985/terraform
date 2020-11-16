@@ -12,8 +12,7 @@ Required Input Variables
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `schedule_name` - Specify a name for this maintance window. Defaults to `"daily_patching"`.
 - `schedule_cron` - Specify a cron expression to define how often this maintenance will execute. Defaults to `"cron(0 0 ? * * *)"`.
 - `schedule_timezone` - Provide a timezone name for which the maintenance window should use. Defaults to `"America/New_York"`.

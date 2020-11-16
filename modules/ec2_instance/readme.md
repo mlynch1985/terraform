@@ -15,8 +15,7 @@ Required Input Variables
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `instance_type` - Specify the EC2 instance type. Defaults to `t3.medium`.
 - `key_name` - Provide the name of an existing EC2 Key Pair. Defaults to `""`.
 - `enable_detailed_monitoring` - Set to `true` to enable Cloudwatch detailed monitoring. Defaults to `false`.
@@ -36,15 +35,15 @@ module "ec2_instance" {
 
   namespace                   = "useast1d"
   app_role                    = "appdemo1"
-  image_id                    = data.aws_ami.amazon_linux_2.image_id
-  security_groups             = [aws_security_group.ec2.id]
-  subnet_id                   = tolist(data.aws_subnet_ids.private.ids)[0]
-  instance_type               = "t3.large"
-  key_name                    = "appdemo01-key"
-  enable_detailed_monitoring  = true
+  image_id                    = "ami-0a1b2c3d4e5f6g7h8i9"
+  security_groups             = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
+  subnet_id                   = "subnet-1a2b3c4d5e"
+  instance_type               = "t3.medium"
+  key_name                    = ""
+  enable_detailed_monitoring  = false
   associate_public_ip_address = false
   user_data                   = filebase64("${path.module}/userdata.sh")
-  iam_instance_profile        = module.ec2_role.profile.name
+  iam_instance_profile        = "arn:aws:iam::012345678901:instance-profile/~"
   enable_second_drive         = true
 
   default_tags = {
@@ -60,7 +59,7 @@ module "ec2_instance" {
     volume_type: "gp2"
     volume_size: "30"
     delete_on_termination: true
-    encrypted: true
+    encrypted: false
   }
 
   ebs_block_device = {
@@ -68,7 +67,7 @@ module "ec2_instance" {
     volume_type: "gp2"
     volume_size: "50"
     delete_on_termination: false
-    encrypted: true
+    encrypted: false
   }
 }
 ```

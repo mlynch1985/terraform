@@ -14,8 +14,7 @@ Required Input Variables
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `is_encrypted` - Set to `true` to enable encryption. Defaults to `false`.
 - `performance_mode` - Set to either `"generalPurpose"` or `"maxIO"`. Defaults to `"generalPurpose"`.
 
@@ -28,9 +27,9 @@ module "efs" {
 
   namespace        = "useast1d"
   app_role         = "appdemo1"
-  subnets          = data.aws_subnet_ids.private.ids
-  security_groups  = [aws_security_group.ec2.id]
-  is_encrypted     = true
+  subnets          = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k", "subnet-1l2m3n4o5p"]
+  security_groups  = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
+  is_encrypted     = false
   performance_mode = "generalPurpose"
 
   default_tags = {

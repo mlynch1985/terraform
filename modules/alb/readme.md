@@ -15,8 +15,7 @@ Required Input Variables
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `is_internal` - Specify `false` to make the ALB public facing. Defaults to `true`.
 - `target_group_port` - Specify the port number to connect to the target group on. Defaults to `80`.
 - `target_group_protocol` - Specify either `"HTTP"` or `"HTTPS"`. Defaults to `"HTTP"`.
@@ -36,15 +35,15 @@ module "alb" {
 
   namespace             = "useast1d"
   app_role              = "appdemo1"
-  security_groups       = [aws_security_group.alb.id]
-  subnets               = data.aws_subnet_ids.public.ids
-  vpc_id                = data.aws_vpc.this.id
+  security_groups       = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
+  subnets               = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k", "subnet-1l2m3n4o5p"]
+  vpc_id                = "vpc-1a2b3c4d"
   is_internal           = false
   target_group_port     = 80
   target_group_protocol = "HTTP"
   deregistration_delay  = 300
-  enable_stickiness     = true
-  healthcheck_path      = "/healthcheck.html"
+  enable_stickiness     = false
+  healthcheck_path      = "/"
   alb_listener_port     = 80
   alb_listener_protocol = "HTTP"
   alb_listener_cert     = ""

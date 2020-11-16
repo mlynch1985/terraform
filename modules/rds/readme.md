@@ -15,8 +15,7 @@ Required Input Variables
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 
 Usage
 -----
@@ -29,7 +28,7 @@ module "rds" {
   app_role           = "appdemo1"
   subnets            = data.aws_subnet_ids.private.ids
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  security_groups    = [aws_security_group.ec2.id]
+  security_groups    = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
 
   default_tags = {
     namespace: "useast1d"

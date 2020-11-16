@@ -16,8 +16,7 @@ Required Input Variables
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `instance_type` - Specify the EC2 instance type. Defaults to `t3.medium`.
 - `key_name` - Provide the name of an existing EC2 Key Pair. Defaults to `""`.
 - `user_data` - Provide path to a userdata script. Defaults to `""`.
@@ -38,19 +37,19 @@ module "asg" {
 
   namespace                  = "useast1d"
   app_role                   = "appdemo1"
-  image_id                   = data.aws_ami.amazon_linux_2.image_id
-  security_groups            = [aws_security_group.asg.id]
-  asg_subnets                = data.aws_subnet_ids.private.ids
-  target_group_arns          = [module.alb.target_group.arn]
-  instance_type              = "t3.large"
-  key_name                   = "appdemo1-key"
+  image_id                   = "ami-0a1b2c3d4e5f6g7h8i9"
+  security_groups            = ["sg-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
+  asg_subnets                = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k", "subnet-1l2m3n4o5p"]
+  target_group_arns          = ["arn:aws:elasticloadbalancing:us-east-1:012345678901:targetgroup/~"]
+  instance_type              = "t3.medium"
+  key_name                   = ""
   user_data                  = filebase64("${path.module}/userdata.sh")
-  enable_detailed_monitoring = true
-  iam_instance_profile       = module.ec2_role.profile.arn
-  asg_min                    = 3
-  asg_max                    = 3
-  asg_desired                = 3
-  asg_healthcheck_type       = "ELB"
+  enable_detailed_monitoring = false
+  iam_instance_profile       = "arn:aws:iam::012345678901:instance-profile/~"
+  asg_min                    = 1
+  asg_max                    = 1
+  asg_desired                = 1
+  asg_healthcheck_type       = "EC2"
 
   default_tags = {
     namespace: "useast1d"
@@ -65,7 +64,7 @@ module "asg" {
     volume_type: "gp2"
     volume_size: "30"
     delete_on_termination: true
-    encrypted: true
+    encrypted: false
   }
 }
 ```
@@ -73,7 +72,7 @@ module "asg" {
 Outputs
 ----------------------
 
-- `None`
+- `asg` - Outputs the [aws_autoscaling_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group) object.
 
 Authors
 ----------------------

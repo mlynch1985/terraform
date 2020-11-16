@@ -11,8 +11,7 @@ Required Input Variables
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `cidr_block` - Specify the VPC cidr block. Should be between a /16 and a /28 cidr. Defaults to `"10.0.0.0/16"`.
 - `enable_dns_support` - Set to `true` to enable VPC DNS support. Defaults to `true`.
 - `enable_dns_hostnames` - Set to `true` to enable VPC hostname support. Defaults to `true`.
@@ -35,7 +34,7 @@ module "vpc" {
   target_az_count          = 3
   deploy_private_subnets   = true
   deploy_protected_subnets = false
-  enable_flow_logs         = true
+  enable_flow_logs         = false
 
   default_tags = {
     namespace: "useast1d"

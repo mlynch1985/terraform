@@ -12,8 +12,7 @@ Required Input Variables
 Optional Input Variables
 ----------------------
 
-- `default_tags` - Provide a map(string) or tags to associate with the ALB
-resources. Defaults to `{}`.
+- `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `path` - Specify the path to create this role. Defaults to `"/"`.
 - `description` - Give this IAM role a friendly description. Defaults to `""`.
 - `max_session_duration` - Provide the number of seconds to allow sessions to last. Defaults to `3600`.
