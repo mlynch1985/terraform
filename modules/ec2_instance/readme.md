@@ -75,7 +75,8 @@ module "ec2_instance" {
 Outputs
 ----------------------
 
-- `None`
+- `root_only_instance` - Outputs the [aws_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) object.
+- `with_ebs_instance` - Outputs the [aws_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) object.
 
 Authors
 ----------------------

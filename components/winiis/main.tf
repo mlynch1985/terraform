@@ -37,14 +37,13 @@ module "msad" {
   default_tags        = local.default_tags
 }
 
-module "cwa" {
-  source = "../../modules/cwa"
+module "cw_agent" {
+  source = "../../modules/cw_agent"
 
-  namespace               = var.namespace
-  component               = local.component
-  default_tags            = local.default_tags
-  windows_config          = file("${path.module}/config_windows.json")
-  auto_scaling_group_name = "NULL"
+  namespace      = var.namespace
+  component      = local.component
+  default_tags   = local.default_tags
+  windows_config = file("${path.module}/config_windows.json")
 }
 
 module "patching" {
@@ -106,13 +105,6 @@ resource "aws_iam_role_policy_attachment" "msad" {
 resource "aws_security_group" "ec2" {
   name_prefix = "${var.namespace}_${local.component}_ec2_"
   vpc_id      = data.aws_vpc.this.id
-
-  ingress {
-    protocol    = "tcp"
-    from_port   = 80
-    to_port     = 80
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   ingress {
     protocol    = "tcp"

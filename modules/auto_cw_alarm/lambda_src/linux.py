@@ -1,68 +1,50 @@
-class linux_alarms:
+class alarms:
     def __init__(self):
         self.data = []
 
-    def does_alarm_exist(self, cloudwatch, alarm_name):
-        response = cloudwatch.describe_alarms(
-            AlarmNames=[alarm_name],
-            AlarmTypes=["MetricAlarm"]
-        )
-
-        if 'MetricAlarms' in response:
-            return True
-        else:
-            return False
-
-    def delete_alarms(self, cloudwatch, instance_id, namespace, app_role):
+    def delete_alarms(self, cloudwatch, instance_id, namespace, component):
         cloudwatch.delete_alarms(
             AlarmNames=[
-                "{}_{}_{}_high_cpu".format(namespace, app_role, instance_id),
-                "{}_{}_{}_low_disk_space".format(namespace, app_role, instance_id),
-                "{}_{}_{}_high_disk_io".format(namespace, app_role, instance_id),
-                "{}_{}_{}_high_memory".format(namespace, app_role, instance_id)
+                "{}_{}_{}_high_cpu".format(namespace, component, instance_id),
+                "{}_{}_{}_low_disk_space".format(namespace, component, instance_id),
+                "{}_{}_{}_high_disk_io".format(namespace, component, instance_id),
+                "{}_{}_{}_high_memory".format(namespace, component, instance_id)
             ]
         )
 
-    def create_alarms(self, cloudwatch, instance_id, namespace, app_role, asg_name):
+    def create_alarms(self, cloudwatch, instance_id, namespace, component, asg_name):
         # High_Cpu
         cloudwatch.put_metric_alarm(
-            AlarmName="{}_{}_{}_high_cpu".format(namespace, app_role, instance_id),
+            AlarmName="{}_{}_{}_high_cpu".format(namespace, component, instance_id),
             AlarmDescription="This metric alarm tracks CPU usage above 80% over 5 minutes",
-            MetricName="cpu_usage_active",
-            Namespace="{}_{}".format(namespace, app_role),
+            MetricName="CPUUtilization",
+            Namespace="AWS/EC2",
             Statistic="Average",
             ComparisonOperator="GreaterThanOrEqualToThreshold",
             Period=60,
+            Unit='Percent',
             EvaluationPeriods=5,
             Threshold=80,
             Dimensions=[
                 {
                     "Name": "InstanceId",
                     "Value": instance_id
-                },
-                {
-                    "Name": "AutoScalingGroupName",
-                    "Value": asg_name
-                },
-                {
-                    "Name": "cpu",
-                    "Value": "cpu-total"
                 }
             ],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_cpu".format(namespace, app_role, instance_id)
+                    "Value": "{}_{}_{}_high_cpu".format(namespace, component, instance_id)
                 }
             ]
         )
 
         # Low_Disk_Space
         cloudwatch.put_metric_alarm(
-            AlarmName="{}_{}_{}_low_disk_space".format(namespace, app_role, instance_id),
+            AlarmName="{}_{}_{}_low_disk_space".format(namespace, component, instance_id),
             AlarmDescription="This metric alarm tracks disk usage above 80% over 5 minutes",
             MetricName="disk_used_percent",
-            Namespace="{}_{}".format(namespace, app_role),
+            Namespace="{}_{}".format(namespace, component),
             Statistic="Average",
             ComparisonOperator="GreaterThanOrEqualToThreshold",
             Period=60,
@@ -93,17 +75,17 @@ class linux_alarms:
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_low_disk_space".format(namespace, app_role, instance_id)
+                    "Value": "{}_{}_{}_low_disk_space".format(namespace, component, instance_id)
                 }
             ]
         )
 
         # High_Disk_IO
         cloudwatch.put_metric_alarm(
-            AlarmName="{}_{}_{}_high_disk_io".format(namespace, app_role, instance_id),
+            AlarmName="{}_{}_{}_high_disk_io".format(namespace, component, instance_id),
             AlarmDescription="This metric alarm tracks disk IO time above 1 second over 5 minutes",
             MetricName="diskio_io_time",
-            Namespace="{}_{}".format(namespace, app_role),
+            Namespace="{}_{}".format(namespace, component),
             Statistic="Sum",
             ComparisonOperator="GreaterThanOrEqualToThreshold",
             Period=60,
@@ -126,17 +108,17 @@ class linux_alarms:
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_disk_io".format(namespace, app_role, instance_id)
+                    "Value": "{}_{}_{}_high_disk_io".format(namespace, component, instance_id)
                 }
             ]
         )
 
         # High_Memory
         cloudwatch.put_metric_alarm(
-            AlarmName="{}_{}_{}_high_memory".format(namespace, app_role, instance_id),
+            AlarmName="{}_{}_{}_high_memory".format(namespace, component, instance_id),
             AlarmDescription="This metric alarm tracks memory usage above 80% over 5 minutes",
             MetricName="mem_used_percent",
-            Namespace="{}_{}".format(namespace, app_role),
+            Namespace="{}_{}".format(namespace, component),
             Statistic="Average",
             ComparisonOperator="GreaterThanOrEqualToThreshold",
             Period=60,
@@ -155,7 +137,7 @@ class linux_alarms:
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_memory".format(namespace, app_role, instance_id)
+                    "Value": "{}_{}_{}_high_memory".format(namespace, component, instance_id)
                 }
             ]
         )

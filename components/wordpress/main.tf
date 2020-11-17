@@ -20,14 +20,22 @@ module "ec2_role" {
   default_tags = local.default_tags
 }
 
-module "cwa" {
-  source = "../../modules/cwa"
+module "auto_cw_alarm" {
+  source = "../../modules/auto_cw_alarm"
 
   namespace               = var.namespace
   component               = local.component
   default_tags            = local.default_tags
-  linux_config            = file("${path.module}/config_linux.json")
   auto_scaling_group_name = module.asg.asg.name
+}
+
+module "cw_agent" {
+  source = "../../modules/cw_agent"
+
+  namespace    = var.namespace
+  component    = local.component
+  default_tags = local.default_tags
+  linux_config = file("${path.module}/config_linux.json")
 }
 
 module "patching" {

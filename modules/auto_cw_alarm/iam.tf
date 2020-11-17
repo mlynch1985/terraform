@@ -1,5 +1,5 @@
 resource "aws_iam_role" "this" {
-  name_prefix           = "${var.namespace}_${var.component}_lambda_"
+  name_prefix           = "${var.namespace}_${var.component}_cw_alarm_"
   force_detach_policies = true
   path                  = "/"
 
@@ -21,7 +21,7 @@ EOF
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.component}_lambda"
+      "Name", "${var.namespace}_${var.component}_cw_alarm"
     )
   )
 }

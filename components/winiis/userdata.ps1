@@ -15,7 +15,7 @@ try {
     $AGENT_SOURCE = "https://s3.$($REGION).amazonaws.com/amazoncloudwatch-agent-$($REGION)/windows/amd64/latest/amazon-cloudwatch-agent.msi"
     $AGENT_DESTINATION = "C:\amazon-cloudwatch-agent.msi"
     $AGENT_BINARY = "C:\Program Files\Amazon\AmazonCloudWatchAgent\amazon-cloudwatch-agent-ctl.ps1"
-    $CWA_CONFIG_SOURCE = (Get-SSMParameterValue -Name "/$($NAMESPACE)/$($APP_ROLE)/cwa/windows" -Region $REGION).Parameters.Value
+    $CWA_CONFIG_SOURCE = (Get-SSMParameterValue -Name "/$($NAMESPACE)/$($COMPONENT)/cwa/windows" -Region $REGION).Parameters.Value
     $CWA_CONFIG_DESTINATION = "C:\ProgramData\Amazon\AmazonCloudWatchAgent\amazon-cloudwatch-agent.json"
 
     # Download the latest version of the CloudWatch Agent for Windows
@@ -26,7 +26,7 @@ try {
 
     # Setup the CloudWatch Agent Config
     $CWA_CONFIG_SOURCE | Set-Content -Path $CWA_CONFIG_DESTINATION
-    (Get-Content -Path $CWA_CONFIG_DESTINATION -Raw) -Replace "NAME_SPACE", "$($NAMESPACE)_$($APP_ROLE)" | Set-Content -Path $CWA_CONFIG_DESTINATION
+    (Get-Content -Path $CWA_CONFIG_DESTINATION -Raw) -Replace "NAME_SPACE", "$($NAMESPACE)_$($COMPONENT)" | Set-Content -Path $CWA_CONFIG_DESTINATION
 
     # Start the CloudWatch Agent
     & $AGENT_BINARY -Action fetch-config -Mode ec2 -ConfigLocation file:$CWA_CONFIG_DESTINATION -Start
@@ -35,7 +35,7 @@ try {
     Remove-Item -Path $AGENT_DESTINATION -Force
 
     # Install all IIS features
-    Install-WindowsFeature -Name Web-Server -IncludeAllSubFeature -IncludeManagementTools
+    # Install-WindowsFeature -Name Web-Server -IncludeAllSubFeature -IncludeManagementTools
 }
 catch {
     # Log any failures to the Windows Event Log

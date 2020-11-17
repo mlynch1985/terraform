@@ -25,14 +25,3 @@ variable "windows_config" {
   type        = string
   default     = ""
 }
-
-variable "auto_scaling_group_name" {
-  description = "Provide the friendly name of the AutoScalingGroup to monitor"
-  type        = string
-}
-
-data "archive_file" "this" {
-  type        = "zip"
-  source_dir  = "${path.module}/lambda_src/"
-  output_path = "${path.module}/lambda.zip"
-}
