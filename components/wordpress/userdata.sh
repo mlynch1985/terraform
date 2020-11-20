@@ -11,15 +11,15 @@ NAMESPACE=$(aws ec2 describe-tags --filters \
     --output text \
     --query Tags[0].Value)
 
-APPROLE=$(aws ec2 describe-tags --filters \
+COMPONENT=$(aws ec2 describe-tags --filters \
     "Name=resource-type,Values=instance" \
     "Name=resource-id,Values=${INSTANCE_ID}" \
-    "Name=key,Values=app_role" \
+    "Name=key,Values=component" \
     --region ${REGION} \
     --output text \
     --query Tags[0].Value)
 
-EFSMOUNT=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/efs_mount" --region $REGION --output text --query Parameter.Value)
+EFSMOUNT=$(aws ssm get-parameter --name "/${NAMESPACE}/${COMPONENT}/efs_mount" --region $REGION --output text --query Parameter.Value)
 
 
 ## Install AWS EFS tools
@@ -42,7 +42,7 @@ then
     touch /var/www/html/wp-config.php
 
     ## Query Secrets Manager for our RDS credentials
-    RDS_SECRET=$(aws secretsmanager get-secret-value --secret-id "/${NAMESPACE}/${APPROLE}/rds" --region $REGION --output text --query SecretString)
+    RDS_SECRET=$(aws secretsmanager get-secret-value --secret-id "/${NAMESPACE}/${COMPONENT}/rds" --region $REGION --output text --query SecretString)
     DBNAME=$(echo $RDS_SECRET | jq -r .database_name)
     ENDPOINT=$(echo $RDS_SECRET | jq -r .endpoint)
     USERNAME=$(echo $RDS_SECRET | jq -r .username)
@@ -52,7 +52,7 @@ then
     i=0
     until [ ! -z $ALBDNS ]
     do
-        ALBDNS=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/alb_dns" --region $REGION --output text --query Parameter.Value)
+        ALBDNS=$(aws ssm get-parameter --name "/${NAMESPACE}/${COMPONENT}/alb_dns" --region $REGION --output text --query Parameter.Value)
         ((i=i+1))
         sleep 30
 
@@ -101,13 +101,13 @@ then
 fi
 
 ## Define CloudWatchAgent variables
-CWA_SOURCE=$(aws ssm get-parameter --name "/${NAMESPACE}/${APPROLE}/cwa/linux" --region $REGION --output text --query Parameter.Value)
+CWA_SOURCE=$(aws ssm get-parameter --name "/${NAMESPACE}/${COMPONENT}/cwa/linux" --region $REGION --output text --query Parameter.Value)
 CWA_CONFIG="/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
 CWA_BINARY="/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl"
 
 ## Setup the CloudWatchAgnet configuration
 echo $CWA_SOURCE > $CWA_CONFIG
-sed -i "s/NAME_SPACE/${NAMESPACE}_${APPROLE}/g" $CWA_CONFIG
+sed -i "s/NAME_SPACE/${NAMESPACE}_${COMPONENT}/g" $CWA_CONFIG
 
 ## Start the CloudWatchAgent
 $CWA_BINARY -a fetch-config -m ec2 -c file:$CWA_CONFIG -s
