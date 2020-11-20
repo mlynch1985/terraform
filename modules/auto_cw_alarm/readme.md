@@ -1,4 +1,4 @@
-AWS CloudWatch Alarms Module
+AWS AutoScaling CloudWatch Alarms Module
 ===========
 
 A Terraform module that will deploy CloudWatch Alarms using Lambda functions triggerd by Cloudwatch Event rules
