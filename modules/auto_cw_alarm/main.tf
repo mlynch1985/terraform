@@ -57,9 +57,61 @@ EOF
   )
 }
 
-resource "aws_cloudwatch_event_target" "this" {
+resource "aws_sns_topic" "this" {
+  name_prefix  = "${var.namespace}_${var.component}_cw_alarms_"
+  display_name = "${var.namespace}_${var.component}_cw_alarms"
+
+  tags = merge(
+    var.default_tags,
+    map(
+      "Name", "${var.namespace}_${var.component}_cw_alarms"
+    )
+  )
+}
+
+data "aws_iam_policy_document" "this" {
+  statement {
+    effect  = "Allow"
+    actions = ["SNS:Publish"]
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com",
+        "cloudwatch.amazonaws.com"
+      ]
+    }
+    resources = [aws_sns_topic.this.arn]
+  }
+}
+
+resource "aws_sns_topic_policy" "this" {
+  arn    = aws_sns_topic.this.arn
+  policy = data.aws_iam_policy_document.this.json
+}
+
+resource "aws_cloudwatch_event_target" "lambda" {
   rule = aws_cloudwatch_event_rule.this.name
   arn  = aws_lambda_function.this.arn
+
+  input_transformer {
+    input_paths = {
+      instance_id             = "$.detail.EC2InstanceId",
+      detail_type             = "$.detail-type",
+      auto_scaling_group_name = "$.detail.AutoScalingGroupName"
+    }
+    input_template = <<EOF
+{
+    "instance_id": <instance_id>,
+    "detail_type": <detail_type>,
+    "auto_scaling_group_name": <auto_scaling_group_name>
+}
+EOF
+  }
+}
+
+resource "aws_cloudwatch_event_target" "sns" {
+  rule = aws_cloudwatch_event_rule.this.name
+  arn  = aws_sns_topic.this.arn
 
   input_transformer {
     input_paths = {
