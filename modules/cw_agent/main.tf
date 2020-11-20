@@ -1,3 +1,8 @@
+resource "aws_iam_role_policy_attachment" "this" {
+  role       = var.iam_role_name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
 resource "aws_ssm_parameter" "linux_parameter" {
   count = var.linux_config != "" ? 1 : 0
 

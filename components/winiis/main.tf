@@ -43,6 +43,7 @@ module "cw_agent" {
   namespace      = var.namespace
   component      = local.component
   default_tags   = local.default_tags
+  iam_role_name  = module.ec2_role.role.name
   windows_config = file("${path.module}/config_windows.json")
 }
 

@@ -32,10 +32,11 @@ module "auto_cw_alarm" {
 module "cw_agent" {
   source = "../../modules/cw_agent"
 
-  namespace    = var.namespace
-  component    = local.component
-  default_tags = local.default_tags
-  linux_config = file("${path.module}/config_linux.json")
+  namespace     = var.namespace
+  component     = local.component
+  default_tags  = local.default_tags
+  iam_role_name = module.ec2_role.role.name
+  linux_config  = file("${path.module}/config_linux.json")
 }
 
 module "patching" {
