@@ -158,7 +158,7 @@ class alarms:
             MetricName="Memory Available MBytes",
             Namespace="{}_{}".format(namespace, component),
             Statistic="Average",
-            ComparisonOperator="GreaterThanOrEqualToThreshold",
+            ComparisonOperator="LessThanOrEqualToThreshold",
             Period=60,
             EvaluationPeriods=5,
             Threshold=500,
