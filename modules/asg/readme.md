@@ -12,6 +12,7 @@ Required Input Variables
 - `security_groups` - Provide a list(string) of security group IDs.
 - `asg_subnets` - Provide a list(string) of subnet IDs to deploy the ALB into.
 - `target_group_arns` - Provide a list(string) of TargetGroup ARNs to associated this ASG with.
+- `iam_instance_profile` - Specify the name to an IAM Instance Profile. Defaults to `""`.
 
 Optional Input Variables
 ----------------------
@@ -19,10 +20,11 @@ Optional Input Variables
 - `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `instance_type` - Specify the EC2 instance type. Defaults to `t3.medium`.
 - `key_name` - Provide the name of an existing EC2 Key Pair. Defaults to `""`.
-- `user_data` - Provide path to a userdata script. Defaults to `""`.
-- `block_device_mapping` - Provide a map(string) defining a block device mapping. Root or secondary drive can be specified, but not both.
 - `enable_detailed_monitoring` - Set to `true` to enable Cloudwatch detailed monitoring. Defaults to `false`.
-- `iam_instance_profile` - Specify the name to an IAM Instance Profile. Defaults to `""`.
+- `user_data` - Provide path to a userdata script. Defaults to `""`.
+- `root_block_device` - Provide a map(string) defining the root block device mapping.
+- `ebs_block_device` - Provide a map(string) defining a secondary block device mapping.
+- `enable_second_drive` - Set to `true` to enable a secondary EBS volume. Defaults to `false`.
 - `asg_min` - Define the minimum number of instances for the ASG. Defaults to `1`.
 - `asg_max` - Define the maximum number of instances for the ASG. Defaults to `1`.
 - `asg_desired` - Define the desired number of instances for the ASG. Defaults to `1`.
@@ -50,6 +52,7 @@ module "asg" {
   asg_max                    = 1
   asg_desired                = 1
   asg_healthcheck_type       = "EC2"
+  enable_second_drive        = true
 
   default_tags = {
     namespace: "useast1d"
@@ -59,12 +62,20 @@ module "asg" {
     environemnt: "developement"
   }
 
-  block_device_mapping = {
-    device_name: "/dev/xvda/"
+  root_block_device = {
+    device_name: "/dev/xvda"
     volume_type: "gp2"
     volume_size: "30"
     delete_on_termination: true
     encrypted: false
+  }
+
+  ebs_block_device = {
+    device_name: "xvdf"
+    volume_type: "gp2"
+    volume_size: "50"
+    delete_on_termination: true
+    encrypted: true
   }
 }
 ```

@@ -19,13 +19,16 @@ Configure Environment
 aws configure --profile sandbox
 
 # Configure Default Region
-export AWS_DEFUAULT_REGION="us-east-1"
-
-# Set Current Session Profile
-export AWS_PROFILE="sandbox"
+export AWS_DEFAULT_REGION="us-east-1"
 
 # Configure Default Profile
 export AWS_DEFAULT_PROFILE="sandbox"
+
+# Set Current Session Region
+export AWS_REGION="us-east-1"
+
+# Set Current Session Profile
+export AWS_PROFILE="sandbox"
 
 # Configure Proxy Server
 export HTTPS_PROXY="proxy.example.com:8443"
@@ -53,22 +56,19 @@ Deployment
 - Reference the below commands to deploy your stack
 
 ```bash
-# Defin AWS Environment Variabls
-export AWS_REGION="us-east-1"
-
 # Set local variables specific to this deployment
 NAMESPACE="useast1d"
 REGION="us-east-1"
 
 # Create S3 bucket to store Terraform state
 aws s3api create-bucket \
-    --bucket "${NAMESPACE}-tf-state-mltemp" \
+    --bucket "${NAMESPACE}-tf-state" \
     --acl "private" \
     --region $REGION
 
 # Enable versioning on the bucket
 aws s3api put-bucket-versioning \
-    --bucket "${NAMESPACE}-tf-state-mltemp" \
+    --bucket "${NAMESPACE}-tf-state" \
     --versioning-configuration Status=Enabled \
     --region $REGION
 
@@ -81,7 +81,7 @@ aws dynamodb create-table \
     --region $REGION
 
 # Initialize your environment first
-terraform init -backend-config="../../environments/useast1d.conf"
+terraform init
 
 # Review the proposed changes and fix errors when needed
 terraform plan -var-file="../../environments/useast1d.tfvars"

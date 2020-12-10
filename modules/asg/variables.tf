@@ -31,6 +31,12 @@ variable "key_name" {
   default     = ""
 }
 
+variable "enable_detailed_monitoring" {
+  description = "Set to true to enable detailed monitoring at 1 minute intervals"
+  type        = bool
+  default     = false
+}
+
 variable "security_groups" {
   description = "Provide a list of security group IDs to attach to this instance"
   type        = list(string)
@@ -42,8 +48,13 @@ variable "user_data" {
   default     = ""
 }
 
-variable "block_device_mapping" {
-  description = "Specify an EBS block mapping for block drive"
+variable "iam_instance_profile" {
+  description = "Please specify the iam instance profile to attach to each EC2 instance"
+  type        = string
+}
+
+variable "root_block_device" {
+  description = "Specify an EBS block mapping for the root block drive"
   type        = map(string)
   default = {
     device_name           = "/dev/xvda"
@@ -54,16 +65,22 @@ variable "block_device_mapping" {
   }
 }
 
-variable "enable_detailed_monitoring" {
-  description = "Set to true to enable detailed monitoring at 1 minute intervals"
-  type        = bool
-  default     = false
+variable "ebs_block_device" {
+  description = "Specify an EBS block mapping for a secondary block drive"
+  type        = map(string)
+  default = {
+    device_name           = "xvdf"
+    volume_type           = "gp2"
+    volume_size           = 50
+    delete_on_termination = true
+    encrypted             = true
+  }
 }
 
-variable "iam_instance_profile" {
-  description = "Please specify the iam instance profile to attach to each EC2 instance"
-  type        = string
-  default     = ""
+variable "enable_second_drive" {
+  description = "Set to true to enable second EBS block device"
+  type        = bool
+  default     = false
 }
 
 variable "asg_min" {

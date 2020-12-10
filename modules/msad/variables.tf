@@ -46,6 +46,11 @@ variable "subnet_2" {
   type        = string
 }
 
+variable "iam_ec2_role" {
+  description = "Please specify the iam EC2 instance role to enable DirectoryService Policies"
+  type        = string
+}
+
 variable "enable_auto_join" {
   description = "Set to true to create an SSM Association that will auto-join instances to AD"
   type        = bool

@@ -1,3 +1,8 @@
+resource "aws_iam_role_policy_attachment" "msad" {
+  role       = var.iam_ec2_role
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMDirectoryServiceAccess"
+}
+
 resource "random_password" "password" {
   length           = 24
   special          = true

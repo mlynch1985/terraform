@@ -12,6 +12,7 @@ Required Input Variables
 - `vpc_id` - Provide a VPC ID to target for this directory.
 - `subnet_1` - Provide a subnet ID to deploy EC2 instances into.
 - `subnet_2` - Provide a subnet ID to deploy EC2 instances into.
+- `iam_ec2_role` - Specify the name to an IAM EC2 Instance Role. Defaults to `""`.
 
 Optional Input Variables
 ----------------------
@@ -31,7 +32,7 @@ module "msad" {
   source = "../modules/msad"
 
   namespace           = "useast1d"
-  component            = "appdemo1"
+  component           = "appdemo1"
   domain_name         = "example.com"
   vpc_id              = "vpc-1a2b3c4d"
   subnet_1            = "subnet-1a2b3c4d5e"
@@ -41,6 +42,7 @@ module "msad" {
   enable_auto_join    = false
   ad_target_tag_name  = "auto_join"
   ad_target_tag_value = "true"
+  iam_ec2_role        = "sample-ec2-role"
 
   default_tags = {
     namespace: "useast1d"

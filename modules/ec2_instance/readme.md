@@ -11,6 +11,7 @@ Required Input Variables
 - `image_id` - Specify an AMI ID used to launch EC2 instances.
 - `security_groups` - Provide a list(string) of security group IDs to associate with this instance.
 - `subnet_id` - Provide a subnet ID of where this instance should be deployed.
+- `iam_instance_profile` - Specify the name to an IAM Instance Profile. Defaults to `""`.
 
 Optional Input Variables
 ----------------------
@@ -21,7 +22,6 @@ Optional Input Variables
 - `enable_detailed_monitoring` - Set to `true` to enable Cloudwatch detailed monitoring. Defaults to `false`.
 - `associate_public_ip_address` - Set to true to enable a Public IP address for this instance. Instance must be deployed in a Public Subnet. Defaults to `false`.
 - `user_data` - Provide path to a userdata script. Defaults to `""`.
-- `iam_instance_profile` - Specify the name to an IAM Instance Profile. Defaults to `""`.
 - `root_block_device` - Provide a map(string) defining a root block device mapping.
 - `ebs_block_device` - Provide a map(string) defining a secondary EBS block device mapping.
 - `enable_second_drive` - Set to `true` if you want to enable a second drive. If `true`, you must also provide a mapping to `ebs_block_device`.
@@ -63,7 +63,7 @@ module "ec2_instance" {
   }
 
   ebs_block_device = {
-    device_name: "/dev/xvdb/"
+    device_name: "xvdf"
     volume_type: "gp2"
     volume_size: "50"
     delete_on_termination: false

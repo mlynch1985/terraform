@@ -1,6 +1,8 @@
-region="us-east-1"
-namespace="useast1d"
-bucket="useast1d-tf-state-mltemp"
-lob="it_operations"
-team="web_hosting"
-environment="development"
+vpc_id="vpc-08b850d3c6b36560f"
+
+default_tags = {
+    "namespace" : "useast1d",
+    "environment" : "development",
+    "lob": "sample",
+    "team": "sample"
+}

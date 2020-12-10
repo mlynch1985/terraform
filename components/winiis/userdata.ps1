@@ -34,7 +34,23 @@ try {
     # Clean up the CloudWatch Agent installer
     Remove-Item -Path $AGENT_DESTINATION -Force
 
-    # Install all IIS features
+    if (Get-PSDrive E -ErrorAction SilentlyContinue) {
+        Write-Host "E: Drive is already mounted"
+    }
+    else {
+        try {
+            Get-Disk |
+            Where-Object PartitionStyle -Eq "RAW" |
+            Initialize-Disk -PartitionStyle GPT -PassThru |
+            New-Partition -DriveLetter E -UseMaximumSize |
+            Format-Volume
+        }
+        catch {
+            Write-Host "A second drive doesn't exist.  Can't mount E:\ drive"
+        }
+    }
+
+    <# INSERT CUSTOM CODE HERE #>
     # Install-WindowsFeature -Name Web-Server -IncludeAllSubFeature -IncludeManagementTools
 }
 catch {

@@ -1,22 +1,20 @@
-variable region {}
-variable namespace {}
-variable bucket {}
-variable lob {}
-variable team {}
-variable environment {}
+variable "vpc_id" {}
+variable "default_tags" {}
 
 locals {
-  component     = "winiis"
+  namespace   = var.default_tags["namespace"]
+  environment = var.default_tags["environment"]
+
+  component     = "WinIIS"
   domain_name   = "example.internal"
   instance_type = "t3.large"
 
-  default_tags = {
-    namespace : var.namespace,
-    component : local.component,
-    lob : var.lob,
-    team : var.team,
-    environment : var.environment
-  }
+  default_tags = merge(
+    var.default_tags,
+    map(
+      "component", local.component
+    )
+  )
 }
 
 data "aws_availability_zones" "available" {
@@ -24,16 +22,14 @@ data "aws_availability_zones" "available" {
 }
 
 data "aws_vpc" "this" {
-  tags = {
-    Name = "${var.namespace}_vpc"
-  }
+  id = var.vpc_id
 }
 
 data "aws_subnet_ids" "public" {
   vpc_id = data.aws_vpc.this.id
 
   tags = {
-    tier = "public"
+    Network = "Public"
   }
 }
 
@@ -41,7 +37,7 @@ data "aws_subnet_ids" "private" {
   vpc_id = data.aws_vpc.this.id
 
   tags = {
-    tier = "private"
+    Network = "Private"
   }
 }
 

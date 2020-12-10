@@ -26,60 +26,7 @@ variable "subnets" {
 }
 
 variable "enable_cross_zone_load_balancing" {
-  description = "Set to true to allow NLB to talk across availability zones"
+  description = "Set to true to enable cross availability zone load balancing"
   type        = bool
   default     = false
-}
-
-variable "target_group_port" {
-  description = "Specify the port to poll target group members"
-  type        = number
-  default     = 80
-}
-
-variable "target_group_protocol" {
-  description = "Specify the protocol to poll target group members"
-  type        = string
-  default     = "HTTP"
-}
-
-variable "vpc_id" {
-  description = "Specify the vpc where this nlb should be deployed"
-  type        = string
-}
-
-variable "deregistration_delay" {
-  description = "Specify how long an instance should drain before removing from nlb"
-  type        = number
-  default     = 300
-}
-
-variable "enable_stickiness" {
-  description = "Set to true to enable sticky sessions"
-  type        = bool
-  default     = false
-}
-
-variable "healthcheck_path" {
-  description = "Specify the url path to perform a healthcheck on target instances"
-  type        = string
-  default     = "/"
-}
-
-variable "nlb_listener_port" {
-  description = "Specify the port the nlb will listen on"
-  type        = number
-  default     = 80
-}
-
-variable "nlb_listener_protocol" {
-  description = "Specify the protocol the nlb will use"
-  type        = string
-  default     = "HTTP"
-}
-
-variable "nlb_listener_cert" {
-  description = "Specify a ssl certificate arn to use for HTTPS protocols"
-  type        = string
-  default     = ""
 }

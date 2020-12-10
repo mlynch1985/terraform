@@ -9,13 +9,14 @@ resource "aws_instance" "root_only" {
   subnet_id                   = var.subnet_id
   associate_public_ip_address = var.associate_public_ip_address
   user_data                   = var.user_data
-  iam_instance_profile        = length(var.iam_instance_profile) > 0 ? var.iam_instance_profile : ""
+  iam_instance_profile        = var.iam_instance_profile
 
   root_block_device {
     volume_type           = var.root_block_device.volume_type
     volume_size           = var.root_block_device.volume_size
     delete_on_termination = var.root_block_device.delete_on_termination
     encrypted             = var.root_block_device.encrypted
+    kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.key_id : ""
   }
 
   tags = merge(
@@ -36,13 +37,14 @@ resource "aws_instance" "with_ebs" {
   subnet_id                   = var.subnet_id
   associate_public_ip_address = var.associate_public_ip_address
   user_data                   = var.user_data
-  iam_instance_profile        = length(var.iam_instance_profile) > 0 ? var.iam_instance_profile : ""
+  iam_instance_profile        = var.iam_instance_profile
 
   root_block_device {
     volume_type           = var.root_block_device.volume_type
     volume_size           = var.root_block_device.volume_size
     delete_on_termination = var.root_block_device.delete_on_termination
     encrypted             = var.root_block_device.encrypted
+    kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.key_id : ""
   }
 
   ebs_block_device {
@@ -51,6 +53,7 @@ resource "aws_instance" "with_ebs" {
     volume_size           = var.ebs_block_device.volume_size
     delete_on_termination = var.ebs_block_device.delete_on_termination
     encrypted             = var.ebs_block_device.encrypted
+    kms_key_id            = var.ebs_block_device.encrypted ? aws_kms_key.this.key_id : ""
   }
 
   tags = merge(

@@ -1,5 +1,11 @@
 terraform {
-  backend "s3" {}
+  backend "s3" {
+    bucket         = "useast1d-tf-state"
+    key            = "winiis-dev"
+    region         = "us-east-1"
+    encrypt        = "true"
+    dynamodb_table = "useast1d-terraform-locks"
+  }
 
   required_providers {
     aws = {
@@ -9,13 +15,16 @@ terraform {
   }
 }
 
-provider "aws" {}
+provider "aws" {
+  region = "us-east-1"
+}
+
 provider "random" {}
 
 module "ec2_role" {
   source = "../../modules/ec2_role"
 
-  namespace    = var.namespace
+  namespace    = local.namespace
   component    = local.component
   default_tags = local.default_tags
 }
@@ -23,24 +32,25 @@ module "ec2_role" {
 module "msad" {
   source = "../../modules/msad"
 
-  namespace           = var.namespace
-  component           = local.component
-  domain_name         = local.domain_name
-  vpc_id              = data.aws_vpc.this.id
-  subnet_1            = tolist(data.aws_subnet_ids.private.ids)[0]
-  subnet_2            = tolist(data.aws_subnet_ids.private.ids)[1]
-  edition             = "Enterprise"
-  enable_sso          = false
-  enable_auto_join    = true
-  ad_target_tag_name  = "ad_join"
-  ad_target_tag_value = "true"
-  default_tags        = local.default_tags
+  namespace            = local.namespace
+  component            = local.component
+  domain_name          = local.domain_name
+  vpc_id               = data.aws_vpc.this.id
+  subnet_1             = tolist(data.aws_subnet_ids.private.ids)[0]
+  subnet_2             = tolist(data.aws_subnet_ids.private.ids)[1]
+  edition              = "Enterprise"
+  enable_sso           = false
+  enable_auto_join     = true
+  ad_target_tag_name   = "ad_join"
+  ad_target_tag_value  = "true"
+  default_tags         = local.default_tags
+  iam_instance_profile = module.ec2_role.role.name
 }
 
 module "cw_agent" {
   source = "../../modules/cw_agent"
 
-  namespace      = var.namespace
+  namespace      = local.namespace
   component      = local.component
   default_tags   = local.default_tags
   iam_role_name  = module.ec2_role.role.name
@@ -50,7 +60,7 @@ module "cw_agent" {
 module "patching" {
   source = "../../modules/patching"
 
-  namespace    = var.namespace
+  namespace    = local.namespace
   component    = local.component
   default_tags = local.default_tags
 }
@@ -58,14 +68,14 @@ module "patching" {
 module "ec2_instance" {
   source = "../../modules/ec2_instance"
 
-  namespace                   = var.namespace
+  namespace                   = local.namespace
   component                   = local.component
   image_id                    = data.aws_ami.windows_2019.image_id
   security_groups             = [aws_security_group.ec2.id]
   subnet_id                   = tolist(data.aws_subnet_ids.public.ids)[0]
   instance_type               = local.instance_type
   key_name                    = ""
-  enable_detailed_monitoring  = true
+  enable_detailed_monitoring  = false
   associate_public_ip_address = true
   user_data                   = filebase64("${path.module}/userdata.ps1")
   iam_instance_profile        = module.ec2_role.profile.name
@@ -80,7 +90,7 @@ module "ec2_instance" {
   )
 
   root_block_device = {
-    device_name : "/dev/sda1/"
+    device_name : "/dev/sda1"
     volume_type : "gp2"
     volume_size : "30"
     delete_on_termination : true
@@ -88,7 +98,7 @@ module "ec2_instance" {
   }
 
   ebs_block_device = {
-    device_name : "xvdb"
+    device_name : "xvdf"
     volume_type : "gp2"
     volume_size : "50"
     delete_on_termination : true
@@ -97,14 +107,8 @@ module "ec2_instance" {
 }
 
 
-resource "aws_iam_role_policy_attachment" "msad" {
-  role       = module.ec2_role.role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMDirectoryServiceAccess"
-
-}
-
 resource "aws_security_group" "ec2" {
-  name_prefix = "${var.namespace}_${local.component}_ec2_"
+  name_prefix = "${local.namespace}_${local.component}_ec2_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
@@ -124,7 +128,7 @@ resource "aws_security_group" "ec2" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${var.namespace}_${local.component}_ec2"
+      "Name", "${local.namespace}_${local.component}_ec2"
     )
   )
 }

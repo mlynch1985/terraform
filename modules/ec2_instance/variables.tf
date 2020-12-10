@@ -62,7 +62,6 @@ variable "user_data" {
 variable "iam_instance_profile" {
   description = "Please specify the iam instance profile to attach to each EC2 instance"
   type        = string
-  default     = ""
 }
 
 variable "root_block_device" {
@@ -80,7 +79,7 @@ variable "ebs_block_device" {
   description = "Specify an EBS block mapping for a secondary block drive"
   type        = map(string)
   default = {
-    device_name           = "/dev/xvdb"
+    device_name           = "xvdf"
     volume_type           = "gp2"
     volume_size           = 50
     delete_on_termination = true
