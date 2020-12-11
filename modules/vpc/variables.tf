@@ -10,7 +10,7 @@ variable "default_tags" {
 }
 
 variable "cidr_block" {
-  description = "The CIDR block for the VPC.  Should be a valid CIDR between /16 and /28"
+  description = "The CIDR block for the VPC.  Should be a valid CIDR between /16 and /20"
   type        = string
   default     = "10.0.0.0/16"
 }

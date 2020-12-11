@@ -5,7 +5,7 @@ locals {
   namespace   = var.default_tags["namespace"]
   environment = var.default_tags["environment"]
 
-  component     = "WinIIS"
+  component     = "winiis"
   domain_name   = "example.internal"
   instance_type = "t3.large"
 
@@ -29,7 +29,7 @@ data "aws_subnet_ids" "public" {
   vpc_id = data.aws_vpc.this.id
 
   tags = {
-    Network = "Public"
+    tier = "public"
   }
 }
 
@@ -37,7 +37,7 @@ data "aws_subnet_ids" "private" {
   vpc_id = data.aws_vpc.this.id
 
   tags = {
-    Network = "Private"
+    tier = "private"
   }
 }
 

@@ -16,7 +16,7 @@ resource "aws_launch_template" "root_drive_only" {
       volume_size           = var.root_block_device.volume_size
       delete_on_termination = var.root_block_device.delete_on_termination
       encrypted             = var.root_block_device.encrypted
-      kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.key_id : ""
+      kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.arn : ""
     }
   }
 
@@ -25,7 +25,7 @@ resource "aws_launch_template" "root_drive_only" {
   }
 
   iam_instance_profile {
-    arn = var.iam_instance_profile
+    arn = var.iam_instance_profile.arn
   }
 
   tag_specifications {
@@ -58,7 +58,7 @@ resource "aws_launch_template" "with_ebs_drive" {
       volume_size           = var.root_block_device.volume_size
       delete_on_termination = var.root_block_device.delete_on_termination
       encrypted             = var.root_block_device.encrypted
-      kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.key_id : ""
+      kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.arn : ""
     }
   }
 
@@ -70,7 +70,7 @@ resource "aws_launch_template" "with_ebs_drive" {
       volume_size           = var.ebs_block_device.volume_size
       delete_on_termination = var.ebs_block_device.delete_on_termination
       encrypted             = var.ebs_block_device.encrypted
-      kms_key_id            = var.ebs_block_device.encrypted ? aws_kms_key.this.key_id : ""
+      kms_key_id            = var.ebs_block_device.encrypted ? aws_kms_key.this.arn : ""
     }
   }
 
@@ -79,7 +79,7 @@ resource "aws_launch_template" "with_ebs_drive" {
   }
 
   iam_instance_profile {
-    arn = var.iam_instance_profile
+    arn = var.iam_instance_profile.arn
   }
 
   tag_specifications {
@@ -105,6 +105,6 @@ resource "aws_autoscaling_group" "this" {
 
   launch_template {
     version = "$Latest"
-    id      = var.enable_second_drive ? aws_launch_template.with_ebs_drive.id : aws_launch_template.root_drive_only.id
+    id      = var.enable_second_drive ? aws_launch_template.with_ebs_drive[0].id : aws_launch_template.root_drive_only[0].id
   }
 }

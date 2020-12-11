@@ -1,18 +1,15 @@
-variable region {}
-variable namespace {}
-variable bucket {}
-variable lob {}
-variable team {}
-variable environment {}
+variable "vpc_id" {}
+variable "default_tags" {}
 
 locals {
+  namespace = var.default_tags["namespace"]
+
   component = "vpc"
 
-  default_tags = {
-    namespace : var.namespace,
-    component : local.component,
-    lob : var.lob,
-    team : var.team,
-    environment : var.environment
-  }
+  default_tags = merge(
+    var.default_tags,
+    map(
+      "component", local.component
+    )
+  )
 }

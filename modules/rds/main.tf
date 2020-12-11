@@ -10,7 +10,7 @@ resource "random_password" "password" {
 }
 
 resource "aws_db_subnet_group" "this" {
-  name_prefix = "${var.namespace}_${var.component}_subnet_group_"
+  name_prefix = "${lower(var.namespace)}_${lower(var.component)}_subnet_group_"
   subnet_ids  = var.subnets
 
   tags = merge(
@@ -23,7 +23,7 @@ resource "aws_db_subnet_group" "this" {
 
 resource "aws_rds_cluster" "this" {
   availability_zones        = var.availability_zones
-  cluster_identifier_prefix = "${var.namespace}-${var.component}-"
+  cluster_identifier_prefix = "${lower(var.namespace)}-${lower(var.component)}-"
   database_name             = "${var.component}DB"
   db_subnet_group_name      = aws_db_subnet_group.this.id
   engine_mode               = "serverless"

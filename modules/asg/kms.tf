@@ -1,12 +1,65 @@
 data "aws_caller_identity" "this" {}
 
 data "aws_iam_instance_profile" "this" {
-  name = var.iam_instance_profile
+  name = var.iam_instance_profile.name
 }
 
 resource "aws_kms_key" "this" {
   description = "${var.namespace}/${var.component}/EBS_CMK"
-  policy      = data.aws_iam_policy_document.this.json
+  policy      = <<EOF
+{
+  "Version": "2012-10-17",
+  "Id": "custom-policy-1",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Action": "kms:*",
+      "Resource": "*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::${data.aws_caller_identity.this.account_id}:root"
+        ]
+      }
+    },
+    {
+      "Sid": "Allow service-linked role use of the CMK",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::${data.aws_caller_identity.this.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+        ]
+      }
+    },
+    {
+      "Sid": "Allow attachment of persistent resources",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::${data.aws_caller_identity.this.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+        ]
+      },
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": true
+        }
+      }
+    }
+  ]
+}
+EOF
 
   tags = merge(
     var.default_tags,
@@ -14,20 +67,6 @@ resource "aws_kms_key" "this" {
       "Name", "${var.namespace}_${var.component}_EBS_CMK"
     )
   )
-}
-
-data "aws_iam_policy_document" "this" {
-  statement {
-    sid       = "Enable IAM User Permissions"
-    effect    = "Allow"
-    actions   = ["kms:*"]
-    resources = ["*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.this.account_id}:root"]
-    }
-  }
 }
 
 resource "aws_iam_role_policy" "this" {

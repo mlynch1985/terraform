@@ -87,8 +87,6 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-
-
 resource "aws_subnet" "private" {
   count = var.deploy_private_subnets ? var.target_az_count : 0
 
@@ -252,7 +250,7 @@ EOF
 resource "aws_cloudwatch_log_group" "this" {
   count = var.enable_flow_logs ? 1 : 0
 
-  name_prefix       = "/${var.namespace}/vpc/flow_logs"
+  name_prefix       = "/${var.namespace}/vpc/flow_logs_"
   retention_in_days = 30
 
   tags = merge(

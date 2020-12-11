@@ -50,7 +50,7 @@ variable "user_data" {
 
 variable "iam_instance_profile" {
   description = "Please specify the iam instance profile to attach to each EC2 instance"
-  type        = string
+  type        = any
 }
 
 variable "root_block_device" {

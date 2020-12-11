@@ -1,24 +1,22 @@
-variable region {}
-variable namespace {}
-variable bucket {}
-variable lob {}
-variable team {}
-variable environment {}
+variable "vpc_id" {}
+variable "default_tags" {}
 
 locals {
+  namespace   = var.default_tags["namespace"]
+  environment = var.default_tags["environment"]
+
   component     = "wordpress"
-  instance_type = "t3.large"
+  instance_type = "c5.large"
   asg_min       = 3
   asg_max       = 3
   asg_desired   = 3
 
-  default_tags = {
-    namespace : var.namespace,
-    component : local.component,
-    lob : var.lob,
-    team : var.team,
-    environment : var.environment
-  }
+  default_tags = merge(
+    var.default_tags,
+    map(
+      "component", local.component
+    )
+  )
 }
 
 data "aws_availability_zones" "available" {
@@ -26,9 +24,7 @@ data "aws_availability_zones" "available" {
 }
 
 data "aws_vpc" "this" {
-  tags = {
-    Name = "${var.namespace}_vpc"
-  }
+  id = var.vpc_id
 }
 
 data "aws_subnet_ids" "public" {
