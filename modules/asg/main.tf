@@ -1,3 +1,5 @@
+provider "time" {}
+
 resource "aws_launch_template" "root_drive_only" {
   count = var.enable_second_drive ? 0 : 1
 
@@ -95,13 +97,16 @@ resource "aws_launch_template" "with_ebs_drive" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  name_prefix         = "${var.namespace}/${var.component}/"
-  min_size            = var.asg_min
-  max_size            = var.asg_max
-  desired_capacity    = var.asg_desired
-  health_check_type   = var.asg_healthcheck_type
-  vpc_zone_identifier = var.asg_subnets
-  target_group_arns   = var.target_group_arns
+  depends_on = [aws_kms_key.this]
+
+  name_prefix             = "${var.namespace}/${var.component}/"
+  min_size                = var.asg_min
+  max_size                = var.asg_max
+  desired_capacity        = var.asg_desired
+  health_check_type       = var.asg_healthcheck_type
+  vpc_zone_identifier     = var.asg_subnets
+  target_group_arns       = var.target_group_arns
+  service_linked_role_arn = aws_iam_service_linked_role.this.arn
 
   launch_template {
     version = "$Latest"
