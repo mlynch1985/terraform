@@ -1,4 +1,4 @@
-vpc_id="vpc-02935cd24805cd315"
+vpc_id="vpc-01913252bb94658c6"
 
 default_tags = {
     "namespace" : "useast1d",
