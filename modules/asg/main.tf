@@ -97,16 +97,18 @@ resource "aws_launch_template" "with_ebs_drive" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  depends_on = [aws_kms_key.this]
+  # depends_on = [aws_kms_key.this]
 
-  name_prefix             = "${var.namespace}/${var.component}/"
-  min_size                = var.asg_min
-  max_size                = var.asg_max
-  desired_capacity        = var.asg_desired
-  health_check_type       = var.asg_healthcheck_type
-  vpc_zone_identifier     = var.asg_subnets
-  target_group_arns       = var.target_group_arns
-  service_linked_role_arn = aws_iam_service_linked_role.this.arn
+  name_prefix               = "${var.namespace}/${var.component}/"
+  min_size                  = var.asg_min
+  max_size                  = var.asg_max
+  desired_capacity          = var.asg_desired
+  health_check_grace_period = var.asg_healthcheck_grace_period
+  health_check_type         = var.asg_healthcheck_type
+  vpc_zone_identifier       = var.asg_subnets
+  target_group_arns         = var.target_group_arns
+  force_delete              = true
+  # service_linked_role_arn = aws_iam_service_linked_role.this.arn
 
   launch_template {
     version = "$Latest"

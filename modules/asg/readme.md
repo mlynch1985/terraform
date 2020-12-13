@@ -28,6 +28,7 @@ Optional Input Variables
 - `asg_min` - Define the minimum number of instances for the ASG. Defaults to `1`.
 - `asg_max` - Define the maximum number of instances for the ASG. Defaults to `1`.
 - `asg_desired` - Define the desired number of instances for the ASG. Defaults to `1`.
+- `asg_healthcheck_grace_period` - Specify the time to wait before starting healthchecks. Defaults to `300`.
 - `asg_healthcheck_type` - Specify either `"EC2"` or `"ELB"` for the type of healthcheck to perform.  Defaults to `"EC2"`.
 
 Usage

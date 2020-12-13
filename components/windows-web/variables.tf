@@ -4,9 +4,11 @@ locals {
   namespace   = var.default_tags["namespace"]
   environment = var.default_tags["environment"]
 
-  component     = "winiis"
-  domain_name   = "example.internal"
+  component     = "windows-web"
   instance_type = "t3.large"
+  asg_min       = 3
+  asg_max       = 3
+  asg_desired   = 3
 
   default_tags = merge(
     var.default_tags,

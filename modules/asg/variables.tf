@@ -19,6 +19,11 @@ variable "image_id" {
   type        = string
 }
 
+variable "security_groups" {
+  description = "Provide a list of security group IDs to attach to this instance"
+  type        = list(string)
+}
+
 variable "instance_type" {
   description = "Specify the EC2 instance size"
   type        = string
@@ -37,11 +42,6 @@ variable "enable_detailed_monitoring" {
   default     = false
 }
 
-variable "security_groups" {
-  description = "Provide a list of security group IDs to attach to this instance"
-  type        = list(string)
-}
-
 variable "user_data" {
   description = "Specify a path to a userdata script"
   type        = string
@@ -51,6 +51,46 @@ variable "user_data" {
 variable "iam_instance_profile" {
   description = "Please specify the iam instance profile to attach to each EC2 instance"
   type        = any
+}
+
+variable "asg_min" {
+  description = "Set the minimum number of instances to run"
+  type        = number
+  default     = 1
+}
+
+variable "asg_max" {
+  description = "Set the maximum number of instances to run"
+  type        = number
+  default     = 1
+}
+
+variable "asg_desired" {
+  description = "Set the desired number of instances to run"
+  type        = number
+  default     = 1
+}
+
+variable "asg_healthcheck_grace_period" {
+  description = "Specify the time to wait before starting healthchecks"
+  type        = number
+  default     = 300
+}
+
+variable "asg_healthcheck_type" {
+  description = "Specify whether to use EC2 or ELB healthchecks"
+  type        = string
+  default     = "EC2"
+}
+
+variable "asg_subnets" {
+  description = "Provide a list of subnets to deploy EC2 instances into"
+  type        = list(string)
+}
+
+variable "target_group_arns" {
+  description = "Provide a list of ALB or NLB target group arns to link into the ASG"
+  type        = list(string)
 }
 
 variable "root_block_device" {
@@ -81,38 +121,4 @@ variable "enable_second_drive" {
   description = "Set to true to enable second EBS block device"
   type        = bool
   default     = false
-}
-
-variable "asg_min" {
-  description = "Set the minimum number of instances to run"
-  type        = number
-  default     = 1
-}
-
-variable "asg_max" {
-  description = "Set the maximum number of instances to run"
-  type        = number
-  default     = 1
-}
-
-variable "asg_desired" {
-  description = "Set the desired number of instances to run"
-  type        = number
-  default     = 1
-}
-
-variable "asg_healthcheck_type" {
-  description = "Specify whether to use EC2 or ELB healthchecks"
-  type        = string
-  default     = "EC2"
-}
-
-variable "asg_subnets" {
-  description = "Provide a list of subnets to deploy EC2 instances into"
-  type        = list(string)
-}
-
-variable "target_group_arns" {
-  description = "Provide a list of ALB or NLB target group arns to link into the ASG"
-  type        = list(string)
 }

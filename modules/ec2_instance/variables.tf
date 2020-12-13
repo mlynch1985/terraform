@@ -19,6 +19,16 @@ variable "image_id" {
   type        = string
 }
 
+variable "security_groups" {
+  description = "Provide a list of security group IDs to attach to this instance"
+  type        = list(string)
+}
+
+variable "subnet_id" {
+  description = "Provide a subnet id to deploy EC2 instances into"
+  type        = string
+}
+
 variable "instance_type" {
   description = "Specify the EC2 instance size"
   type        = string
@@ -35,16 +45,6 @@ variable "enable_detailed_monitoring" {
   description = "Set to true to enable detailed monitoring at 1 minute intervals"
   type        = bool
   default     = false
-}
-
-variable "security_groups" {
-  description = "Provide a list of security group IDs to attach to this instance"
-  type        = list(string)
-}
-
-variable "subnet_id" {
-  description = "Provide a subnet id to deploy EC2 instances into"
-  type        = string
 }
 
 variable "associate_public_ip_address" {

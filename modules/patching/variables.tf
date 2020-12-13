@@ -65,7 +65,7 @@ variable "max_concurrency" {
 variable "max_errors" {
   description = "Define how many errors can be encountered before stopping the maintenance activities"
   type        = number
-  default     = 3
+  default     = 2
 }
 
 data "aws_caller_identity" "current" {}

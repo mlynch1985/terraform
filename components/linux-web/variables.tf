@@ -4,9 +4,11 @@ locals {
   namespace   = var.default_tags["namespace"]
   environment = var.default_tags["environment"]
 
-  component     = "winiis"
-  domain_name   = "example.internal"
-  instance_type = "t3.large"
+  component     = "linux-web"
+  instance_type = "t3.medium"
+  asg_min       = 3
+  asg_max       = 3
+  asg_desired   = 3
 
   default_tags = merge(
     var.default_tags,
@@ -42,11 +44,12 @@ data "aws_subnet_ids" "private" {
   }
 }
 
-data "aws_ami" "windows_2019" {
+data "aws_ami" "amazon_linux_2" {
   most_recent = true
   owners      = ["amazon"]
+
   filter {
     name   = "name"
-    values = ["Windows_Server-2019-English-Full-Base*"]
+    values = ["amzn2-ami-hvm*"]
   }
 }

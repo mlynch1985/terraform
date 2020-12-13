@@ -24,7 +24,7 @@ module "vpc" {
 
   namespace                = local.namespace
   default_tags             = local.default_tags
-  cidr_block               = "10.0.0.0/20"
+  cidr_block               = "10.0.0.0/16"
   enable_dns_support       = true
   enable_dns_hostnames     = true
   target_az_count          = 3

@@ -4,18 +4,18 @@ data "aws_iam_instance_profile" "this" {
   name = var.iam_instance_profile.name
 }
 
-resource "aws_iam_service_linked_role" "this" {
-  aws_service_name = "autoscaling.amazonaws.com"
-  custom_suffix    = "${var.namespace}_${var.component}"
-}
+# resource "aws_iam_service_linked_role" "this" {
+#   aws_service_name = "autoscaling.amazonaws.com"
+#   custom_suffix    = "${var.namespace}_${var.component}"
+# }
 
-resource "time_sleep" "this" {
-  depends_on      = [aws_iam_service_linked_role.this]
-  create_duration = "5s"
-}
+# resource "time_sleep" "this" {
+#   depends_on      = [aws_iam_service_linked_role.this]
+#   create_duration = "5s"
+# }
 
 resource "aws_kms_key" "this" {
-  depends_on = [time_sleep.this]
+  # depends_on = [time_sleep.this]
 
   description = "${var.namespace}/${var.component}/EBS_CMK"
   policy      = <<EOF
@@ -47,7 +47,7 @@ resource "aws_kms_key" "this" {
       "Resource": "*",
       "Principal": {
         "AWS": [
-          "${aws_iam_service_linked_role.this.arn}"
+          "arn:aws:iam::${data.aws_caller_identity.this.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
         ]
       }
     },
@@ -60,7 +60,7 @@ resource "aws_kms_key" "this" {
       "Resource": "*",
       "Principal": {
         "AWS": [
-          "${aws_iam_service_linked_role.this.arn}"
+          "arn:aws:iam::${data.aws_caller_identity.this.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
         ]
       },
       "Condition": {
