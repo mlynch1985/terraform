@@ -19,18 +19,6 @@ variable "domain_name" {
   type        = string
 }
 
-variable "edition" {
-  description = "Specify either Standard or Enterprise for the edition of AD to deploy."
-  type        = string
-  default     = "Standard"
-}
-
-variable "enable_sso" {
-  description = "Set to true to enable single-sign on for this directory"
-  type        = bool
-  default     = false
-}
-
 variable "vpc_id" {
   description = "Specify the target VPC ID to deploy into"
   type        = string
@@ -44,6 +32,18 @@ variable "subnet_1" {
 variable "subnet_2" {
   description = "Provide a subnet ID to deploy EC2 instances into"
   type        = string
+}
+
+variable "edition" {
+  description = "Specify either Standard or Enterprise for the edition of AD to deploy."
+  type        = string
+  default     = "Standard"
+}
+
+variable "enable_sso" {
+  description = "Set to true to enable single-sign on for this directory"
+  type        = bool
+  default     = false
 }
 
 variable "iam_ec2_role" {
@@ -60,7 +60,7 @@ variable "enable_auto_join" {
 variable "ad_target_tag_name" {
   description = "Specify the target TAG name used for auto-join"
   type        = string
-  default     = "namespace"
+  default     = "tag:namespace"
 }
 
 variable "ad_target_tag_value" {

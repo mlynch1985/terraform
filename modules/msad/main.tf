@@ -1,3 +1,5 @@
+provider "random" {}
+
 resource "aws_iam_role_policy_attachment" "msad" {
   role       = var.iam_ec2_role
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMDirectoryServiceAccess"
@@ -40,7 +42,7 @@ resource "aws_ssm_association" "this" {
   max_errors          = 5
 
   targets {
-    key    = "tag:${var.ad_target_tag_name}"
+    key    = var.ad_target_tag_name
     values = [var.ad_target_tag_value]
   }
   parameters = {

@@ -3,6 +3,21 @@ try {
     # Setup Windows Event Logs
 	New-EventLog -Source "UserData" -Logname Application
 
+    if (Get-PSDrive E -ErrorAction SilentlyContinue) {
+        Write-Host "E: Drive is already mounted"
+    } else {
+        try {
+            Get-Disk |
+            Where-Object PartitionStyle -Eq "RAW" |
+            Initialize-Disk -PartitionStyle GPT -PassThru |
+            New-Partition -DriveLetter E -UseMaximumSize |
+            Format-Volume
+        }
+        catch {
+            Write-Host "A second drive doesn't exist.  Can't mount E:\ drive"
+        }
+    }
+
     # Query the AWS Metadata service for information about the current instance
     $INSTANCE_METADATA = Get-EC2InstanceMetadata -Category IdentityDocument | ConvertFrom-Json
 	$INSTANCE_ID = $INSTANCE_METADATA.instanceId
@@ -35,7 +50,6 @@ try {
     Remove-Item -Path $AGENT_DESTINATION -Force
 
     <# INSERT CUSTOM CODE HERE #>
-    Install-WindowsFeature -Name Web-Server -IncludeAllSubFeature -IncludeManagementTools
 }
 catch {
     # Log any failures to the Windows Event Log

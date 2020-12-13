@@ -1,7 +1,7 @@
 terraform {
   #   backend "s3" {
   #     bucket         = "useast1d-tf-state"
-  #     key            = "winiis-dev"
+  #     key            = "wordpress-dev"
   #     region         = "us-east-1"
   #     encrypt        = "true"
   #     dynamodb_table = "useast1d-terraform-locks"
@@ -19,34 +19,19 @@ provider "aws" {
   region = "us-east-1"
 }
 
-provider "random" {}
-
+## IAM Role that grants SSMManagedInstanceCore, ParameterStore, SecretsManager and S3 specific to this component
 module "ec2_role" {
   source = "../../modules/ec2_role"
 
-  namespace    = local.namespace
-  component    = local.component
-  default_tags = local.default_tags
-}
-
-module "msad" {
-  source = "../../modules/msad"
-
   namespace            = local.namespace
   component            = local.component
-  domain_name          = local.domain_name
-  vpc_id               = data.aws_vpc.this.id
-  subnet_1             = tolist(data.aws_subnet_ids.private.ids)[0]
-  subnet_2             = tolist(data.aws_subnet_ids.private.ids)[1]
-  edition              = "Enterprise"
-  enable_sso           = false
-  enable_auto_join     = true
-  ad_target_tag_name   = "ad_join"
-  ad_target_tag_value  = "true"
   default_tags         = local.default_tags
-  iam_instance_profile = module.ec2_role.role.name
+  path                 = "/"
+  description          = "Grants SSMManagedInstanceCore, ParameterStore, SecretsManager and S3 specific to this component"
+  max_session_duration = 3600 # 1
 }
 
+## Adds permission to IAM Role to publish custom metrics and logs to Cloudwatch.  Also publishes CW Agent config to ParameterStore
 module "cw_agent" {
   source = "../../modules/cw_agent"
 
@@ -57,14 +42,44 @@ module "cw_agent" {
   windows_config = file("${path.module}/config_windows.json")
 }
 
+## Creates a MS Active Directory using the AWS Directory Service and configures SSM Association to auto-join EC2 instances
+module "msad" {
+  source = "../../modules/msad"
+
+  namespace           = local.namespace
+  component           = local.component
+  default_tags        = local.default_tags
+  domain_name         = local.domain_name
+  vpc_id              = data.aws_vpc.this.id
+  subnet_1            = tolist(data.aws_subnet_ids.private.ids)[0]
+  subnet_2            = tolist(data.aws_subnet_ids.private.ids)[1]
+  edition             = "Standard"
+  enable_sso          = false
+  iam_ec2_role        = module.ec2_role.role.name
+  enable_auto_join    = true
+  ad_target_tag_name  = "tag:ad_join"
+  ad_target_tag_value = "true"
+}
+
+## Configures a maintenance window to perform patching every night at midnight
 module "patching" {
   source = "../../modules/patching"
 
-  namespace    = local.namespace
-  component    = local.component
-  default_tags = local.default_tags
+  namespace         = local.namespace
+  component         = local.component
+  default_tags      = local.default_tags
+  schedule_name     = "daily_patching"
+  schedule_cron     = "cron(0 0 ? * * *)"
+  schedule_timezone = "America/New_York"
+  schedule_cutoff   = 1
+  schedule_duration = 4
+  target_tag_name   = "tag:enable_patching"
+  target_tag_value  = "true"
+  max_concurrency   = 5
+  max_errors        = 2
 }
 
+## Deploys a single EC2 instance in the Private-1a subnet
 module "ec2_instance" {
   source = "../../modules/ec2_instance"
 
@@ -72,11 +87,11 @@ module "ec2_instance" {
   component                   = local.component
   image_id                    = data.aws_ami.windows_2019.image_id
   security_groups             = [aws_security_group.ec2.id]
-  subnet_id                   = tolist(data.aws_subnet_ids.public.ids)[0]
+  subnet_id                   = tolist(data.aws_subnet_ids.private.ids)[0]
   instance_type               = local.instance_type
   key_name                    = ""
   enable_detailed_monitoring  = false
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   user_data                   = filebase64("${path.module}/userdata.ps1")
   iam_instance_profile        = module.ec2_role.profile.name
   enable_second_drive         = true
@@ -84,8 +99,8 @@ module "ec2_instance" {
   default_tags = merge(
     local.default_tags,
     map(
-      "ad_join", "true",
-      "enable_patching", "true"
+      "enable_patching", "true",
+      "ad_join", "true"
     )
   )
 
@@ -106,15 +121,16 @@ module "ec2_instance" {
   }
 }
 
+## Created Security Group allowing ALL traffic from the Private subnets only
 resource "aws_security_group" "ec2" {
   name_prefix = "${local.namespace}_${local.component}_ec2_"
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
-    protocol    = "tcp"
-    from_port   = 3389
-    to_port     = 3389
-    cidr_blocks = ["100.34.0.0/16"]
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [for s in data.aws_subnet.private : s.cidr_block]
   }
 
   egress {

@@ -4,9 +4,9 @@ locals {
   namespace   = var.default_tags["namespace"]
   environment = var.default_tags["environment"]
 
-  component     = "winiis"
-  domain_name   = "example.internal"
+  component     = "windows-ad"
   instance_type = "t3.large"
+  domain_name   = "example.internal"
 
   default_tags = merge(
     var.default_tags,
@@ -40,6 +40,11 @@ data "aws_subnet_ids" "private" {
   tags = {
     tier = "private"
   }
+}
+
+data "aws_subnet" "private" {
+  for_each = data.aws_subnet_ids.private.ids
+  id       = each.value
 }
 
 data "aws_ami" "windows_2019" {

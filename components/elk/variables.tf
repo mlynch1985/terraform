@@ -1,4 +1,3 @@
-variable "vpc_id" {}
 variable "default_tags" {}
 
 locals {
@@ -21,7 +20,9 @@ data "aws_availability_zones" "available" {
 }
 
 data "aws_vpc" "this" {
-  id = var.vpc_id
+  tags = {
+    Name = "${local.namespace}_vpc"
+  }
 }
 
 data "aws_subnet_ids" "public" {
