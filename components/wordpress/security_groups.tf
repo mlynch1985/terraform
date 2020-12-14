@@ -19,7 +19,7 @@ resource "aws_security_group" "efs" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.component}_efs"
+      "Name", "${local.namespace}/${local.component}/efs"
     )
   )
 }
@@ -45,7 +45,7 @@ resource "aws_security_group" "alb" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.component}_alb"
+      "Name", "${local.namespace}/${local.component}/alb"
     )
   )
 }
@@ -71,7 +71,7 @@ resource "aws_security_group" "asg" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.component}_asg"
+      "Name", "${local.namespace}/${local.component}/asg"
     )
   )
 }
@@ -97,7 +97,7 @@ resource "aws_security_group" "rds" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.component}_rds"
+      "Name", "${local.namespace}/${local.component}/rds"
     )
   )
 }

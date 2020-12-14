@@ -76,7 +76,7 @@ EOF
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.component}_EBS_CMK"
+      "Name", "${var.namespace}/${var.component}/EBS_CMK"
     )
   )
 }

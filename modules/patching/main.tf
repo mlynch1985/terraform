@@ -8,7 +8,7 @@ resource "aws_ssm_maintenance_window" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.component}_${var.schedule_name}"
+      "Name", "${var.namespace}/${var.component}/${var.schedule_name}"
     )
   )
 }

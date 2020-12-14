@@ -36,7 +36,7 @@ resource "aws_launch_template" "root_drive_only" {
     tags = merge(
       var.default_tags,
       map(
-        "Name", "${var.namespace}_${var.component}"
+        "Name", "${var.namespace}/${var.component}"
       )
     )
   }
@@ -90,7 +90,7 @@ resource "aws_launch_template" "with_ebs_drive" {
     tags = merge(
       var.default_tags,
       map(
-        "Name", "${var.namespace}_${var.component}"
+        "Name", "${var.namespace}/${var.component}"
       )
     )
   }

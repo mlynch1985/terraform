@@ -159,7 +159,7 @@ resource "aws_security_group" "alb" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.component}_alb"
+      "Name", "${local.namespace}/${local.component}/alb"
     )
   )
 }
@@ -186,7 +186,7 @@ resource "aws_security_group" "asg" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.component}_asg"
+      "Name", "${local.namespace}/${local.component}/asg"
     )
   )
 }

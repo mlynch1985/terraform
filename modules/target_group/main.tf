@@ -12,7 +12,8 @@ resource "aws_lb_target_group" "this" {
 
   health_check {
     enabled             = true
-    path                = var.elb_type == "ALB" ? var.healthcheck_path : ""
+    port                = var.target_group_port
+    protocol            = var.target_group_protocol
     healthy_threshold   = 3
     unhealthy_threshold = 3
     matcher             = var.elb_type == "ALB" ? "200-399" : ""

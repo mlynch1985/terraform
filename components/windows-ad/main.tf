@@ -54,7 +54,7 @@ module "msad" {
   subnet_1            = tolist(data.aws_subnet_ids.private.ids)[0]
   subnet_2            = tolist(data.aws_subnet_ids.private.ids)[1]
   edition             = "Standard"
-  enable_sso          = false
+  enable_sso          = true
   iam_ec2_role        = module.ec2_role.role.name
   enable_auto_join    = true
   ad_target_tag_name  = "tag:ad_join"
@@ -121,7 +121,40 @@ module "ec2_instance" {
   }
 }
 
-## Created Security Group allowing ALL traffic from the Private subnets only
+## Creates public facing Network Load Balancer to allow RDP
+module "nlb" {
+  source = "../../modules/nlb"
+
+  namespace                        = local.namespace
+  component                        = local.component
+  default_tags                     = local.default_tags
+  subnets                          = data.aws_subnet_ids.public.ids
+  is_internal                      = false
+  enable_cross_zone_load_balancing = true
+}
+
+## Creates a Target Group listening on TCP 3389 for RDP access
+module "target_group" {
+  source = "../../modules/target_group"
+
+  namespace             = local.namespace
+  component             = local.component
+  default_tags          = local.default_tags
+  target_ids            = [module.ec2_instance.with_ebs_instance[0].id]
+  target_group_port     = 3389
+  target_group_protocol = "TCP"
+  vpc_id                = data.aws_vpc.this.id
+  deregistration_delay  = 60
+  enable_stickiness     = true
+  healthcheck_path      = ""
+  elb_arn               = module.nlb.nlb.arn
+  elb_type              = "NLB"
+  elb_listener_port     = 3389
+  elb_listener_protocol = "TCP"
+  elb_listener_cert     = ""
+}
+
+## Created Security Group allowing ALL traffic from the Private subnets only and 3389 from the NLB/Public
 resource "aws_security_group" "ec2" {
   name_prefix = "${local.namespace}_${local.component}_ec2_"
   vpc_id      = data.aws_vpc.this.id
@@ -131,6 +164,20 @@ resource "aws_security_group" "ec2" {
     from_port   = 0
     to_port     = 0
     cidr_blocks = [for s in data.aws_subnet.private : s.cidr_block]
+  }
+
+  ingress {
+    protocol    = "TCP"
+    from_port   = 3389
+    to_port     = 3389
+    cidr_blocks = [for s in data.aws_subnet.public : s.cidr_block]
+  }
+
+  ingress {
+    protocol    = "TCP"
+    from_port   = 3389
+    to_port     = 3389
+    cidr_blocks = ["100.34.0.0/16"]
   }
 
   egress {
@@ -143,7 +190,7 @@ resource "aws_security_group" "ec2" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.component}_ec2"
+      "Name", "${local.namespace}/${local.component}/ec2"
     )
   )
 }

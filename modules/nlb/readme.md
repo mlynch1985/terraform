@@ -22,7 +22,7 @@ Usage
 
 ```hcl
 module "nlb" {
-  source = "../modules/nlb"
+  source = "../../modules/nlb"
 
   namespace                        = "useast1d"
   component                        = "appdemo1"

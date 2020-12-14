@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "this" {
-  name              = "/aws/lambda/${var.namespace}_${var.component}_cw_alarms"
+  name              = "/aws/lambda/${var.namespace}/${var.component}/cw_alarms"
   retention_in_days = 7
 
   tags = merge(
@@ -23,7 +23,7 @@ resource "aws_lambda_function" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.component}_cw_alarms"
+      "Name", "${var.namespace}/${var.component}/cw_alarms"
     )
   )
 }
@@ -36,7 +36,7 @@ resource "aws_lambda_permission" "this" {
 }
 
 resource "aws_cloudwatch_event_rule" "this" {
-  name_prefix = "${var.namespace}_${var.component}_cw_alarms_"
+  name_prefix = "${var.namespace}/${var.component}/cw_alarms_"
   description = "Triggers CloudWatch Alarm Lambda function for EC2 AutoScaling Launch/Terminate events."
 
   event_pattern = <<EOF
@@ -64,7 +64,7 @@ resource "aws_sns_topic" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_${var.component}_cw_alarms"
+      "Name", "${var.namespace}/${var.component}/cw_alarms"
     )
   )
 }

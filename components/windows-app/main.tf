@@ -121,7 +121,7 @@ resource "aws_security_group" "ec2" {
   tags = merge(
     local.default_tags,
     map(
-      "Name", "${local.namespace}_${local.component}_ec2"
+      "Name", "${local.namespace}/${local.component}/ec2"
     )
   )
 }

@@ -31,7 +31,7 @@ resource "aws_default_security_group" "this" {
   tags = merge(
     var.default_tags,
     map(
-      "Name", "${var.namespace}_sg_default"
+      "Name", "${var.namespace}/sg_default"
     )
   )
 }
