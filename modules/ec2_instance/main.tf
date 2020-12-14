@@ -25,7 +25,12 @@ resource "aws_instance" "root_only" {
       "Name", "${var.namespace}/${var.component}"
     )
   )
+
+  lifecycle {
+    ignore_changes = [root_block_device["kms_key_id"]]
+  }
 }
+
 resource "aws_instance" "with_ebs" {
   count = var.enable_second_drive ? 1 : 0
 
@@ -62,4 +67,8 @@ resource "aws_instance" "with_ebs" {
       "Name", "${var.namespace}/${var.component}"
     )
   )
+
+  lifecycle {
+    ignore_changes = [root_block_device["kms_key_id"]]
+  }
 }

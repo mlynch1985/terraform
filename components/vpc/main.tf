@@ -1,11 +1,11 @@
 terraform {
-  # backend "s3" {
-  #   bucket         = "useast1d-tf-state"
-  #   key            = "vpc-dev"
-  #   region         = "us-east-1"
-  #   encrypt        = "true"
-  #   dynamodb_table = "useast1d-terraform-locks"
-  # }
+  backend "s3" {
+    bucket         = "useast1d-tf-state"
+    key            = "vpc-dev"
+    region         = "us-east-1"
+    encrypt        = "true"
+    dynamodb_table = "useast1d-terraform-locks"
+  }
 
   required_providers {
     aws = {
@@ -24,7 +24,7 @@ module "vpc" {
 
   namespace                = local.namespace
   default_tags             = local.default_tags
-  cidr_block               = "10.0.0.0/16"
+  cidr_block               = var.cidr_block
   enable_dns_support       = true
   enable_dns_hostnames     = true
   target_az_count          = 3

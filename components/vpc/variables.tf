@@ -1,4 +1,5 @@
 variable "default_tags" {}
+variable "cidr_block" {}
 
 locals {
   namespace = var.default_tags["namespace"]
