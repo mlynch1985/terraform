@@ -36,7 +36,7 @@ resource "aws_lambda_permission" "this" {
 }
 
 resource "aws_cloudwatch_event_rule" "this" {
-  name_prefix = "${var.namespace}/${var.component}/cw_alarms_"
+  name_prefix = "${var.namespace}_${var.component}_cw_alarms_"
   description = "Triggers CloudWatch Alarm Lambda function for EC2 AutoScaling Launch/Terminate events."
 
   event_pattern = <<EOF

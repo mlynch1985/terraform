@@ -1,8 +1,12 @@
 provider "random" {}
 
-resource "random_password" "username" {
-  length  = 8
-  special = false
+resource "random_string" "username" {
+  length      = 8
+  min_lower   = 1
+  min_upper   = 1
+  min_numeric = 1
+  special     = false
+
 }
 
 resource "random_password" "password" {
@@ -30,7 +34,7 @@ resource "aws_rds_cluster" "this" {
   db_subnet_group_name      = aws_db_subnet_group.this.id
   engine_mode               = "serverless"
   engine                    = "aurora"
-  master_username           = random_password.username.result
+  master_username           = random_string.username.result
   master_password           = random_password.password.result
   skip_final_snapshot       = true
   vpc_security_group_ids    = var.security_groups
@@ -66,7 +70,7 @@ resource "aws_secretsmanager_secret_version" "this" {
   secret_id     = aws_secretsmanager_secret.this.id
   secret_string = <<EOF
 {
-  "username": "${random_password.username.result}",
+  "username": "${random_string.username.result}",
   "password": "${random_password.password.result}",
   "cluster_identifier": "${aws_rds_cluster.this.cluster_identifier}",
   "endpoint": "${aws_rds_cluster.this.endpoint}",

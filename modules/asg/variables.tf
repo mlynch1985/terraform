@@ -1,3 +1,4 @@
+/* ##### ALL REQUIRED VARIABLES ##### */
 variable "namespace" {
   description = "Specify a stack namespace to prefix all resources"
   type        = string
@@ -8,10 +9,9 @@ variable "component" {
   type        = string
 }
 
-variable "default_tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default     = {}
+variable "subnets" {
+  description = "List of subnet IDs to launch instances in"
+  type        = list(string)
 }
 
 variable "image_id" {
@@ -19,15 +19,125 @@ variable "image_id" {
   type        = string
 }
 
-variable "security_groups" {
+variable "instance_type" {
+  description = "Specify the EC2 instance size"
+  type        = string
+}
+
+variable "vpc_security_group_ids" {
   description = "Provide a list of security group IDs to attach to this instance"
   type        = list(string)
 }
 
-variable "instance_type" {
-  description = "Specify the EC2 instance size"
+/* ##### ASG REQUIRED VARIABLES ##### */
+variable "min_size" {
+  description = "The minimum size of the auto scaling group"
+  type        = number
+  default     = 1
+}
+
+variable "max_size" {
+  description = "The maximum size of the auto scaling group"
+  type        = number
+  default     = 1
+}
+
+variable "desired_capacity" {
+  description = "The desired capacity of the auto scaling group"
+  type        = number
+  default     = 1
+}
+
+variable "capacity_rebalance" {
+  description = "Allows to the capacity to be balanced across the AZs"
+  type        = bool
+  default     = false
+}
+
+variable "default_cooldown" {
+  description = "The amoung of time in seconds between scaling events"
+  type        = number
+  default     = null
+}
+
+variable "healthcheck_grace_period" {
+  description = "Time in seconds after instance launch before performing healthchecks"
+  type        = number
+  default     = 300
+}
+
+variable "healthcheck_type" {
+  description = "Specify EC2 or ELB to determine how healthchecks should be performed"
   type        = string
-  default     = "t3.medium"
+  default     = "EC2"
+}
+
+variable "force_delete" {
+  description = "Allow ASG to terminate before all instances have been terminated"
+  type        = bool
+  default     = false
+}
+
+variable "target_group_arns" {
+  description = "A list of target group ARNs to associated instances with"
+  type        = list(string)
+  default     = []
+}
+
+variable "termination_policies" {
+  ## Allowed Values: Default, OldestInstance, NewestInstance, OldestLaunchConfiguration, NewestLaunchConfiguration, ClosestToNextInstanceHour, OldestLaunchTemplate
+  description = "A list of policies to decide how instances in ASG should be terminated"
+  type        = list(string)
+  default     = ["Default"]
+}
+
+variable "default_tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "wait_for_capacity_timeout" {
+  description = "Max duration Terraform should wait for instances to be healthy"
+  type        = string
+  default     = "10m"
+}
+
+variable "protect_from_scale_in" {
+  description = "Prevents instances from be terminated due to a scale in operation"
+  type        = bool
+  default     = false
+}
+
+# variable "service_linked_role_arn" {
+#   description = "Override the default service linked role with a custom role"
+#   type        = string
+#   default     = ""
+# }
+
+/* ##### LAUNCH TEMPLATE REQUIRED VARIABLES ##### */
+variable "update_default_version" {
+  description = "Set to true to overwrite Default version or false to create a new version"
+  type        = bool
+  default     = true
+}
+
+variable "block_device_mappings" {
+  description = "Specify a list of block device mappings to attach to each instance"
+  type        = any
+  default     = []
+}
+
+variable "disable_api_termination" {
+  description = "Set to true to prevent termination of instance via API calls"
+  type        = bool
+  default     = false
+}
+
+variable "iam_instance_profile" {
+  description = "Please specify the iam instance profile arn to attach to each EC2 instance"
+  type        = any
+  default     = null
 }
 
 variable "key_name" {
@@ -36,7 +146,7 @@ variable "key_name" {
   default     = ""
 }
 
-variable "enable_detailed_monitoring" {
+variable "monitoring" {
   description = "Set to true to enable detailed monitoring at 1 minute intervals"
   type        = bool
   default     = false
@@ -46,79 +156,4 @@ variable "user_data" {
   description = "Specify a path to a userdata script"
   type        = string
   default     = ""
-}
-
-variable "iam_instance_profile" {
-  description = "Please specify the iam instance profile to attach to each EC2 instance"
-  type        = any
-}
-
-variable "asg_min" {
-  description = "Set the minimum number of instances to run"
-  type        = number
-  default     = 1
-}
-
-variable "asg_max" {
-  description = "Set the maximum number of instances to run"
-  type        = number
-  default     = 1
-}
-
-variable "asg_desired" {
-  description = "Set the desired number of instances to run"
-  type        = number
-  default     = 1
-}
-
-variable "asg_healthcheck_grace_period" {
-  description = "Specify the time to wait before starting healthchecks"
-  type        = number
-  default     = 300
-}
-
-variable "asg_healthcheck_type" {
-  description = "Specify whether to use EC2 or ELB healthchecks"
-  type        = string
-  default     = "EC2"
-}
-
-variable "asg_subnets" {
-  description = "Provide a list of subnets to deploy EC2 instances into"
-  type        = list(string)
-}
-
-variable "target_group_arns" {
-  description = "Provide a list of ALB or NLB target group arns to link into the ASG"
-  type        = list(string)
-}
-
-variable "root_block_device" {
-  description = "Specify an EBS block mapping for the root block drive"
-  type        = map(string)
-  default = {
-    device_name           = "/dev/xvda"
-    volume_type           = "gp2"
-    volume_size           = 30
-    delete_on_termination = true
-    encrypted             = true
-  }
-}
-
-variable "ebs_block_device" {
-  description = "Specify an EBS block mapping for a secondary block drive"
-  type        = map(string)
-  default = {
-    device_name           = "xvdf"
-    volume_type           = "gp2"
-    volume_size           = 50
-    delete_on_termination = true
-    encrypted             = true
-  }
-}
-
-variable "enable_second_drive" {
-  description = "Set to true to enable second EBS block device"
-  type        = bool
-  default     = false
 }

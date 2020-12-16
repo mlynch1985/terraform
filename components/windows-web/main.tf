@@ -76,44 +76,44 @@ module "alb" {
 module "asg" {
   source = "../../modules/asg"
 
-  namespace                    = local.namespace
-  component                    = local.component
-  image_id                     = data.aws_ami.windows_2019.image_id
-  security_groups              = [aws_security_group.asg.id]
-  instance_type                = local.instance_type
-  key_name                     = ""
-  enable_detailed_monitoring   = false
-  user_data                    = filebase64("${path.module}/userdata.ps1")
-  iam_instance_profile         = module.ec2_role.profile
-  asg_min                      = local.asg_min
-  asg_max                      = local.asg_max
-  asg_desired                  = local.asg_desired
-  asg_healthcheck_grace_period = 600
-  asg_healthcheck_type         = "ELB"
-  asg_subnets                  = data.aws_subnet_ids.private.ids
-  target_group_arns            = [module.target_group.target_group.arn]
-  enable_second_drive          = true
+  namespace              = local.namespace
+  component              = local.component
+  subnets                = data.aws_subnet_ids.private.ids
+  image_id               = data.aws_ami.this.image_id
+  instance_type          = local.instance_type
+  vpc_security_group_ids = [aws_security_group.asg.id]
+
+  min_size                 = local.min_size
+  max_size                 = local.max_size
+  desired_capacity         = local.desired_capacity
+  healthcheck_grace_period = 600
+  healthcheck_type         = "ELB"
+  force_delete             = true
+  target_group_arns        = [module.target_group.target_group.arn]
+  iam_instance_profile     = module.ec2_role.profile
+  user_data                = filebase64("${path.module}/userdata.ps1")
 
   default_tags = merge(
     local.default_tags,
     map("enable_patching", "true")
   )
 
-  root_block_device = {
-    device_name : "/dev/sda1"
-    volume_type : "gp2"
-    volume_size : "30"
-    delete_on_termination : true
-    encrypted : true
-  }
-
-  ebs_block_device = {
-    device_name : "xvdf"
-    volume_type : "gp2"
-    volume_size : "50"
-    delete_on_termination : true
-    encrypted : true
-  }
+  block_device_mappings = [
+    {
+      device_name : "/dev/sda1"
+      volume_type : "gp2"
+      volume_size : "30"
+      delete_on_termination : true
+      encrypted : true
+    },
+    {
+      device_name : "/dev/xvdf"
+      volume_type : "gp2"
+      volume_size : "100"
+      delete_on_termination : true
+      encrypted : true
+    }
+  ]
 }
 
 ## Created a Target Group listening on HTTP port 80

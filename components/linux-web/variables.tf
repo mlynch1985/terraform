@@ -4,11 +4,11 @@ locals {
   namespace   = var.default_tags["namespace"]
   environment = var.default_tags["environment"]
 
-  component     = "linux-web"
-  instance_type = "t3.medium"
-  asg_min       = 3
-  asg_max       = 3
-  asg_desired   = 3
+  component        = "linux-web"
+  instance_type    = "t3.medium"
+  min_size         = 3
+  max_size         = 3
+  desired_capacity = 3
 
   default_tags = merge(
     var.default_tags,

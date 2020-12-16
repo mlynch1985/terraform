@@ -80,27 +80,44 @@ module "alb" {
 module "asg" {
   source = "../../modules/asg"
 
-  namespace                  = local.namespace
-  component                  = local.component
-  image_id                   = data.aws_ami.amazon_linux_2.image_id
-  instance_type              = local.instance_type
-  security_groups            = [aws_security_group.asg.id]
-  user_data                  = filebase64("${path.module}/userdata.sh")
-  enable_detailed_monitoring = false
-  iam_instance_profile       = module.ec2_role.profile
-  asg_min                    = local.asg_min
-  asg_max                    = local.asg_max
-  asg_desired                = local.asg_desired
-  asg_healthcheck_type       = "EC2"
-  asg_subnets                = data.aws_subnet_ids.private.ids
-  target_group_arns          = [module.target_group.target_group.arn]
+  namespace              = local.namespace
+  component              = local.component
+  subnets                = data.aws_subnet_ids.private.ids
+  image_id               = data.aws_ami.this.image_id
+  instance_type          = local.instance_type
+  vpc_security_group_ids = [aws_security_group.asg.id]
+
+  min_size                 = local.min_size
+  max_size                 = local.max_size
+  desired_capacity         = local.desired_capacity
+  healthcheck_grace_period = 600
+  healthcheck_type         = "ELB"
+  force_delete             = true
+  target_group_arns        = [module.target_group.target_group.arn]
+  iam_instance_profile     = module.ec2_role.profile
+  user_data                = filebase64("${path.module}/userdata.sh")
 
   default_tags = merge(
     local.default_tags,
-    map(
-      "enable_patching", "true"
-    )
+    map("enable_patching", "true")
   )
+
+  block_device_mappings = [
+    {
+      device_name : "/dev/xvda"
+      volume_type : "gp2"
+      volume_size : "30"
+      delete_on_termination : true
+      encrypted : true
+    },
+    {
+      device_name : "/dev/xvdf"
+      volume_type : "gp2"
+      volume_size : "100"
+      delete_on_termination : true
+      encrypted : true
+    }
+  ]
 }
 
 module "target_group" {

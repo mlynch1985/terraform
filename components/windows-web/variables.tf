@@ -4,11 +4,11 @@ locals {
   namespace   = var.default_tags["namespace"]
   environment = var.default_tags["environment"]
 
-  component     = "windows-web"
-  instance_type = "t3.large"
-  asg_min       = 3
-  asg_max       = 3
-  asg_desired   = 3
+  component        = "windows-web"
+  instance_type    = "t3.large"
+  min_size         = 3
+  max_size         = 3
+  desired_capacity = 3
 
   default_tags = merge(
     var.default_tags,
