@@ -16,7 +16,7 @@ resource "aws_instance" "root_only" {
     volume_size           = var.root_block_device.volume_size
     delete_on_termination = var.root_block_device.delete_on_termination
     encrypted             = var.root_block_device.encrypted
-    kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.key_id : ""
+    kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.arn : ""
   }
 
   tags = merge(
@@ -25,10 +25,6 @@ resource "aws_instance" "root_only" {
       "Name", "${var.namespace}/${var.component}"
     )
   )
-
-  lifecycle {
-    ignore_changes = [root_block_device["kms_key_id"]]
-  }
 }
 
 resource "aws_instance" "with_ebs" {
@@ -49,7 +45,7 @@ resource "aws_instance" "with_ebs" {
     volume_size           = var.root_block_device.volume_size
     delete_on_termination = var.root_block_device.delete_on_termination
     encrypted             = var.root_block_device.encrypted
-    kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.key_id : ""
+    kms_key_id            = var.root_block_device.encrypted ? aws_kms_key.this.arn : ""
   }
 
   ebs_block_device {
@@ -67,8 +63,4 @@ resource "aws_instance" "with_ebs" {
       "Name", "${var.namespace}/${var.component}"
     )
   )
-
-  lifecycle {
-    ignore_changes = [root_block_device["kms_key_id"]]
-  }
 }
