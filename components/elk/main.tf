@@ -30,28 +30,29 @@ module "ec2_role" {
 module "ec2_instance" {
   source = "../../modules/ec2_instance"
 
-  namespace                   = local.namespace
-  component                   = local.component
-  image_id                    = data.aws_ami.amazon_linux_2.image_id
-  security_groups             = [aws_security_group.ec2.id]
-  subnet_id                   = tolist(data.aws_subnet_ids.public.ids)[0]
-  instance_type               = local.instance_type
-  key_name                    = ""
-  enable_detailed_monitoring  = false
-  associate_public_ip_address = true
-  user_data                   = filebase64("${path.module}/userdata.sh")
-  iam_instance_profile        = module.ec2_role.profile.name
-  enable_second_drive         = false
+  namespace            = local.namespace
+  component            = local.component
+  image_id             = data.aws_ami.this.image_id
+  instance_type        = local.instance_type
+  security_groups      = [aws_security_group.ec2.id]
+  subnet_id            = tolist(data.aws_subnet_ids.private.ids)[0]
+  user_data            = filebase64("${path.module}/userdata.sh")
+  iam_instance_profile = module.ec2_role.profile.name
 
-  default_tags = local.default_tags
+  default_tags = merge(
+    local.default_tags,
+    map("enable_patching", "true")
+  )
 
-  root_block_device = {
-    device_name : "/dev/sda1"
-    volume_type : "gp2"
-    volume_size : "50"
-    delete_on_termination : true
-    encrypted : true
-  }
+  root_block_device = [
+    {
+      volume_type : "gp2"
+      volume_size : "50"
+      iops : null
+      delete_on_termination : true
+      encrypted : true
+    }
+  ]
 }
 
 resource "aws_security_group" "ec2" {

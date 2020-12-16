@@ -53,6 +53,13 @@ data "aws_ami" "windows_2019" {
 }
 
 locals {
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = "50"
+      #encrypted   = false
+    }
+  ]
   ebs_block_device = [
     {
       device_name = "xvdf"
@@ -71,6 +78,18 @@ resource "aws_instance" "name" {
   ami           = data.aws_ami.windows_2019.image_id
   instance_type = "t3.medium"
   subnet_id     = tolist(data.aws_subnet_ids.public.ids)[0]
+
+  dynamic "root_block_device" {
+    for_each = local.root_block_device
+
+    content {
+      volume_type           = lookup(root_block_device.value, "volume_type", null)
+      volume_size           = lookup(root_block_device.value, "volume_size", null)
+      delete_on_termination = lookup(root_block_device.value, "delete_on_termination", null)
+      encrypted             = lookup(root_block_device.value, "encrypted", null)
+      kms_key_id            = lookup(root_block_device.value, "encrypted", false) ? "abcd1234" : "efgh5678"
+    }
+  }
 
   dynamic "ebs_block_device" {
     for_each = local.ebs_block_device

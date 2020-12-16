@@ -1,3 +1,4 @@
+/* ##### REQUIRED VARIABLES ##### */
 variable "namespace" {
   description = "Specify a stack namespace to prefix all resources"
   type        = string
@@ -8,14 +9,13 @@ variable "component" {
   type        = string
 }
 
-variable "default_tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default     = {}
-}
-
 variable "image_id" {
   description = "Specify the AMI ID of the image to be used for each EC2 instance"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "Specify the EC2 instance size"
   type        = string
 }
 
@@ -29,10 +29,47 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "instance_type" {
-  description = "Specify the EC2 instance size"
+/* ###### OPTIONAL VARIABLES ##### */
+variable "availability_zone" {
+  description = "The AZ to start the instance in"
   type        = string
-  default     = "t3.medium"
+  default     = ""
+}
+
+variable "placement_group" {
+  description = "The placement group to start the instance in"
+  type        = string
+  default     = ""
+}
+
+variable "tenancy" {
+  description = "Define where this instance is on a Shared or Dedicated host"
+  type        = string
+  default     = "default"
+}
+
+variable "host_id" {
+  description = "The ID of the dedicated host that the instance will be assigned to"
+  type        = string
+  default     = ""
+}
+
+variable "cpu_core_count" {
+  description = "Sets the number of cores for the instance"
+  type        = number
+  default     = null
+}
+
+variable "cpu_threads_per_core" {
+  description = "Set to 1 to disable hyperthreading or 2 to enable it"
+  type        = number
+  default     = 2
+}
+
+variable "disable_api_termination" {
+  description = "Set to true to prevent termination of instance via API calls"
+  type        = bool
+  default     = false
 }
 
 variable "key_name" {
@@ -41,7 +78,7 @@ variable "key_name" {
   default     = ""
 }
 
-variable "enable_detailed_monitoring" {
+variable "monitoring" {
   description = "Set to true to enable detailed monitoring at 1 minute intervals"
   type        = bool
   default     = false
@@ -53,6 +90,18 @@ variable "associate_public_ip_address" {
   default     = false
 }
 
+variable "private_ip" {
+  description = "Specify the Private IP address to associate to this instance"
+  type        = string
+  default     = ""
+}
+
+variable "source_dest_check" {
+  description = "Set to false to allow traffic not destined for this instance"
+  type        = bool
+  default     = true
+}
+
 variable "user_data" {
   description = "Specify a path to a userdata script"
   type        = string
@@ -60,35 +109,25 @@ variable "user_data" {
 }
 
 variable "iam_instance_profile" {
-  description = "Please specify the iam instance profile to attach to each EC2 instance"
+  description = "Please specify the iam instance profile arn to attach to each EC2 instance"
   type        = string
+  default     = ""
+}
+
+variable "default_tags" {
+  description = "Specify a map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
 }
 
 variable "root_block_device" {
-  description = "Specify an EBS block mapping for the root block drive"
-  type        = map(string)
-  default = {
-    volume_type           = "gp2"
-    volume_size           = 30
-    delete_on_termination = true
-    encrypted             = true
-  }
+  description = "Specify a list of EBS block mapping for the root block drive. Limit is 1 for root device"
+  type        = list(map(string))
+  default     = []
 }
 
 variable "ebs_block_device" {
-  description = "Specify an EBS block mapping for a secondary block drive"
-  type        = map(string)
-  default = {
-    device_name           = "xvdf"
-    volume_type           = "gp2"
-    volume_size           = 50
-    delete_on_termination = true
-    encrypted             = true
-  }
-}
-
-variable "enable_second_drive" {
-  description = "Set to true to enable second EBS block device"
-  type        = bool
-  default     = false
+  description = "Specify a list of EBS block mappings for additional block drives"
+  type        = list(map(string))
+  default     = []
 }

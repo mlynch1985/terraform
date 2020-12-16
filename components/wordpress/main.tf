@@ -19,8 +19,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-provider "random" {}
-
 module "ec2_role" {
   source = "../../modules/ec2_role"
 

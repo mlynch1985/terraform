@@ -83,18 +83,14 @@ module "patching" {
 module "ec2_instance" {
   source = "../../modules/ec2_instance"
 
-  namespace                   = local.namespace
-  component                   = local.component
-  image_id                    = data.aws_ami.windows_2019.image_id
-  security_groups             = [aws_security_group.ec2.id]
-  subnet_id                   = tolist(data.aws_subnet_ids.private.ids)[0]
-  instance_type               = local.instance_type
-  key_name                    = ""
-  enable_detailed_monitoring  = false
-  associate_public_ip_address = false
-  user_data                   = filebase64("${path.module}/userdata.ps1")
-  iam_instance_profile        = module.ec2_role.profile.name
-  enable_second_drive         = true
+  namespace            = local.namespace
+  component            = local.component
+  image_id             = data.aws_ami.this.image_id
+  instance_type        = local.instance_type
+  security_groups      = [aws_security_group.ec2.id]
+  subnet_id            = tolist(data.aws_subnet_ids.private.ids)[0]
+  user_data            = filebase64("${path.module}/userdata.ps1")
+  iam_instance_profile = module.ec2_role.profile.name
 
   default_tags = merge(
     local.default_tags,
@@ -104,21 +100,26 @@ module "ec2_instance" {
     )
   )
 
-  root_block_device = {
-    device_name : "/dev/sda1"
-    volume_type : "gp2"
-    volume_size : "30"
-    delete_on_termination : true
-    encrypted : true
-  }
+  root_block_device = [
+    {
+      volume_type : "gp2"
+      volume_size : "30"
+      iops : null
+      delete_on_termination : true
+      encrypted : true
+    }
+  ]
 
-  ebs_block_device = {
-    device_name : "xvdf"
-    volume_type : "gp2"
-    volume_size : "50"
-    delete_on_termination : true
-    encrypted : true
-  }
+  ebs_block_device = [
+    {
+      device_name : "xvdf"
+      volume_type : "gp3"
+      volume_size : "100"
+      iops : null
+      delete_on_termination : true
+      encrypted : true
+    }
+  ]
 }
 
 ## Creates public facing Network Load Balancer to allow RDP
@@ -140,7 +141,7 @@ module "target_group" {
   namespace             = local.namespace
   component             = local.component
   default_tags          = local.default_tags
-  target_ids            = [module.ec2_instance.with_ebs_instance[0].id]
+  target_ids            = [module.ec2_instance.instance.id]
   target_group_port     = 3389
   target_group_protocol = "TCP"
   vpc_id                = data.aws_vpc.this.id

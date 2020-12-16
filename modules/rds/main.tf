@@ -1,3 +1,5 @@
+provider "random" {}
+
 resource "random_password" "username" {
   length  = 8
   special = false

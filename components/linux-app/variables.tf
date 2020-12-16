@@ -46,7 +46,7 @@ data "aws_subnet" "private" {
   id       = each.value
 }
 
-data "aws_ami" "amazon_linux_2" {
+data "aws_ami" "this" {
   most_recent = true
   owners      = ["amazon"]
 

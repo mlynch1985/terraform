@@ -44,7 +44,7 @@ data "aws_subnet_ids" "private" {
   }
 }
 
-data "aws_ami" "windows_2019" {
+data "aws_ami" "this" {
   most_recent = true
   owners      = ["amazon"]
   filter {
