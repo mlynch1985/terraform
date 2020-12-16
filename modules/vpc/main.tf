@@ -51,7 +51,7 @@ resource "aws_subnet" "public" {
   count = var.target_az_count
 
   vpc_id                  = aws_vpc.this.id
-  cidr_block              = cidrsubnet(var.cidr_block, 8, count.index)
+  cidr_block              = cidrsubnet(var.cidr_block, var.subnet_size_offset, count.index)
   availability_zone       = data.aws_availability_zones.zones.names[count.index]
   map_public_ip_on_launch = true
 
@@ -91,7 +91,7 @@ resource "aws_subnet" "private" {
   count = var.deploy_private_subnets ? var.target_az_count : 0
 
   vpc_id                  = aws_vpc.this.id
-  cidr_block              = cidrsubnet(var.cidr_block, 8, count.index + var.target_az_count)
+  cidr_block              = cidrsubnet(var.cidr_block, var.subnet_size_offset, count.index + var.target_az_count)
   availability_zone       = data.aws_availability_zones.zones.names[count.index]
   map_public_ip_on_launch = false
 
@@ -153,13 +153,11 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private[count.index].id
 }
 
-
-
 resource "aws_subnet" "protected" {
   count = var.deploy_protected_subnets ? var.target_az_count : 0
 
   vpc_id                  = aws_vpc.this.id
-  cidr_block              = cidrsubnet(var.cidr_block, 8, count.index + var.target_az_count + var.target_az_count)
+  cidr_block              = cidrsubnet(var.cidr_block, var.subnet_size_offset, count.index + var.target_az_count + var.target_az_count)
   availability_zone       = data.aws_availability_zones.zones.names[count.index]
   map_public_ip_on_launch = false
 

@@ -15,6 +15,12 @@ variable "cidr_block" {
   default     = "10.0.0.0/16"
 }
 
+variable "subnet_size_offset" {
+  description = "Define the subnet offset based on the vpc cidr"
+  type        = number
+  default     = 8
+}
+
 variable "enable_dns_support" {
   description = "Set to true to enable DNS support for the VPC"
   type        = bool

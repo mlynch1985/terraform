@@ -13,6 +13,7 @@ Optional Input Variables
 
 - `default_tags` - Provide a map(string) or tags to associate with the ALB resources. Defaults to `{}`.
 - `cidr_block` - Specify the VPC cidr block. Should be between a /16 and a /20 cidr. Defaults to `"10.0.0.0/16"`.
+- `subnet_size_offset` - Define the subnet offset based on vpc cidr. Defaults to `8`.
 - `enable_dns_support` - Set to `true` to enable VPC DNS support. Defaults to `true`.
 - `enable_dns_hostnames` - Set to `true` to enable VPC hostname support. Defaults to `true`.
 - `target_az_count` - Specify the number of availability zones to deploy subnets into. Defaults to `3`.
@@ -29,6 +30,7 @@ module "vpc" {
 
   namespace                = "useast1d"
   cidr_block               = "10.0.0.0/16"
+  subnet_size_offset       = 8
   enable_dns_support       = true
   enable_dns_hostnames     = true
   target_az_count          = 3

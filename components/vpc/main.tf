@@ -25,6 +25,7 @@ module "vpc" {
   namespace                = local.namespace
   default_tags             = local.default_tags
   cidr_block               = var.cidr_block
+  subnet_size_offset       = var.subnet_size_offset
   enable_dns_support       = true
   enable_dns_hostnames     = true
   target_az_count          = 3
