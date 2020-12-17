@@ -1,11 +1,11 @@
 terraform {
-  #   backend "s3" {
-  #     bucket         = "useast1d-tf-state"
-  #     key            = "wordpress-dev"
-  #     region         = "us-east-1"
-  #     encrypt        = "true"
-  #     dynamodb_table = "useast1d-terraform-locks"
-  # }
+  backend "s3" {
+    bucket         = "useast1d-tf-state"
+    key            = "linux-web-dev"
+    region         = "us-east-1"
+    encrypt        = "true"
+    dynamodb_table = "useast1d-terraform-locks"
+  }
 
   required_providers {
     aws = {
