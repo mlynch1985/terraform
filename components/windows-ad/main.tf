@@ -1,11 +1,11 @@
 terraform {
-  #   backend "s3" {
-  #     bucket         = "useast1d-tf-state"
-  #     key            = "wordpress-dev"
-  #     region         = "us-east-1"
-  #     encrypt        = "true"
-  #     dynamodb_table = "useast1d-terraform-locks"
-  # }
+  backend "s3" {
+    bucket         = "useast1d-tf-state"
+    key            = "wordpress-dev"
+    region         = "us-east-1"
+    encrypt        = "true"
+    dynamodb_table = "useast1d-terraform-locks"
+  }
 
   required_providers {
     aws = {
@@ -123,15 +123,27 @@ module "ec2_instance" {
 }
 
 ## Creates public facing Network Load Balancer to allow RDP
-module "nlb" {
-  source = "../../modules/nlb"
+# module "nlb" {
+#   source = "../../modules/nlb"
+
+#   namespace                        = local.namespace
+#   component                        = local.component
+#   default_tags                     = local.default_tags
+#   subnets                          = data.aws_subnet_ids.public.ids
+#   is_internal                      = false
+#   enable_cross_zone_load_balancing = true
+# }
+
+module "elb" {
+  source = "../../modules/elb"
 
   namespace                        = local.namespace
   component                        = local.component
-  default_tags                     = local.default_tags
+  load_balancer_type               = "network"
   subnets                          = data.aws_subnet_ids.public.ids
-  is_internal                      = false
   enable_cross_zone_load_balancing = true
+  internal                         = false
+  default_tags                     = local.default_tags
 }
 
 ## Creates a Target Group listening on TCP 3389 for RDP access
@@ -148,7 +160,7 @@ module "target_group" {
   deregistration_delay  = 60
   enable_stickiness     = true
   healthcheck_path      = ""
-  elb_arn               = module.nlb.nlb.arn
+  elb_arn               = module.elb.elb.arn
   elb_type              = "NLB"
   elb_listener_port     = 3389
   elb_listener_protocol = "TCP"
