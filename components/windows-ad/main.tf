@@ -1,11 +1,7 @@
 terraform {
   backend "s3" {
     bucket         = "useast1d-tf-state"
-<<<<<<< HEAD
-    key            = "wordpress-dev"
-=======
     key            = "windows-ad-dev"
->>>>>>> 8c26604b9ef316b71d949794c6eabae0aa3529d3
     region         = "us-east-1"
     encrypt        = "true"
     dynamodb_table = "useast1d-terraform-locks"
