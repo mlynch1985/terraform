@@ -60,18 +60,6 @@ module "patching" {
   max_errors        = 2
 }
 
-## Creates a public facing Application Load Balancer
-module "alb" {
-  source = "../../modules/alb"
-
-  namespace       = local.namespace
-  component       = local.component
-  default_tags    = local.default_tags
-  is_internal     = false
-  security_groups = [aws_security_group.alb.id]
-  subnets         = data.aws_subnet_ids.public.ids
-}
-
 ## Creates an AutoScalingGroup in the Private Subnet
 module "asg" {
   source = "../../modules/asg"
@@ -116,6 +104,19 @@ module "asg" {
   ]
 }
 
+## Creates a public facing Application Load Balancer
+module "elb" {
+  source = "../../modules/elb"
+
+  namespace          = local.namespace
+  component          = local.component
+  load_balancer_type = "application"
+  subnets            = data.aws_subnet_ids.public.ids
+  security_groups    = [aws_security_group.alb.id]
+  internal           = false
+  default_tags       = local.default_tags
+}
+
 ## Created a Target Group listening on HTTP port 80
 module "target_group" {
   source = "../../modules/target_group"
@@ -130,7 +131,7 @@ module "target_group" {
   deregistration_delay  = 60
   enable_stickiness     = true
   healthcheck_path      = "/"
-  elb_arn               = module.alb.alb.arn
+  elb_arn               = module.elb.elb.arn
   elb_type              = "ALB"
   elb_listener_port     = 80
   elb_listener_protocol = "HTTP"

@@ -40,7 +40,7 @@ module "elb" {
   idle_timeout               = 60
   enable_http2               = true
 
-  is_internal                = false
+  internal                   = false
   enable_deletion_protection = false
 
   default_tags = {

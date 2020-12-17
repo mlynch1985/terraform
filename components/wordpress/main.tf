@@ -66,17 +66,6 @@ module "efs" {
   security_groups  = [aws_security_group.efs.id]
 }
 
-module "alb" {
-  source = "../../modules/alb"
-
-  namespace       = local.namespace
-  component       = local.component
-  default_tags    = local.default_tags
-  is_internal     = false
-  security_groups = [aws_security_group.alb.id]
-  subnets         = data.aws_subnet_ids.public.ids
-}
-
 module "asg" {
   source = "../../modules/asg"
 
@@ -120,6 +109,18 @@ module "asg" {
   ]
 }
 
+module "elb" {
+  source = "../../modules/elb"
+
+  namespace          = local.namespace
+  component          = local.component
+  load_balancer_type = "application"
+  subnets            = data.aws_subnet_ids.public.ids
+  security_groups    = [aws_security_group.alb.id]
+  internal           = false
+  default_tags       = local.default_tags
+}
+
 module "target_group" {
   source = "../../modules/target_group"
 
@@ -132,7 +133,7 @@ module "target_group" {
   vpc_id                = data.aws_vpc.this.id
   deregistration_delay  = 60
   enable_stickiness     = true
-  elb_arn               = module.alb.alb.arn
+  elb_arn               = module.elb.elb.arn
   elb_type              = "ALB"
   elb_listener_port     = 80
   elb_listener_protocol = "HTTP"

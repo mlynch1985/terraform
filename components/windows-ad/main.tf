@@ -123,17 +123,6 @@ module "ec2_instance" {
 }
 
 ## Creates public facing Network Load Balancer to allow RDP
-# module "nlb" {
-#   source = "../../modules/nlb"
-
-#   namespace                        = local.namespace
-#   component                        = local.component
-#   default_tags                     = local.default_tags
-#   subnets                          = data.aws_subnet_ids.public.ids
-#   is_internal                      = false
-#   enable_cross_zone_load_balancing = true
-# }
-
 module "elb" {
   source = "../../modules/elb"
 
