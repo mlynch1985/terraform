@@ -20,7 +20,7 @@ amazon-linux-extras install java-openjdk11 -y
 ## Add the Elastic Search Repository
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
-cat >> /etc/yum.repos.d/elasticsearch.repo <<EOF
+cat >> /etc/yum.repos.d/elasticsearch.repo <<-EOF
 [elasticsearch]
 name=Elasticsearch repository for 7.x packages
 baseurl=https://artifacts.elastic.co/packages/7.x/yum
@@ -74,7 +74,7 @@ systemctl start kibana.service
 /usr/share/logstash/bin/logstash-plugin install logstash-input-cloudwatch
 /usr/share/logstash/bin/logstash-plugin install logstash-codec-cloudwatch_logs
 
-# cat > /etc/logstash/conf.d/windows-eventlogs.conf <<EOF
+# cat > /etc/logstash/conf.d/windows-eventlogs.conf <<-EOF
 # input {
 #   kinesis {
 #     kinesis_stream_name => "${NAMESPACE}_windows_eventlogs"
@@ -100,7 +100,7 @@ systemctl start kibana.service
 # }
 # EOF
 
-cat > /etc/logstash/conf.d/cloudwatch-metrics.conf <<EOF
+cat > /etc/logstash/conf.d/cloudwatch-metrics.conf <<-EOF
 input {
   cloudwatch {
       namespace => "AWS/EC2"

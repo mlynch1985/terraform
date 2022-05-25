@@ -196,7 +196,7 @@ resource "aws_iam_role" "this" {
   name_prefix           = "${var.namespace}_flow_logs_role"
   force_detach_policies = true
 
-  assume_role_policy = <<EOF
+  assume_role_policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -224,7 +224,7 @@ resource "aws_iam_role_policy" "this" {
 
   name   = "GrantCloudwatchLogs"
   role   = aws_iam_role.this[0].id
-  policy = <<EOF
+  policy = <<-EOF
 {
   "Version": "2012-10-17",
   "Statement": [

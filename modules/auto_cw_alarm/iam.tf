@@ -3,7 +3,7 @@ resource "aws_iam_role" "this" {
   force_detach_policies = true
   path                  = "/"
 
-  assume_role_policy = <<EOF
+  assume_role_policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -30,7 +30,7 @@ resource "aws_iam_role_policy" "cloudwatch_logs" {
   name = "GrantCloudwatchLogs"
   role = aws_iam_role.this.id
 
-  policy = <<EOF
+  policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -52,7 +52,7 @@ resource "aws_iam_role_policy" "cloudwatch_alarms" {
   name = "GrantCloudwatchAlarms"
   role = aws_iam_role.this.id
 
-  policy = <<EOF
+  policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [

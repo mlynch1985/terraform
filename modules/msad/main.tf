@@ -88,7 +88,7 @@ resource "aws_secretsmanager_secret" "this" {
 
 resource "aws_secretsmanager_secret_version" "this" {
   secret_id     = aws_secretsmanager_secret.this.id
-  secret_string = <<EOF
+  secret_string = <<-EOF
 {
   "root_password": "${random_password.password.result}",
   "directory_id": "${aws_directory_service_directory.this.id},

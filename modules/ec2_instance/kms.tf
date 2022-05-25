@@ -34,7 +34,7 @@ resource "aws_iam_role_policy" "this" {
   name = "GrantKMS"
   role = data.aws_iam_instance_profile.this.role_name
 
-  policy = <<EOF
+  policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [

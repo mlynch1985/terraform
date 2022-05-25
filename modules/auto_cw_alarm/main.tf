@@ -39,7 +39,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   name_prefix = "${var.namespace}_${var.component}_cw_alarms_"
   description = "Triggers CloudWatch Alarm Lambda function for EC2 AutoScaling Launch/Terminate events."
 
-  event_pattern = <<EOF
+  event_pattern = <<-EOF
 {
   "source": ["aws.autoscaling"],
   "detail-type": ["EC2 Instance Launch Successful", "EC2 Instance Terminate Successful"],
@@ -99,7 +99,7 @@ resource "aws_cloudwatch_event_target" "lambda" {
       detail_type             = "$.detail-type",
       auto_scaling_group_name = "$.detail.AutoScalingGroupName"
     }
-    input_template = <<EOF
+    input_template = <<-EOF
 {
     "instance_id": <instance_id>,
     "detail_type": <detail_type>,
@@ -119,7 +119,7 @@ resource "aws_cloudwatch_event_target" "sns" {
       detail_type             = "$.detail-type",
       auto_scaling_group_name = "$.detail.AutoScalingGroupName"
     }
-    input_template = <<EOF
+    input_template = <<-EOF
 {
     "instance_id": <instance_id>,
     "detail_type": <detail_type>,

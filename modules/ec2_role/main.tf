@@ -5,7 +5,7 @@ resource "aws_iam_role" "this" {
   description           = var.description
   max_session_duration  = var.max_session_duration
 
-  assume_role_policy = <<EOF
+  assume_role_policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -37,7 +37,7 @@ resource "aws_iam_role_policy" "s3" {
   name = "GrantS3"
   role = aws_iam_role.this.id
 
-  policy = <<EOF
+  policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -58,7 +58,7 @@ resource "aws_iam_role_policy" "parameter_store" {
   name = "GrantParameterStore"
   role = aws_iam_role.this.id
 
-  policy = <<EOF
+  policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -81,7 +81,7 @@ resource "aws_iam_role_policy" "secrets_manager" {
   name = "GrantSecretsManager"
   role = aws_iam_role.this.id
 
-  policy = <<EOF
+  policy = <<-EOF
 {
     "Version": "2012-10-17",
     "Statement": [
