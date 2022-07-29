@@ -36,8 +36,7 @@ data "aws_ami" "amazonlinux2" {
 }
 
 module "asg" {
-  # source = "git::https://gitlab.aws.dev/awsml/tf-modules.git//asg"
-  source = "../tf-modules/asg/"
+  source = "../custom-modules-examples/asg/"
 
   image_id               = data.aws_ami.amazonlinux2.id
   instance_type          = "c5.xlarge"
@@ -74,16 +73,14 @@ module "asg" {
 }
 
 module "iam_role" {
-  # source = "git::https://gitlab.aws.dev/awsml/tf-modules.git//iam_role"
-  source = "../tf-modules/iam_role/"
+  source = "../custom-modules-examples/iam_role/"
 
   service   = "ec2"
   role_name = "use1_dev_ec2_servers"
 }
 
 module "ipam" {
-  # source = "git::https://gitlab.aws.dev/awsml/tf-modules.git//ipam"
-  source = "../tf-modules/ipam/"
+  source = "../custom-modules-examples/ipam/"
 
   region                            = var.region
   namespace                         = var.namespace
@@ -95,8 +92,7 @@ module "ipam" {
 }
 
 module "kms_key_asg" {
-  # source = "git::https://gitlab.aws.dev/awsml/tf-modules.git//kms_key"
-  source = "../tf-modules/kms_key/"
+  source = "../custom-modules-examples/kms_key/"
 
   key_name            = "${var.namespace}/${var.environment}/asg"
   iam_roles           = [module.iam_role.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"]
@@ -104,8 +100,7 @@ module "kms_key_asg" {
 }
 
 module "kms_key_s3_bucket" {
-  # source = "git::https://gitlab.aws.dev/awsml/tf-modules.git//kms_key"
-  source = "../tf-modules/kms_key/"
+  source = "../custom-modules-examples/kms_key/"
 
   key_name            = "${var.namespace}/${var.environment}/s3_bucket"
   iam_roles           = [module.iam_role.arn]
@@ -113,8 +108,7 @@ module "kms_key_s3_bucket" {
 }
 
 module "s3_bucket" {
-  # source = "git::https://gitlab.aws.dev/awsml/tf-modules.git//s3_bucket"
-  source = "../tf-modules/s3_bucket/"
+  source = "../custom-modules-examples/s3_bucket/"
 
   bucket_name = "${var.namespace}-${var.environment}-app1"
   key_arn     = module.kms_key_s3_bucket.arn
@@ -122,8 +116,7 @@ module "s3_bucket" {
 }
 
 module "vpc" {
-  # source = "git::https://gitlab.aws.dev/awsml/tf-modules.git//vpc"
-  source = "../tf-modules/vpc/"
+  source = "../custom-modules-examples/vpc/"
 
   namespace            = "use1"
   environment          = "dev"

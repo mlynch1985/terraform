@@ -2,7 +2,7 @@
 
 ## Description
 
-This repository contains a Terraform stack that will provision a shared S3 bucket, a CodeCommit repository and CodePipeline pipeline within a targeted AWS account. The CodeCommit repository will be used to develop and track custom Terraform modules. When pushing or merging to the `main` branch of the CodePipeline pipeline, it will pull the source code from the CodeCommit repository, execute scans and linting tools, and then publish it into our S3 bucket. Teams will then be able to deploy their AWS infrastructure referencing this published library of custom TF modules.
+This Terraform stack will provision an S3 bucket, CodeCommit repository and CodePipeline pipeline. The CodeCommit repo can be used to develop custom modules. When merging to the `main` branch, CodePipeline will pull the source code from the CodeCommit repo, execute scans and linting tools, and then publish it into our S3 bucket.
 
 ----
 
@@ -26,7 +26,7 @@ This repository contains a Terraform stack that will provision a shared S3 bucke
 ## Pipeline Usage
 
 - Log in to the AWS Console, visit the CodeCommit Console and search for the newly create repository
-- Capture the Checkout path to your clipboard and return to your text editory or cli tool
+- Capture the Checkout path to your clipboard and return to your text editor or command-line tool
 - Perform a `git checkout {clone url}` and begin creating your custom Terraform Modules
 - To publish your new modules to the S3 bucket, push/merge to the `main` branch
 

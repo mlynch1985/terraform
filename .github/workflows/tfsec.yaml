@@ -22,5 +22,3 @@ jobs:
 
       - name: Execute TF Sec
         uses: aquasecurity/tfsec-action@v1.0.0
-        with:
-          sort-severity: true

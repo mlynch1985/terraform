@@ -19,7 +19,7 @@ Optional Input Variables
 - `target_group_protocol` - Specify either `"HTTP"` or `"HTTPS"`. Defaults to `"HTTP"`.
 - `deregistration_delay` - Set to a nunmber in seconds for how long the elb should drain connections before removing it from the elb. Defaults to `300`.
 - `enable_stickiness` - Set to `true` to enable sticky sessions. Defaults to `false`.
-- `healthcheck_path` - Provide the url path to perform a healthcheck. Defaults to `"/"`.
+- `healthcheck_path` - Provide the URL path to perform a healthcheck. Defaults to `"/"`.
 - `elb_arn` - Provide the ARN to the ELB to associate with.
 - `elb_listener_port` - Define the port number the elb should listen on. Defaults to `80`.
 - `elb_listener_protocol` - Define the protocol the elb should listen on. Defaults to `"HTTP"`.

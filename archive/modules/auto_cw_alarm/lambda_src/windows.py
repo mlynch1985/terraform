@@ -9,7 +9,7 @@ class alarms:
                 "{}_{}_{}_low_disk_space".format(namespace, component, instance_id),
                 "{}_{}_{}_high_disk_read".format(namespace, component, instance_id),
                 "{}_{}_{}_high_disk_write".format(namespace, component, instance_id),
-                "{}_{}_{}_high_memory".format(namespace, component, instance_id)
+                "{}_{}_{}_high_memory".format(namespace, component, instance_id),
             ]
         )
 
@@ -23,26 +23,25 @@ class alarms:
             Statistic="Average",
             ComparisonOperator="GreaterThanOrEqualToThreshold",
             Period=60,
-            Unit='Percent',
+            Unit="Percent",
             EvaluationPeriods=5,
             Threshold=80,
-            Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                }
-            ],
+            Dimensions=[{"Name": "InstanceId", "Value": instance_id}],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_cpu".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_high_cpu".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )
 
         # Low_Disk_Space
         cloudwatch.put_metric_alarm(
-            AlarmName="{}_{}_{}_low_disk_space".format(namespace, component, instance_id),
+            AlarmName="{}_{}_{}_low_disk_space".format(
+                namespace, component, instance_id
+            ),
             AlarmDescription="This metric alarm tracks disk free space below 20% over 5 minutes",
             MetricName="LogicalDisk % Free Space",
             Namespace="{}_{}".format(namespace, component),
@@ -52,34 +51,26 @@ class alarms:
             EvaluationPeriods=5,
             Threshold=20,
             Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                },
-                {
-                    "Name": "AutoScalingGroupName",
-                    "Value": asg_name
-                },
-                {
-                    "Name": "instance",
-                    "Value": "C:"
-                },
-                {
-                    "Name": "objectname",
-                    "Value": "LogicalDisk"
-                }
+                {"Name": "InstanceId", "Value": instance_id},
+                {"Name": "AutoScalingGroupName", "Value": asg_name},
+                {"Name": "instance", "Value": "C:"},
+                {"Name": "objectname", "Value": "LogicalDisk"},
             ],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_low_disk_space".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_low_disk_space".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )
 
         # High_Disk_Read_Time
         cloudwatch.put_metric_alarm(
-            AlarmName="{}_{}_{}_high_disk_read".format(namespace, component, instance_id),
+            AlarmName="{}_{}_{}_high_disk_read".format(
+                namespace, component, instance_id
+            ),
             AlarmDescription="This metric alarm tracks disk read time above 80% over 5 minutes",
             MetricName="LogicalDisk % Disk Read Time",
             Namespace="{}_{}".format(namespace, component),
@@ -89,34 +80,26 @@ class alarms:
             EvaluationPeriods=5,
             Threshold=80,
             Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                },
-                {
-                    "Name": "AutoScalingGroupName",
-                    "Value": asg_name
-                },
-                {
-                    "Name": "instance",
-                    "Value": "C:"
-                },
-                {
-                    "Name": "objectname",
-                    "Value": "LogicalDisk"
-                }
+                {"Name": "InstanceId", "Value": instance_id},
+                {"Name": "AutoScalingGroupName", "Value": asg_name},
+                {"Name": "instance", "Value": "C:"},
+                {"Name": "objectname", "Value": "LogicalDisk"},
             ],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_disk_read".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_high_disk_read".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )
 
         # High_Disk_Write_Time
         cloudwatch.put_metric_alarm(
-            AlarmName="{}_{}_{}_high_disk_write".format(namespace, component, instance_id),
+            AlarmName="{}_{}_{}_high_disk_write".format(
+                namespace, component, instance_id
+            ),
             AlarmDescription="This metric alarm tracks disk write time above 80% over 5 minutes",
             MetricName="LogicalDisk % Disk Write Time",
             Namespace="{}_{}".format(namespace, component),
@@ -126,29 +109,19 @@ class alarms:
             EvaluationPeriods=5,
             Threshold=80,
             Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                },
-                {
-                    "Name": "AutoScalingGroupName",
-                    "Value": asg_name
-                },
-                {
-                    "Name": "instance",
-                    "Value": "C:"
-                },
-                {
-                    "Name": "objectname",
-                    "Value": "LogicalDisk"
-                }
+                {"Name": "InstanceId", "Value": instance_id},
+                {"Name": "AutoScalingGroupName", "Value": asg_name},
+                {"Name": "instance", "Value": "C:"},
+                {"Name": "objectname", "Value": "LogicalDisk"},
             ],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_disk_write".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_high_disk_write".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )
 
         # High_Memory
@@ -163,23 +136,16 @@ class alarms:
             EvaluationPeriods=5,
             Threshold=500,
             Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                },
-                {
-                    "Name": "AutoScalingGroupName",
-                    "Value": asg_name
-                },
-                {
-                    "Name": "objectname",
-                    "Value": "Memory"
-                }
+                {"Name": "InstanceId", "Value": instance_id},
+                {"Name": "AutoScalingGroupName", "Value": asg_name},
+                {"Name": "objectname", "Value": "Memory"},
             ],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_memory".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_high_memory".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )

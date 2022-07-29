@@ -39,8 +39,8 @@ Outputs
 ----------------------
 
 - `arn` - The ARN of the IPAM
-- `id` - The id of the IPAM
-- `cidr` - The cidr range of the IPAM
+- `id` - The ID of the IPAM
+- `cidr` - The CIDR range of the IPAM
 
 Authors
 ----------------------

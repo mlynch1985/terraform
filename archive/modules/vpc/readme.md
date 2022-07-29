@@ -1,7 +1,7 @@
 AWS VPC Module
 ===========
 
-A Terraform module that will deploy an AWS VPC, with an Internet Gateway and a public subnet per availability zone.
+A Terraform module that will deploy an AWS VPC, with an internet gateway and a public subnet per availability zone.
 
 Required Input Variables
 ----------------------

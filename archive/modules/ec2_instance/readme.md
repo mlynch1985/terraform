@@ -11,7 +11,7 @@ Required Input Variables
 - `image_id` - Specify the AMI ID of the image to be used for each EC2 instance.
 - `instance_type` - Specify the EC2 instance size.
 - `security_groups` - Provide a list of security group IDs to attach to this instance.
-- `subnet_id` - Provide a subnet id to deploy EC2 instances into.
+- `subnet_id` - Provide a subnet ID to deploy EC2 instances into.
 
 Optional Input Variables
 ----------------------

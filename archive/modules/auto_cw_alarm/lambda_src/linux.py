@@ -8,7 +8,7 @@ class alarms:
                 "{}_{}_{}_high_cpu".format(namespace, component, instance_id),
                 "{}_{}_{}_low_disk_space".format(namespace, component, instance_id),
                 "{}_{}_{}_high_disk_io".format(namespace, component, instance_id),
-                "{}_{}_{}_high_memory".format(namespace, component, instance_id)
+                "{}_{}_{}_high_memory".format(namespace, component, instance_id),
             ]
         )
 
@@ -22,26 +22,25 @@ class alarms:
             Statistic="Average",
             ComparisonOperator="GreaterThanOrEqualToThreshold",
             Period=60,
-            Unit='Percent',
+            Unit="Percent",
             EvaluationPeriods=5,
             Threshold=80,
-            Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                }
-            ],
+            Dimensions=[{"Name": "InstanceId", "Value": instance_id}],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_cpu".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_high_cpu".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )
 
         # Low_Disk_Space
         cloudwatch.put_metric_alarm(
-            AlarmName="{}_{}_{}_low_disk_space".format(namespace, component, instance_id),
+            AlarmName="{}_{}_{}_low_disk_space".format(
+                namespace, component, instance_id
+            ),
             AlarmDescription="This metric alarm tracks disk usage above 80% over 5 minutes",
             MetricName="disk_used_percent",
             Namespace="{}_{}".format(namespace, component),
@@ -51,33 +50,20 @@ class alarms:
             EvaluationPeriods=5,
             Threshold=80,
             Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                },
-                {
-                    "Name": "AutoScalingGroupName",
-                    "Value": asg_name
-                },
-                {
-                    "Name": "device",
-                    "Value": "nvme0n1p1"
-                },
-                {
-                    "Name": "fstype",
-                    "Value": "xfs"
-                },
-                {
-                    "Name": "path",
-                    "Value": "/"
-                }
+                {"Name": "InstanceId", "Value": instance_id},
+                {"Name": "AutoScalingGroupName", "Value": asg_name},
+                {"Name": "device", "Value": "nvme0n1p1"},
+                {"Name": "fstype", "Value": "xfs"},
+                {"Name": "path", "Value": "/"},
             ],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_low_disk_space".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_low_disk_space".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )
 
         # High_Disk_IO
@@ -92,25 +78,18 @@ class alarms:
             EvaluationPeriods=5,
             Threshold=1000,
             Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                },
-                {
-                    "Name": "AutoScalingGroupName",
-                    "Value": asg_name
-                },
-                {
-                    "Name": "name",
-                    "Value": "nvme0n1"
-                }
+                {"Name": "InstanceId", "Value": instance_id},
+                {"Name": "AutoScalingGroupName", "Value": asg_name},
+                {"Name": "name", "Value": "nvme0n1"},
             ],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_disk_io".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_high_disk_io".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )
 
         # High_Memory
@@ -125,19 +104,15 @@ class alarms:
             EvaluationPeriods=5,
             Threshold=80,
             Dimensions=[
-                {
-                    "Name": "InstanceId",
-                    "Value": instance_id
-                },
-                {
-                    "Name": "AutoScalingGroupName",
-                    "Value": asg_name
-                }
+                {"Name": "InstanceId", "Value": instance_id},
+                {"Name": "AutoScalingGroupName", "Value": asg_name},
             ],
             Tags=[
                 {
                     "Key": "Name",
-                    "Value": "{}_{}_{}_high_memory".format(namespace, component, instance_id)
+                    "Value": "{}_{}_{}_high_memory".format(
+                        namespace, component, instance_id
+                    ),
                 }
-            ]
+            ],
         )
