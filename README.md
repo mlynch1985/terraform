@@ -2,6 +2,7 @@
 
 [![SuperLinter](https://github.com/mlynch1985/terraform/actions/workflows/superlinter.yaml/badge.svg?branch=main)](https://github.com/mlynch1985/terraform/actions/workflows/superlinter.yaml)
 [![Checkov](https://github.com/mlynch1985/terraform/actions/workflows/checkov.yaml/badge.svg?branch=main)](https://github.com/mlynch1985/terraform/actions/workflows/checkov.yaml)
+[![TfSec](https://github.com/mlynch1985/terraform/actions/workflows/tfsec.yaml/badge.svg?branch=main)](https://github.com/mlynch1985/terraform/actions/workflows/tfsec.yaml)
 
 ## Description
 
