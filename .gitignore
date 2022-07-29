@@ -12,10 +12,17 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.lnk
-.terraform/
-.terraform.tfstate.lock.info
-.terraform.lock.hcl
-terraform.tfstate
-terraform.tfstate.backup
+**/.terraform/*
 *.tfstate
-lambda.zip
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+## These should be uncommented in real environemnts to ensure no confidential data is leaked
+# *.tfvars
+# *.tfvars.json

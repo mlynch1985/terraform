@@ -1,0 +1,41 @@
+name: SuperLinter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run Super-Linter
+        uses: github/super-linter/slim@v4
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_JSCPD: false
+          VALIDATE_YAML: false
+          FILTER_REGEX_INCLUDE: .*example-stacks/.*
+
+      - name: Run Super-Linter Jenkins
+        uses: github/super-linter/slim@v4
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_JSCPD: false
+          VALIDATE_YAML: false
+          FILTER_REGEX_INCLUDE: .*jenkins/infrastructure/.*
