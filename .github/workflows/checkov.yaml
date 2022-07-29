@@ -26,13 +26,5 @@ jobs:
       - name: Execute Checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: example-stacks/
           quiet: true
-          framework: cloudformation
-
-      - name: Execute Checkov Jenkins
-        uses: bridgecrewio/checkov-action@master
-        with:
-          directory: jenkins/infrastructure
-          quiet: true
-          framework: cloudformation
+          # framework: cloudformation
