@@ -27,4 +27,4 @@ jobs:
         uses: bridgecrewio/checkov-action@master
         with:
           quiet: true
-          # framework: cloudformation
+          skip_path: archive/
