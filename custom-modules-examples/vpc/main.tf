@@ -1,3 +1,7 @@
+locals {
+  az_index = ["a", "b", "c", "d", "e", "f"]
+}
+
 resource "aws_vpc" "vpc" {
   cidr_block           = var.cidr_block
   enable_dns_hostnames = var.enable_dns_hostnames
@@ -22,7 +26,8 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_igw"
+    "Name" = "${var.namespace}_${var.environment}_igw",
+    "tier" = "public"
   }
 }
 
@@ -36,7 +41,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_public_${count.index}",
+    "Name" = "${var.namespace}_${var.environment}_public_${local.az_index[count.index]}",
     "tier" = "public"
   }
 }
@@ -47,7 +52,8 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_public"
+    "Name" = "${var.namespace}_${var.environment}_public",
+    "tier" = "public"
   }
 }
 
@@ -75,7 +81,7 @@ resource "aws_subnet" "private" {
   map_public_ip_on_launch = false
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_private_${count.index}",
+    "Name" = "${var.namespace}_${var.environment}_private_${local.az_index[count.index]}",
     "tier" = "private"
   }
 }
@@ -85,7 +91,8 @@ resource "aws_eip" "private" {
   count = var.vpc_type == "hub" ? var.target_az_count : 0 // Create EIPs for our NAT GWs only if this is a HUB VPC
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_${count.index}"
+    "Name" = "${var.namespace}_${var.environment}_${count.index}",
+    "tier" = "private"
   }
 }
 
@@ -96,7 +103,8 @@ resource "aws_nat_gateway" "private" {
   subnet_id     = aws_subnet.public[count.index].id
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_${count.index}"
+    "Name" = "${var.namespace}_${var.environment}_${count.index}",
+    "tier" = "private"
   }
 }
 
@@ -106,7 +114,8 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_private_${count.index}"
+    "Name" = "${var.namespace}_${var.environment}_private_${count.index}",
+    "tier" = "private"
   }
 }
 
