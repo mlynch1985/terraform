@@ -2,7 +2,7 @@
 
 ## Description
 
-This Terraform stack will provision an S3 bucket, CodeCommit repository and CodePipeline pipeline. The CodeCommit repo can be used to develop custom modules. When merging to the `main` branch, CodePipeline will pull the source code from the CodeCommit repo, execute scans and linting tools, and then publish it into our S3 bucket.
+This Terraform stack will provision an S3 bucket, CodeCommit repository and CodePipeline pipeline. The CodeCommit repository can be used to develop custom modules. When merging to the `main` branch, CodePipeline will pull the source code from the CodeCommit repository, execute scans and linting tools, and then publish it into our S3 bucket.
 
 ----
 

@@ -1,3 +1,4 @@
+---
 name: Checkov
 
 on:
@@ -27,4 +28,3 @@ jobs:
         uses: bridgecrewio/checkov-action@master
         with:
           quiet: true
-          skip_path: archive/
