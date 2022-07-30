@@ -28,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IGNORE_GITIGNORED_FILES: true
           FILTER_REGEX_EXCLUDE: .*archive/*
-          LOG_LEVEL: WARN
+          LOG_LEVEL: NOTICE
           VALIDATE_TERRAFORM_TERRASCAN: false
           VALIDATE_TERRAFORM_TFLINT: false
           # VALIDATE_SHELL_SHFMT: false
