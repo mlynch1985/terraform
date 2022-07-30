@@ -1,8 +1,16 @@
 terraform {
+  cloud {
+    organization = "lynchbros"
+
+    workspaces {
+      name = "test-stack"
+    }
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.15"
+      version = ">= 4.15"
     }
   }
 }
@@ -36,7 +44,7 @@ data "aws_ami" "amazonlinux2" {
 }
 
 module "asg" {
-  source = "../custom-modules-examples/asg/"
+  source = "github.com/mlynch1985/terraform/custom-modules-examples/asg/"
 
   image_id               = data.aws_ami.amazonlinux2.id
   instance_type          = "c5.xlarge"
@@ -73,14 +81,14 @@ module "asg" {
 }
 
 module "iam_role" {
-  source = "../custom-modules-examples/iam_role/"
+  source = "github.com/mlynch1985/terraform/custom-modules-examples/iam_role/"
 
   service   = "ec2"
   role_name = "use1_dev_ec2_servers"
 }
 
 module "ipam" {
-  source = "../custom-modules-examples/ipam/"
+  source = "github.com/mlynch1985/terraform/custom-modules-examples/ipam/"
 
   region                            = var.region
   namespace                         = var.namespace
@@ -92,7 +100,7 @@ module "ipam" {
 }
 
 module "kms_key_asg" {
-  source = "../custom-modules-examples/kms_key/"
+  source = "github.com/mlynch1985/terraform/custom-modules-examples/kms_key/"
 
   key_name            = "${var.namespace}/${var.environment}/asg"
   iam_roles           = [module.iam_role.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"]
@@ -100,7 +108,7 @@ module "kms_key_asg" {
 }
 
 module "kms_key_s3_bucket" {
-  source = "../custom-modules-examples/kms_key/"
+  source = "github.com/mlynch1985/terraform/custom-modules-examples/kms_key/"
 
   key_name            = "${var.namespace}/${var.environment}/s3_bucket"
   iam_roles           = [module.iam_role.arn]
@@ -108,7 +116,7 @@ module "kms_key_s3_bucket" {
 }
 
 module "s3_bucket" {
-  source = "../custom-modules-examples/s3_bucket/"
+  source = "github.com/mlynch1985/terraform/custom-modules-examples/s3_bucket/"
 
   bucket_name = "${var.namespace}-${var.environment}-app1"
   key_arn     = module.kms_key_s3_bucket.arn
@@ -116,7 +124,7 @@ module "s3_bucket" {
 }
 
 module "vpc" {
-  source = "../custom-modules-examples/vpc/"
+  source = "github.com/mlynch1985/terraform/custom-modules-examples/vpc/"
 
   namespace            = "use1"
   environment          = "dev"
@@ -126,6 +134,6 @@ module "vpc" {
   enable_flow_logs     = true
   subnet_size_offset   = 8
   target_az_count      = 3
-  tgw_id               = "tgw-06af5ff7e0ece9f3e"
-  vpc_type             = "spoke"
+  tgw_id               = ""
+  vpc_type             = "hub"
 }

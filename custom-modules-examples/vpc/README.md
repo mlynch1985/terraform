@@ -19,7 +19,7 @@ Optional Input Variables
 - `subnet_size_offset` - Define the subnet offset based on vpc cidr. Defaults to `8`.
 - `target_az_count` - Specify the number of availability zones to deploy subnets into. Defaults to `3`.
 - `tgw_id` - If creating a `hub` VPC then you must specify an existing Transit Gateway ID. Defult to `""`.
-- `vpc_type` - Set to `hub` or `spoke` to determine if we should create Public Tier or connect to existing TGW
+- `vpc_type` - Set to `hub` or `spoke` to determine if we should create Public Tier or connect to existing TGW. Defaults to `hub`
 
 Usage
 -----
@@ -37,7 +37,7 @@ module "vpc" {
   subnet_size_offset   = 8
   target_az_count      = 3
   tgw_id               = ""
-  vpc_type             = "spoke"
+  vpc_type             = "hub"
 
 }
 ```

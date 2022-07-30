@@ -81,9 +81,9 @@ variable "tgw_id" {
 }
 
 variable "vpc_type" {
-  description = "Set to \"hub\" or \"spoke\" to determine if we should create Public Tier or connect to existing TGW"
+  description = "Set to \"hub\" or \"spoke\" to determine if we should create Public Tier or connect to existing TGW. Defaults to \"hub\""
   type        = string
-  default     = "spoke"
+  default     = "hub"
 
   validation {
     condition     = contains(["spoke", "hub"], var.vpc_type)
