@@ -26,8 +26,7 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IGNORE_GITIGNORED_FILES: true
-          FILTER_REGEX_EXCLUDE: .archive/*
-          FILTER_REGEX_EXCLUDE: .*/*
+          FILTER_REGEX_EXCLUDE: .*archive/*
           VALIDATE_TERRAFORM_TERRASCAN: false
           VALIDATE_TERRAFORM_TFLINT: false
           # VALIDATE_SHELL_SHFMT: false
