@@ -55,7 +55,7 @@ module "asg" {
       device_name: "/dev/xvda"
       volume_type: "gp3"
       volume_size: "50"
-      iops: "3000""
+      iops: "3000"
       delete_on_termination: true
     },
     {
