@@ -11,6 +11,7 @@ Below are customized Terraform modules that can be published and consumed across
 - [IPAM](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/ipam)
 - [KMS Key](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/kms_key)
 - [S3 Bucket](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/s3_bucket)
+- [Security Group](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/security_group)
 - [VPC](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/vpc)
 
 ---
