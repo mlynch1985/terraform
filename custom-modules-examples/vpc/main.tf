@@ -93,7 +93,7 @@ resource "aws_eip" "private" {
   count = var.vpc_type == "hub" ? var.target_az_count : 0 // Create EIPs for our NAT GWs only if this is a HUB VPC
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_${count.index}",
+    "Name" = "${var.namespace}_${var.environment}_${local.az_index[count.index]}",
     "tier" = "private"
   }
 }
@@ -105,7 +105,7 @@ resource "aws_nat_gateway" "private" {
   subnet_id     = aws_subnet.public[count.index].id
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_${count.index}",
+    "Name" = "${var.namespace}_${var.environment}_${local.az_index[count.index]}",
     "tier" = "private"
   }
 }
@@ -116,7 +116,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_private_${count.index}",
+    "Name" = "${var.namespace}_${var.environment}_private_${local.az_index[count.index]}",
     "tier" = "private"
   }
 }

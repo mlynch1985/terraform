@@ -65,7 +65,7 @@ module "vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
-  enable_flow_logs     = false
+  enable_flow_logs     = true
   subnet_size_offset   = 8
   target_az_count      = 3
   tgw_id               = ""
