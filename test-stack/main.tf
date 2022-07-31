@@ -67,7 +67,7 @@ module "vpc" {
   enable_dns_support   = true
   enable_flow_logs     = true
   ipam_pool_id         = module.ipam.pool_id
-  ipam_pool_netmask    = "20"
+  ipam_pool_netmask    = 20
   subnet_size_offset   = 4
   target_az_count      = 3
   tgw_id               = ""
