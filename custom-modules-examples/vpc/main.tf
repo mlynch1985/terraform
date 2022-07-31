@@ -142,19 +142,6 @@ resource "aws_route_table_association" "private" {
   route_table_id = var.vpc_type == "hub" ? aws_route_table.private[count.index].id : aws_route_table.private[0].id // Connect each Private subnet to our Private Route Tables
 }
 
-#tfsec:ignore:aws-cloudwatch-log-group-customer-key
-resource "aws_cloudwatch_log_group" "log_group" {
-  #checkov:skip=CKV_AWS_158:We do not want to enable KMS CMK for this log group as part of the demo
-  count = var.enable_flow_logs ? 1 : 0 // Create CW Log Group only if VPC Flow Logs have been enabled
-
-  name              = "/${var.namespace}/${var.environment}/vpc/flow_logs"
-  retention_in_days = 30
-
-  tags = {
-    "Name" = "/${var.namespace}/${var.environment}/vpc/flow_logs"
-  }
-}
-
 resource "aws_ec2_transit_gateway_vpc_attachment" "tgw_attachment" {
   count = var.vpc_type != "hub" && var.tgw_id != "" ? 1 : 0 // Only create a VPC to TGW Attachment if this is a Spoke VPC and a tgw_id has been provided
 
@@ -162,6 +149,19 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "tgw_attachment" {
   transit_gateway_id = var.tgw_id
   vpc_id             = aws_vpc.vpc.id
 }
+
+# #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+# resource "aws_cloudwatch_log_group" "log_group" {
+#   #checkov:skip=CKV_AWS_158:We do not want to enable KMS CMK for this log group as part of the demo
+#   count = var.enable_flow_logs ? 1 : 0 // Create CW Log Group only if VPC Flow Logs have been enabled
+
+#   name              = "/${var.namespace}/${var.environment}/vpc/flow_logs"
+#   retention_in_days = 30
+
+#   tags = {
+#     "Name" = "/${var.namespace}/${var.environment}/vpc/flow_logs"
+#   }
+# }
 
 data "aws_iam_policy_document" "assume_role_policy_document" {
   count = var.enable_flow_logs ? 1 : 0 // Create Trust Policy only if VPC Flow Logs have been enabled
@@ -213,15 +213,19 @@ resource "aws_iam_role_policy" "iam_role_policy" {
   })
 }
 
-resource "aws_flow_log" "flow_log" {
-  count = var.enable_flow_logs ? 1 : 0
+# resource "aws_flow_log" "flow_log" {
+#   count = var.enable_flow_logs ? 1 : 0
 
-  traffic_type    = "ALL"
-  iam_role_arn    = aws_iam_role.iam_role[0].arn
-  log_destination = aws_cloudwatch_log_group.log_group[0].arn
-  vpc_id          = aws_vpc.vpc.id
+#   traffic_type    = "ALL"
+#   iam_role_arn    = aws_iam_role.iam_role[0].arn
+#   log_destination = aws_cloudwatch_log_group.log_group[0].arn
+#   vpc_id          = aws_vpc.vpc.id
 
-  tags = {
-    "Name" = "/${var.namespace}/${var.environment}/vpc/flow_logs"
-  }
-}
+#   tags = {
+#     "Name" = "/${var.namespace}/${var.environment}/vpc/flow_logs"
+#   }
+
+#   depends_on = [
+#     aws_cloudwatch_log_group.log_group
+#   ]
+# }
