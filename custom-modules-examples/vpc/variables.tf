@@ -46,7 +46,7 @@ variable "cidr_block" {
   default     = ""
 
   validation {
-    condition     = can(regex("^(10|172|192)(.[0-9]{1,3}){3}/(1[6-9]|2[0-4])$", var.cidr_block))
+    condition     = can(regex("^$|^(10|172|192)(.[0-9]{1,3}){3}/(1[6-9]|2[0-4])$", var.cidr_block))
     error_message = "Please specify a valid VPC CIDR between /16 and /24"
   }
 }
