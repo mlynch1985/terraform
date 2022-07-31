@@ -28,6 +28,14 @@ This module creates a Launch Template and an Auto Scaling Group.
 
 ---
 
+## Output Variables
+
+- `id` - The AutoScalingGroup [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#id)
+- `arn` - The AutoScalingGroup [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#arn)
+- `name` - The AutoScalingGroup [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#name)
+
+---
+
 ## Usage
 
 ```hcl
@@ -82,14 +90,6 @@ module "asg" {
   # user_data = filebase64("userdata.sh")
 }
 ```
-
----
-
-## Outputs
-
-- `id` - The AutoScalingGroup [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#id)
-- `arn` - The AutoScalingGroup [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#arn)
-- `name` - The AutoScalingGroup [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#name)
 
 ---
 

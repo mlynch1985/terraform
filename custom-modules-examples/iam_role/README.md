@@ -18,6 +18,15 @@ This module creates an IAM Role and an IAM Instance Profile.
 
 ---
 
+## Output Variables
+
+- `id` - The IAM Role [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#id)
+- `arn` - The IAM Role [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#arn)
+- `name` - The IAM Role [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#name)
+- `profile` - The IAM Instance Profile [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile#name)
+
+---
+
 ## Usage
 
 ```hcl
@@ -50,15 +59,6 @@ module "iam_role" {
 EOF
 }
 ```
-
----
-
-## Outputs
-
-- `id` - The IAM Role [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#id)
-- `arn` - The IAM Role [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#arn)
-- `name` - The IAM Role [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#name)
-- `profile` - The IAM Instance Profile [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile#name)
 
 ---
 
