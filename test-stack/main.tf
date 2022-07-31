@@ -154,14 +154,14 @@ module "asg" {
   kms_key_arn            = module.kms_key_asg.arn
   subnets                = module.vpc.private_subnets[*].id
 
-  user_data = base64encode(<<-EOF
-#!/bin/bash
-yum upgrade -y
-yum install -y httpd
-echo "Hello World from $(hostname -f)" > /var/www/html/index.html
-service httpd start
-chkconfig httpd on
-EOF
+  user_data = base64encode(<<EOF
+    #!/bin/bash
+    yum upgrade -y
+    yum install -y httpd
+    echo "Hello World from $(hostname -f)" > /var/www/html/index.html
+    service httpd start
+    chkconfig httpd on
+    EOF
   )
 
   iam_instance_profile     = module.iam_role.profile

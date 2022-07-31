@@ -31,5 +31,3 @@ jobs:
           LOG_LEVEL: NOTICE
           VALIDATE_TERRAFORM_TERRASCAN: false
           VALIDATE_TERRAFORM_TFLINT: false
-          # VALIDATE_SHELL_SHFMT: false
-          # VALIDATE_BASH: false

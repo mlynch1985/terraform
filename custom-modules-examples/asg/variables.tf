@@ -27,6 +27,16 @@ EOF
   }
 }
 
+variable "kms_key_arn" {
+  description = "Provide the KMS Key ARN used to encrypt the EBS Volumes"
+  type        = string
+
+  validation {
+    condition     = can(regex("^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$", var.kms_key_arn))
+    error_message = "Please specify a valid KMS Key ARN (^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$)"
+  }
+}
+
 variable "server_name" {
   description = "Specify the server name to used for the Name Tag"
   type        = string
@@ -34,6 +44,18 @@ variable "server_name" {
   validation {
     condition     = can(regex("^[0-9a-zA-Z-_]{1,64}$", var.server_name))
     error_message = "Please specify a valid Server Name between 1 and 64 characters long (^[0-9a-zA-Z-_]{1,64}$)"
+  }
+}
+
+variable "subnets" {
+  description = "List of subnet IDs to launch instances in"
+  type        = list(string)
+
+  validation {
+    condition = alltrue([
+      for subnet in var.subnets : can(regex("^subnet-[0-9a-zA-Z]{17}$", subnet))
+    ])
+    error_message = "Please specify a list containing at least one valid Subnet ID (^subnet-[0-9a-zA-Z]{17}$)"
   }
 }
 
@@ -49,25 +71,42 @@ variable "vpc_security_group_ids" {
   }
 }
 
-variable "user_data" {
-  description = "Specify a path to a userdata script"
-  type        = string
-  default     = ""
-}
-
 variable "block_device_mappings" {
   description = "Specify a list of block device mappings to attach to each instance"
   type        = any
   default     = []
 }
 
-variable "kms_key_arn" {
-  description = "Provide the KMS Key ARN used to encrypt the EBS Volumes"
-  type        = string
+variable "desired_capacity" {
+  description = "The desired capacity of the auto scaling group"
+  type        = number
+  default     = 1
 
   validation {
-    condition     = can(regex("^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$", var.kms_key_arn))
-    error_message = "Please specify a valid KMS Key ARN (^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$)"
+    condition     = var.desired_capacity >= 1 && var.desired_capacity <= 16
+    error_message = "Please specify a valid desired capacity between 1 and 16"
+  }
+}
+
+variable "healthcheck_grace_period" {
+  description = "Time in seconds after instance launch before performing healthchecks"
+  type        = number
+  default     = 300
+
+  validation {
+    condition     = var.healthcheck_grace_period >= 30 && var.healthcheck_grace_period <= 3600
+    error_message = "Please specify in seconds the healthcheck grace period between 30 seconds and 1 hour (3600 seconds)"
+  }
+}
+
+variable "healthcheck_type" {
+  description = "Specify EC2 or ELB to determine how healthchecks should be performed"
+  type        = string
+  default     = "EC2"
+
+  validation {
+    condition     = contains(["EC2", "ELB"], var.healthcheck_type)
+    error_message = "Please specify a valid healthcheck type either EC2 or ELB"
   }
 }
 
@@ -103,53 +142,8 @@ variable "min_size" {
   }
 }
 
-variable "healthcheck_grace_period" {
-  description = "Time in seconds after instance launch before performing healthchecks"
-  type        = number
-  default     = 300
-
-  validation {
-    condition     = var.healthcheck_grace_period >= 30 && var.healthcheck_grace_period <= 3600
-    error_message = "Please specify in seconds the healthcheck grace period between 30 seconds and 1 hour (3600 seconds)"
-  }
-}
-
-variable "healthcheck_type" {
-  description = "Specify EC2 or ELB to determine how healthchecks should be performed"
+variable "user_data" {
+  description = "Specify a path to a userdata script"
   type        = string
-  default     = "EC2"
-
-  validation {
-    condition     = contains(["EC2", "ELB"], var.healthcheck_type)
-    error_message = "Please specify a valid healthcheck type either EC2 or ELB"
-  }
-}
-
-variable "desired_capacity" {
-  description = "The desired capacity of the auto scaling group"
-  type        = number
-  default     = 1
-
-  validation {
-    condition     = var.desired_capacity >= 1 && var.desired_capacity <= 16
-    error_message = "Please specify a valid desired capacity between 1 and 16"
-  }
-}
-
-variable "subnets" {
-  description = "List of subnet IDs to launch instances in"
-  type        = list(string)
-
-  validation {
-    condition = alltrue([
-      for subnet in var.subnets : can(regex("^subnet-[0-9a-zA-Z]{17}$", subnet))
-    ])
-    error_message = "Please specify a list containing at least one valid Subnet ID (^subnet-[0-9a-zA-Z]{17}$)"
-  }
-}
-
-variable "target_group_arns" {
-  description = "A list of target group ARNs to associated instances with"
-  type        = list(string)
-  default     = []
+  default     = ""
 }
