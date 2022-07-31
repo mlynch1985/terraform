@@ -20,7 +20,7 @@ This repository contains various Terraform based projects I am currently or have
 
 ## Setup Procedures
 
-### Install Terraform command line interface
+### Install Terraform command-line interface
 
 - Browse to the Terraform [Downloads Page](https://www.terraform.io/downloads) and follow the steps for your operating system
 - Alternatively for Windows based systems, you can use Chocolatey to manage the install ([Reference](https://community.chocolatey.org/packages/terraform))

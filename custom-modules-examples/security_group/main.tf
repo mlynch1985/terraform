@@ -1,4 +1,6 @@
+#tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group" "this" {
+  #checkov:skip=CKV2_AWS_5:This resource is part of a resuable module and will be attached outside of this definition
   # Allows us to apply changes that require replacement of this security group
   lifecycle {
     create_before_destroy = true
@@ -15,7 +17,7 @@ resource "aws_security_group" "this" {
 resource "aws_security_group_rule" "this" {
   for_each = { for rule in var.rules : rule.type => rule }
 
-  cidr_blocks              = [each.value.cidr_blocks != "" ? each.value.cidr_blocks : null]
+  cidr_blocks              = [each.value.cidr_blocks != "" ? each.value.cidr_blocks : null] #tfsec:ignore:aws-vpc-no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-egress-sgr
   description              = each.value.description != "" ? each.value.description : null
   from_port                = each.value.from_port
   protocol                 = each.value.protocol
