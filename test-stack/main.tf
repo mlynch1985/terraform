@@ -57,9 +57,11 @@ module "ipam" {
 module "vpc" {
   source = "github.com/mlynch1985/terraform/custom-modules-examples/vpc/"
 
-  namespace            = var.namespace
-  environment          = var.environment
-  cidr_block           = "10.0.0.0/16"
+  namespace         = var.namespace
+  environment       = var.environment
+  ipam_pool_id      = module.ipam.pool_id
+  ipam_pool_netmask = "16"
+  # cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
   enable_flow_logs     = true
