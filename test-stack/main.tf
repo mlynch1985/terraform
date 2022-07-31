@@ -155,7 +155,6 @@ module "asg" {
   # Required Parameters
   image_id               = data.aws_ami.amazonlinux2.id
   instance_type          = "c5.xlarge"
-  kms_key_arn            = module.kms_key_asg.arn
   server_name            = "app_server"
   subnets                = module.vpc.private_subnets[*].id
   vpc_security_group_ids = [module.vpc.default_security_group.id, module.asg_security_group.id]
@@ -171,17 +170,23 @@ module "asg" {
   block_device_mappings = [
     {
       device_name : "/dev/xvda"
-      volume_type : "gp3"
-      volume_size : "50"
-      iops : "3000"
       delete_on_termination : true
+      encrypted : true
+      iops : 0
+      kms_key_id : module.kms_key_asg.arn
+      throughput : 0
+      volume_type : "gp3"
+      volume_size : 50
     },
     {
       device_name : "xvdf"
-      volume_type : "gp3"
-      volume_size : "100"
-      iops : null
       delete_on_termination : true
+      encrypted : true
+      iops : 0
+      kms_key_id : module.kms_key_asg.arn
+      throughput : 0
+      volume_type : "gp3"
+      volume_size : 100
     }
   ]
 

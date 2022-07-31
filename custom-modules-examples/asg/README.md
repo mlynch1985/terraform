@@ -8,7 +8,6 @@ This module creates a Launch Template and an Auto Scaling Group.
 
 - `image_id` - Specify the AMI ID of the image to be used for each EC2 instance.
 - `instance_type` - Specify the EC2 instance size.
-- `kms_key_arn` - Provide the KMS Key ARN used to encrypt the EBS Volumes.
 - `server_name` - Specify the server name to used for the Name Tag.
 - `subnets` - List of subnet IDs to launch instances in.
 - `vpc_security_group_ids` - Provide a list of security group IDs to attach to this instance.
@@ -17,7 +16,6 @@ This module creates a Launch Template and an Auto Scaling Group.
 
 ## Optional Input Variables
 
-- `block_device_mappings` - Specify a list of block device mappings to attach to each instance. Defaults to `[]`.
 - `desired_capacity` - The desired capacity of the auto scaling group. Defaults to `1`.
 - `healthcheck_grace_period` - Time in seconds after instance launch before performing healthchecks. Defaults to `300`.
 - `healthcheck_type` - Specify `EC2` or `ELB` to determine how healthchecks should be performed. Defaults to `EC2`.
@@ -25,6 +23,21 @@ This module creates a Launch Template and an Auto Scaling Group.
 - `max_size` - The maximum size of the auto scaling group. Defaults to `1`.
 - `min_size` - The minimum size of the auto scaling group. Defaults to `1`.
 - `user_data` - Specify a path to a userdata script. Defaults to `""`.
+
+- `block_device_mappings` - Specify a list of block device mappings to attach to each instance. Default:
+
+```hcl
+[{
+  delete_on_termination = true
+  device_name           = "/dev/xvda"
+  encrypted             = false
+  iops                  = 0
+  kms_key_id            = ""
+  throughput            = 0
+  volume_size           = 50
+  volume_type           = "gp3"
+}]
+```
 
 ---
 

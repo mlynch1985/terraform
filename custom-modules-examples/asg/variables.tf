@@ -27,16 +27,6 @@ EOF
   }
 }
 
-variable "kms_key_arn" {
-  description = "Provide the KMS Key ARN used to encrypt the EBS Volumes"
-  type        = string
-
-  validation {
-    condition     = can(regex("^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$", var.kms_key_arn))
-    error_message = "Please specify a valid KMS Key ARN (^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$)"
-  }
-}
-
 variable "server_name" {
   description = "Specify the server name to used for the Name Tag"
   type        = string
@@ -73,8 +63,26 @@ variable "vpc_security_group_ids" {
 
 variable "block_device_mappings" {
   description = "Specify a list of block device mappings to attach to each instance"
-  type        = any
-  default     = []
+  type = list(object({
+    device_name           = string
+    delete_on_termination = bool
+    encrypted             = bool
+    iops                  = number
+    kms_key_id            = string
+    throughput            = number
+    volume_size           = number
+    volume_type           = string
+  }))
+  default = [{
+    delete_on_termination = true
+    device_name           = "/dev/xvda"
+    encrypted             = false
+    iops                  = 0
+    kms_key_id            = ""
+    throughput            = 0
+    volume_size           = 50
+    volume_type           = "gp3"
+  }]
 }
 
 variable "desired_capacity" {

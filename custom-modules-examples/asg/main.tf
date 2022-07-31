@@ -9,15 +9,16 @@ resource "aws_launch_template" "this" {
     for_each = var.block_device_mappings
 
     content {
-      device_name = lookup(block_device_mappings.value, "device_name", null)
+      device_name = block_device_mappings.value.device_name
 
       ebs {
-        volume_type           = lookup(block_device_mappings.value, "volume_type", null) # Convert to simpler syntax
-        volume_size           = lookup(block_device_mappings.value, "volume_size", null)
-        iops                  = lookup(block_device_mappings.value, "iops", null)
-        delete_on_termination = lookup(block_device_mappings.value, "delete_on_termination", null)
-        encrypted             = true            # ToDo: make optional parameter
-        kms_key_id            = var.kms_key_arn # ToDo: make optional parameter
+        delete_on_termination = block_device_mappings.value.delete_on_termination == false ? false : true
+        encrypted             = block_device_mappings.value.encrypted == true ? true : false
+        iops                  = block_device_mappings.value.iops >= 3000 ? block_device_mappings.value.iops : null
+        kms_key_id            = block_device_mappings.value.kms_key_id != "" ? block_device_mappings.value.kms_key_id : null
+        throughput            = block_device_mappings.value.throughput >= 125 ? block_device_mappings.value.throughput : null
+        volume_size           = block_device_mappings.value.volume_size >= 25 ? block_device_mappings.value.volume_size : 50
+        volume_type           = block_device_mappings.value.volume_type != "" ? block_device_mappings.value.volume_type : "gp3"
       }
     }
   }
