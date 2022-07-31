@@ -47,24 +47,27 @@ data "aws_ami" "amazonlinux2" {
 module "ipam" {
   source = "github.com/mlynch1985/terraform/custom-modules-examples/ipam/"
 
+  # Optional Parameters
   allocation_default_netmask_length = 20
   allocation_max_netmask_length     = 28
   allocation_min_netmask_length     = 16
   ipam_cidr                         = "10.0.0.0/8"
 }
 
-/* ToDo: Integrate IPAM with VPC Module */
 module "vpc" {
   source = "github.com/mlynch1985/terraform/custom-modules-examples/vpc/"
 
-  namespace         = var.namespace
-  environment       = var.environment
-  ipam_pool_id      = module.ipam.pool_id
-  ipam_pool_netmask = "20"
-  # cidr_block           = "10.0.0.0/16"
+  # Required Parameters
+  environment = var.environment
+  namespace   = var.namespace
+
+  # Optional Parameters
+  cidr_block           = ""
   enable_dns_hostnames = true
   enable_dns_support   = true
   enable_flow_logs     = true
+  ipam_pool_id         = module.ipam.pool_id
+  ipam_pool_netmask    = "20"
   subnet_size_offset   = 8
   target_az_count      = 3
   tgw_id               = ""

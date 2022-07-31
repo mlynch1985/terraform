@@ -35,6 +35,7 @@ This module creates an IPAM Pool and allocates one CIDR into the current region.
 module "ipam_pool" {
   source = "./modules/ipam"
 
+  # Optional Parameters
   allocation_default_netmask_length = 20
   allocation_max_netmask_length     = 28
   allocation_min_netmask_length     = 16

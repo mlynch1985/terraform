@@ -2,6 +2,11 @@ locals {
   az_index = ["a", "b", "c", "d", "e", "f"]
 }
 
+
+data "aws_availability_zones" "zones" {
+  state = "available"
+}
+
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 

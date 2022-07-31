@@ -1,41 +1,19 @@
-variable "namespace" {
-  description = "Specify a namspace to identify the current deployment in lowercase characters"
-  type        = string
-
-  validation {
-    condition     = can(regex("[0-9a-z]{1,10}", var.namespace))
-    error_message = "Must be an alphanumeric value with only lowercase characters and a max length of 10"
-  }
-}
-
-variable "ipam_pool_id" {
-  description = "Provide an IPAM Pool ID to use for CIDR assignment"
-  type        = string
-  default     = ""
-
-  validation {
-    condition     = can(regex("^$|^ipam-pool-[0-9a-z]{17}$", var.ipam_pool_id))
-    error_message = "Must be a valid IPAM Pool ID (^$|^ipam-pool-[0-9a-z]{17}$)"
-  }
-}
-
-variable "ipam_pool_netmask" {
-  description = "Specify the netmask of an IPAM provided CIDR"
-  type        = number
-  default     = 16
-
-  validation {
-    condition     = var.ipam_pool_netmask >= 16 && var.ipam_pool_netmask <= 28
-    error_message = "Must be a valid number between 16 and 28"
-  }
-}
-
 variable "environment" {
   description = "Specify an environment to identify the current deployment in lowercase characters"
   type        = string
 
   validation {
     condition     = can(regex("[0-9a-z]{1,10}", var.environment))
+    error_message = "Must be an alphanumeric value with only lowercase characters and a max length of 10"
+  }
+}
+
+variable "namespace" {
+  description = "Specify a namespace to identify the current deployment in lowercase characters"
+  type        = string
+
+  validation {
+    condition     = can(regex("[0-9a-z]{1,10}", var.namespace))
     error_message = "Must be an alphanumeric value with only lowercase characters and a max length of 10"
   }
 }
@@ -69,8 +47,30 @@ variable "enable_flow_logs" {
   default     = true
 }
 
+variable "ipam_pool_id" {
+  description = "Provide an IPAM Pool ID to use for CIDR assignment"
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = can(regex("^$|^ipam-pool-[0-9a-z]{17}$", var.ipam_pool_id))
+    error_message = "Must be a valid IPAM Pool ID (^$|^ipam-pool-[0-9a-z]{17}$)"
+  }
+}
+
+variable "ipam_pool_netmask" {
+  description = "Specify the netmask of an IPAM provided CIDR"
+  type        = number
+  default     = 16
+
+  validation {
+    condition     = var.ipam_pool_netmask >= 16 && var.ipam_pool_netmask <= 28
+    error_message = "Must be a valid number between 16 and 28"
+  }
+}
+
 variable "subnet_size_offset" {
-  description = "Define the subnet mask offset based on the vpc cidr"
+  description = "Define the subnet mask offset based on the VPC CIDR"
   type        = number
   default     = 8
 
@@ -81,7 +81,7 @@ variable "subnet_size_offset" {
 }
 
 variable "target_az_count" {
-  description = "Specify the number of Availability Zones to deploy subnets into"
+  description = "Specify the number of availability zones to deploy subnets into"
   type        = number
   default     = 3
 
@@ -111,8 +111,4 @@ variable "vpc_type" {
     condition     = contains(["spoke", "hub"], var.vpc_type)
     error_message = "Please specify only \"spoke\" or \"hub\""
   }
-}
-
-data "aws_availability_zones" "zones" {
-  state = "available"
 }
