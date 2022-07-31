@@ -2,6 +2,8 @@ locals {
   az_index = ["a", "b", "c", "d", "e", "f"]
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_vpc" "vpc" {
   cidr_block           = var.cidr_block
   enable_dns_hostnames = var.enable_dns_hostnames
@@ -150,18 +152,18 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "tgw_attachment" {
   vpc_id             = aws_vpc.vpc.id
 }
 
-# #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-# resource "aws_cloudwatch_log_group" "log_group" {
-#   #checkov:skip=CKV_AWS_158:We do not want to enable KMS CMK for this log group as part of the demo
-#   count = var.enable_flow_logs ? 1 : 0 // Create CW Log Group only if VPC Flow Logs have been enabled
+#tfsec:ignore:aws-cloudwatch-log-group-customer-key
+resource "aws_cloudwatch_log_group" "log_group" {
+  #checkov:skip=CKV_AWS_158:We do not want to enable KMS CMK for this log group as part of the demo
+  count = var.enable_flow_logs ? 1 : 0 // Create CW Log Group only if VPC Flow Logs have been enabled
 
-#   name              = "/${var.namespace}/${var.environment}/vpc/flow_logs"
-#   retention_in_days = 30
+  name              = "/${var.namespace}/${var.environment}/vpc/flow_logs"
+  retention_in_days = 30
 
-#   tags = {
-#     "Name" = "/${var.namespace}/${var.environment}/vpc/flow_logs"
-#   }
-# }
+  tags = {
+    "Name" = "/${var.namespace}/${var.environment}/vpc/flow_logs"
+  }
+}
 
 data "aws_iam_policy_document" "assume_role_policy_document" {
   count = var.enable_flow_logs ? 1 : 0 // Create Trust Policy only if VPC Flow Logs have been enabled
@@ -205,27 +207,27 @@ resource "aws_iam_role_policy" "iam_role_policy" {
         ]
         Effect = "Allow"
         Resource = [
-          "${aws_cloudwatch_log_group.log_group[0].arn}",
-          "${aws_cloudwatch_log_group.log_group[0].arn}:*"
+          "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/${var.namespace}/${var.environment}/vpc/flow_logs",
+          "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/${var.namespace}/${var.environment}/vpc/flow_logs:*"
         ]
       }
     ]
   })
 }
 
-# resource "aws_flow_log" "flow_log" {
-#   count = var.enable_flow_logs ? 1 : 0
+resource "aws_flow_log" "flow_log" {
+  count = var.enable_flow_logs ? 1 : 0
 
-#   traffic_type    = "ALL"
-#   iam_role_arn    = aws_iam_role.iam_role[0].arn
-#   log_destination = aws_cloudwatch_log_group.log_group[0].arn
-#   vpc_id          = aws_vpc.vpc.id
+  traffic_type    = "ALL"
+  iam_role_arn    = aws_iam_role.iam_role[0].arn
+  log_destination = aws_cloudwatch_log_group.log_group[0].arn
+  vpc_id          = aws_vpc.vpc.id
 
-#   tags = {
-#     "Name" = "/${var.namespace}/${var.environment}/vpc/flow_logs"
-#   }
+  tags = {
+    "Name" = "/${var.namespace}/${var.environment}/vpc/flow_logs"
+  }
 
-#   depends_on = [
-#     aws_cloudwatch_log_group.log_group
-#   ]
-# }
+  depends_on = [
+    aws_cloudwatch_log_group.log_group
+  ]
+}
