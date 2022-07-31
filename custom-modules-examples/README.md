@@ -1,9 +1,20 @@
-Custom TF Module Examples
-=====
+# Custom Terraform Module Examples
 
-This repository contains sample custom Terraform modules to be consumed by our TF Module Pipeline and then deployed out to an S3 Bucket.
+Below are customized Terraform modules that can be published and consumed across multiple projects.
 
-Authors
-----------------------
+---
 
-mlynch1985@gmail.com
+## Table of Contents
+
+- [Auto Scaling Group](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/asg)
+- [IAM Role](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/iam_role)
+- [IPAM](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/ipam)
+- [KMS Key](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/kms_key)
+- [S3 Bucket](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/s3_bucket)
+- [VPC](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/vpc)
+
+---
+
+## Authors
+
+Mike Lynch ([mlynch1985@gmail.com](mailto:mlynch1985@gmail.com))
