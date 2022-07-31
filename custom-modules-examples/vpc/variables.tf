@@ -43,7 +43,7 @@ variable "environment" {
 variable "cidr_block" {
   description = "Please specify a valid VPC CIDR"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = ""
 
   validation {
     condition     = can(regex("^(10|172|192)(.[0-9]{1,3}){3}/(1[6-9]|2[0-4])$", var.cidr_block))

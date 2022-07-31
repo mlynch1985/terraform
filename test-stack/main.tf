@@ -60,7 +60,7 @@ module "vpc" {
   namespace         = var.namespace
   environment       = var.environment
   ipam_pool_id      = module.ipam.pool_id
-  ipam_pool_netmask = "16"
+  ipam_pool_netmask = "20"
   # cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
