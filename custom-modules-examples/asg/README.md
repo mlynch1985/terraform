@@ -68,7 +68,7 @@ module "asg" {
   ]
 
   # Inline User Data Script
-  user_data = base64encode(<<EOF
+  user_data = base64encode(<<-EOF
     #!/bin/bash
     yum upgrade -y
     yum install -y httpd

@@ -44,7 +44,7 @@ resource "aws_launch_template" "this" {
   }
 }
 
-resource "aws_autoscaling_group" "asg" {
+resource "aws_autoscaling_group" "this" {
   // Use the "autoscaling_attachment" resource to manage ELB/TargetGroup attachments
   // Ref: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_attachment
   lifecycle {

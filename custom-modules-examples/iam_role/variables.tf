@@ -1,19 +1,38 @@
+variable "role_name" {
+  description = "Please specify a name prefix for the IAM Role"
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9-_]{1,36}$", var.role_name))
+    error_message = "Please specify a IAM role name prefix (^[a-zA-Z0-9-_]{1,36}$)"
+  }
+}
+
 variable "service" {
   description = "Please specify the AWS Service name prefix without the \".amazonaws.com\" domain"
   type        = string
 
   validation {
     condition     = can(regex("^[a-zA-Z0-9]{1,36}$", var.service))
-    error_message = "Please specify a valid AWS Server name prefex (^[a-zA-Z0-9]{1,36}$)"
+    error_message = "Please specify a valid AWS Service name prefex (^[a-zA-Z0-9]{1,36}$)"
   }
 }
 
-variable "role_name" {
-    description = "Please specify a name for the IAM Role"
-    type = string
+variable "inline_policy_json" {
+  description = "Please provide a JSON IAM Policy to attach to this role"
+  type        = string
+  default     = ""
+}
+
+variable "managed_policy_arns" {
+  description = "Please provide a list of managed IAM policies ARNs to attach to this role"
+  type        = list(string)
+  default     = []
 
   validation {
-    condition     = can(regex("^[a-zA-Z0-9-_]{1,36}$", var.role_name))
-    error_message = "Please specify a IAM role name prefex (^[a-zA-Z0-9-_]{1,36}$)"
+    condition = alltrue([
+      for policy_arn in var.managed_policy_arns : can(regex("^arn:aws:iam::[0-9]{0,12}:policy/[a-zA-Z0-9-_./]{1,96}$", policy_arn))
+    ])
+    error_message = "Please provide a list of managed IAM policies ARNs to attach to this role"
   }
 }

@@ -1,3 +1,4 @@
-output "arn" { value = aws_iam_role.iam_role.arn }
-output "name" { value = aws_iam_role.iam_role.name }
-output "profile" { value = aws_iam_instance_profile.instance_profile.arn }
+output "id" { value = aws_iam_role.this.id }
+output "arn" { value = aws_iam_role.this.arn }
+output "name" { value = aws_iam_role.this.name }
+output "profile" { value = aws_iam_instance_profile.this.arn }
