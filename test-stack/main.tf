@@ -21,9 +21,10 @@ provider "aws" {
   default_tags {
     tags = {
       Creator      = var.creator
-      Owner        = var.owner
-      Organization = var.organization
       Environment  = var.environment
+      Namespace    = var.namespace
+      Organization = var.organization
+      Owner        = var.owner
     }
   }
 }
@@ -98,12 +99,20 @@ module "iam_role" {
 EOF
 }
 
+resource "aws_iam_service_linked_role" "autoscaling" {
+  aws_service_name = "autoscaling.amazonaws.com"
+}
+
 module "kms_key_asg" {
   source = "github.com/mlynch1985/terraform/custom-modules-examples/kms_key/"
 
   key_name            = "${var.namespace}/${var.environment}/asg"
   iam_roles           = [module.iam_role.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"]
   enable_multi_region = false
+
+  depends_on = [
+    aws_iam_service_linked_role.autoscaling
+  ]
 }
 
 /* ToDo: Create as a reusable module */

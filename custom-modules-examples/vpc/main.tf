@@ -6,7 +6,9 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_vpc" "vpc" {
-  cidr_block           = var.cidr_block
+  cidr_block           = var.cidr_block != "" && var.ipam_pool_id == "" ? var.cidr_block : ""        ## Manually define CIDR
+  ipv4_ipam_pool_id    = var.cidr_block == "" && var.ipam_pool_id != "" ? var.ipam_pool_id : ""      ## Leverage IPAM to define CIDR
+  ipv4_netmask_length  = var.cidr_block == "" && var.ipam_pool_id != "" ? var.ipam_pool_netmask : "" ## Leverage IPAM to define CIDR
   enable_dns_hostnames = var.enable_dns_hostnames
   enable_dns_support   = var.enable_dns_support
 

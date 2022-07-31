@@ -8,6 +8,28 @@ variable "namespace" {
   }
 }
 
+variable "ipam_pool_id" {
+  description = "Provide an IPAM Pool ID to use for CIDR assignment"
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = can(regex("^$|^ipam-pool-[0-9a-z]{17}$", var.namespace))
+    error_message = "Must be a valid IPAM Pool ID (^$|^ipam-pool-[0-9a-z]{17}$)"
+  }
+}
+
+variable "ipam_pool_netmask" {
+  description = "Specify the netmask of an IPAM provided CIDR"
+  type        = number
+  default     = 16
+
+  validation {
+    condition     = var.ipam_pool_netmask >= 16 && var.ipam_pool_netmask <= 28
+    error_message = "Must be a valid number between 16 and 28"
+  }
+}
+
 variable "environment" {
   description = "Specify an environment to identify the current deployment in lowercase characters"
   type        = string

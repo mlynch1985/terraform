@@ -20,6 +20,7 @@ Optional Input Variables
 - `target_az_count` - Specify the number of availability zones to deploy subnets into. Defaults to `3`.
 - `tgw_id` - If creating a `hub` VPC then you must specify an existing Transit Gateway ID. Defult to `""`.
 - `vpc_type` - Set to `hub` or `spoke` to determine if we should create Public Tier or connect to existing TGW. Defaults to `hub`
+- `ipam_pool_id` - .
 
 Usage
 -----
