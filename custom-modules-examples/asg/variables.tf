@@ -111,13 +111,8 @@ variable "healthcheck_type" {
 }
 
 variable "iam_instance_profile" {
-  description = "Please specify the iam instance profile arn to attach to each EC2 instance"
+  description = "Please specify the iam instance profile name to attach to each EC2 instance"
   type        = any
-
-  validation {
-    condition     = can(regex("^arn:aws:iam::[0-9]{12}:instance-profile/[a-zA-Z0-9-_]{1,64}$", var.iam_instance_profile))
-    error_message = "Please specify a valid IAM Instance Profile ARN (^arn:aws:iam::[0-9]{12}:instance-profile/[a-zA-Z0-9-_]{1,64}$)"
-  }
 }
 
 variable "max_size" {

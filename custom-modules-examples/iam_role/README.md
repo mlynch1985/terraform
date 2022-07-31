@@ -58,7 +58,7 @@ EOF
 - `id` - The IAM Role [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#id)
 - `arn` - The IAM Role [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#arn)
 - `name` - The IAM Role [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#name)
-- `profile` - The IAM Instance Profile [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile#arn)
+- `profile` - The IAM Instance Profile [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile#name)
 
 ---
 

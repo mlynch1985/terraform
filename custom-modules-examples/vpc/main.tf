@@ -181,7 +181,7 @@ resource "aws_iam_role" "iam_role" {
   count = var.enable_flow_logs ? 1 : 0 // Create IAM Role only if VPC Flow Logs have been enabled
 
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy_document[0].json
-  name               = "${var.namespace}_${var.environment}_vpc_flow_logs"
+  name_prefix        = "${var.namespace}_${var.environment}_vpc_flow_logs_"
 
   tags = {
     "Name" = "${var.namespace}_${var.environment}_vpc_flow_logs"
