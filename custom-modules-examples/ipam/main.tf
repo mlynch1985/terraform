@@ -1,7 +1,9 @@
 data "aws_region" "current" {}
 
 resource "aws_vpc_ipam" "this" {
-  region_name = data.aws_region.current.name
+  operating_regions {
+    region_name = data.aws_region.current.name
+  }
 }
 
 resource "aws_vpc_ipam_pool" "this" {
@@ -13,7 +15,7 @@ resource "aws_vpc_ipam_pool" "this" {
   locale                            = data.aws_region.current.name
 }
 
-resource "aws_vpc_ipam_pool_cidr" "vpc_ipam_cidr" {
+resource "aws_vpc_ipam_pool_cidr" "this" {
   cidr         = var.ipam_cidr
   ipam_pool_id = aws_vpc_ipam_pool.this.id
 }
