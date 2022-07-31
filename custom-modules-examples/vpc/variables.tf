@@ -14,7 +14,7 @@ variable "ipam_pool_id" {
   default     = ""
 
   validation {
-    condition     = can(regex("^$|^ipam-pool-[0-9a-z]{17}$", var.namespace))
+    condition     = can(regex("^$|^ipam-pool-[0-9a-z]{17}$", var.ipam_pool_id))
     error_message = "Must be a valid IPAM Pool ID (^$|^ipam-pool-[0-9a-z]{17}$)"
   }
 }
