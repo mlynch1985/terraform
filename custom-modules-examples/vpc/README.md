@@ -6,7 +6,6 @@ This module will provision either a `hub` or `spoke` type VPC with either `publi
 Required Input Variables
 ----------------------
 
-- `region` - Specify the region to deploy into
 - `namespace` - Specify a stack namespace to prefix all resources
 - `environment` - Specify a stack environment to prefix all resources
 - `cidr_block` - Specify the VPC cidr block
@@ -29,7 +28,6 @@ Usage
 module "vpc" {
   source = "s3::https://s3.amazonaws.com/${S3_Bucket_Name}/vpc.zip"
 
-  region = "us-east-1"
   namespace            = "use1"
   environment          = "dev"
   cidr_block           = "10.0.0.0/16"

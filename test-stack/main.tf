@@ -43,23 +43,19 @@ data "aws_ami" "amazonlinux2" {
   }
 }
 
-# module "ipam" {
-#   source = "github.com/mlynch1985/terraform/custom-modules-examples/ipam/"
+module "ipam" {
+  source = "github.com/mlynch1985/terraform/custom-modules-examples/ipam/"
 
-#   region                            = var.region
-#   namespace                         = var.namespace
-#   environment                       = var.environment
-#   allocation_default_netmask_length = 20
-#   allocation_min_netmask_length     = 16
-#   allocation_max_netmask_length     = 28
-#   ipam_cidr                         = "10.0.0.0/8"
-# }
+  allocation_default_netmask_length = 20
+  allocation_max_netmask_length     = 28
+  allocation_min_netmask_length     = 16
+  ipam_cidr                         = "10.0.0.0/8"
+}
 
 /* ToDo: Integrate IPAM with VPC Module */
 module "vpc" {
   source = "github.com/mlynch1985/terraform/custom-modules-examples/vpc/"
 
-  region               = var.region
   namespace            = var.namespace
   environment          = var.environment
   cidr_block           = "10.0.0.0/16"

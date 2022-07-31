@@ -1,48 +1,49 @@
-IPAM Module
-===========
+# IPAM Module
 
-This module will create an IPAM Pool
+This module creates an IPAM Pool and allocates one CIDR into the current region.
 
-Required Input Variables
-----------------------
+---
 
-- `region` - Specify the region to enable for this IPAM Pool
-- `namespace` - Specify a namespace to be used to prefix the name of our resources
-- `environment` - Specify a environment to be used to prefix the name of our resources
+## Required Input Variables
 
-Optional Input Variables
-----------------------
+- **None**
 
-- `allocation_default_netmask_length` - Specify the default vpc netmask length. Default is `20`
-- `allocation_min_netmask_length` - Specify the minimum vpc netmask length. Default is `16`
-- `allocation_max_netmask_length` - Specify the maximum vpc netmask length. Default is `28`
-- `ipam_cidr` - Specify the cidr range to be used for the IPAM Pool's private scope. Default is `10.0.0.0/8`
+---
 
-Usage
------
+## Optional Input Variables
+
+- `allocation_default_netmask_length` - Specify the default netmask length for new VPC CIDRs. Default is `20`.
+- `allocation_max_netmask_length` - Specify the maximum netmask length for new VPC CIDRs. Default is `28`.
+- `allocation_min_netmask_length` - Specify the minimum netmask length for new VPC CIDRs. Default is `16`.
+- `ipam_cidr` - Specify the IPAM Pool CIDR. Default is `10.0.0.0/8`.
+
+---
+
+## Output Variables
+
+- `ipam_id` - The IPAM [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_ipam#id)
+- `ipam_arn` - The IPAM [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_ipam#arn)
+- `pool_id` - The IPAM Pool [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_ipam_pool#id)
+- `pool_arn` - The IPAM Pool [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_ipam_pool#arn)
+- `cidr` - The IPAM Pool [CIDR](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_ipam_pool_cidr#cidr)
+
+---
+
+## Usage
 
 ```hcl
 module "ipam_pool" {
   source = "./modules/ipam"
 
-  region                            = "us-east-1"
-  namespace                         = "use1"
-  environment                       = "dev"
   allocation_default_netmask_length = 20
-  allocation_min_netmask_length     = 16
   allocation_max_netmask_length     = 28
-  ipam_cidr                         = "10.0.0.0/8
+  allocation_min_netmask_length     = 16
+  ipam_cidr                         = "10.0.0.0/8"
 }
 ```
 
-Outputs
-----------------------
+---
 
-- `arn` - The ARN of the IPAM
-- `id` - The ID of the IPAM
-- `cidr` - The CIDR range of the IPAM
+## Authors
 
-Authors
-----------------------
-
-mlynch1985@gmail.com
+Mike Lynch ([mlynch1985@gmail.com](mailto:mlynch1985@gmail.com))

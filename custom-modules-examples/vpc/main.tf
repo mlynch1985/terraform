@@ -3,6 +3,7 @@ locals {
 }
 
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 resource "aws_vpc" "vpc" {
   cidr_block           = var.cidr_block
@@ -207,8 +208,8 @@ resource "aws_iam_role_policy" "iam_role_policy" {
         ]
         Effect = "Allow"
         Resource = [
-          "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/${var.namespace}/${var.environment}/vpc/flow_logs",
-          "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/${var.namespace}/${var.environment}/vpc/flow_logs:*"
+          "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/${var.namespace}/${var.environment}/vpc/flow_logs",
+          "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/${var.namespace}/${var.environment}/vpc/flow_logs:*"
         ]
       }
     ]
