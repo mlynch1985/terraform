@@ -87,9 +87,9 @@ module "asg" {
 
 ## Outputs
 
-- `id` - The AutoScalingGroup ID
-- `arn` - The AutoScalingGroup ARN
-- `name` - The AutoScalingGroup Name
+- `id` - The AutoScalingGroup [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#id)
+- `arn` - The AutoScalingGroup [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#arn)
+- `name` - The AutoScalingGroup [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#name)
 
 ---
 
