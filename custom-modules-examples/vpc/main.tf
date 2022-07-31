@@ -41,7 +41,7 @@ resource "aws_subnet" "public" {
   count = var.vpc_type == "hub" ? var.target_az_count : 0 // Create Public Subnets only if this is a HUB VPC
 
   vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = cidrsubnet(var.cidr_block, var.subnet_size_offset, count.index + var.target_az_count)
+  cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, var.subnet_size_offset, count.index + var.target_az_count)
   availability_zone       = data.aws_availability_zones.zones.names[count.index]
   map_public_ip_on_launch = true
 
@@ -81,7 +81,7 @@ resource "aws_subnet" "private" {
   count = var.target_az_count
 
   vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = cidrsubnet(var.cidr_block, var.subnet_size_offset, count.index)
+  cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, var.subnet_size_offset, count.index)
   availability_zone       = data.aws_availability_zones.zones.names[count.index]
   map_public_ip_on_launch = false
 
