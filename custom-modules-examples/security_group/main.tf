@@ -1,5 +1,6 @@
 #tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group" "this" {
+  #checkov:skip=CKV_AWS_23:Using default description for demo purposes only
   #checkov:skip=CKV2_AWS_5:This resource is part of a resuable module and will be attached outside of this definition
   # Allows us to apply changes that require replacement of this security group
   lifecycle {
