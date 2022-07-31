@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "inline" {
   count = var.inline_policy_json != "" ? 1 : 0
 
   role       = aws_iam_role.this.name
-  policy_arn = aws_iam_policy.inline.arn
+  policy_arn = aws_iam_policy.inline[0].arn
 }
 
 resource "aws_iam_role_policy_attachment" "managed" {
