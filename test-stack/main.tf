@@ -149,37 +149,6 @@ module "asg_security_group" {
   ]
 }
 
-/* ToDo: Create as a reusable module */
-resource "aws_security_group" "asg" {
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  name_prefix = "${var.namespace}-${var.environment}-ec2"
-  description = "Allow HTTP inbound traffic"
-  vpc_id      = module.vpc.vpc.id
-
-  ingress {
-    description = "Allow inbound HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    description = "Allow all outbound"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.namespace}-${var.environment}-ec2"
-  }
-}
-
 module "asg" {
   source = "../custom-modules-examples/asg/"
 
@@ -189,7 +158,7 @@ module "asg" {
   kms_key_arn            = module.kms_key_asg.arn
   server_name            = "app_server"
   subnets                = module.vpc.private_subnets[*].id
-  vpc_security_group_ids = [module.vpc.default_security_group.id, aws_security_group.asg.id]
+  vpc_security_group_ids = [module.vpc.default_security_group.id, module.asg_security_group.id]
 
   # Optional Parameters
   desired_capacity         = 3
