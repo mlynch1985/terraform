@@ -12,12 +12,12 @@ resource "aws_launch_template" "this" {
       device_name = lookup(block_device_mappings.value, "device_name", null)
 
       ebs {
-        volume_type           = lookup(block_device_mappings.value, "volume_type", null)
+        volume_type           = lookup(block_device_mappings.value, "volume_type", null) # Convert to simpler syntax
         volume_size           = lookup(block_device_mappings.value, "volume_size", null)
         iops                  = lookup(block_device_mappings.value, "iops", null)
         delete_on_termination = lookup(block_device_mappings.value, "delete_on_termination", null)
-        encrypted             = true
-        kms_key_id            = var.kms_key_arn
+        encrypted             = true            # ToDo: make optional parameter
+        kms_key_id            = var.kms_key_arn # ToDo: make optional parameter
       }
     }
   }
