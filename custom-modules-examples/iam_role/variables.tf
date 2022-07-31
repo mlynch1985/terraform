@@ -28,11 +28,4 @@ variable "managed_policy_arns" {
   description = "Please provide a list of managed IAM policies ARNs to attach to this role"
   type        = list(string)
   default     = []
-
-  validation {
-    condition = alltrue([
-      for policy_arn in var.managed_policy_arns : can(regex("^arn:aws:iam::[0-9]{0,12}:policy/[a-zA-Z0-9-_./]{1,96}$", policy_arn))
-    ])
-    error_message = "Please provide a list of managed IAM policies ARNs to attach to this role"
-  }
 }

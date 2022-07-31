@@ -24,9 +24,11 @@ This module creates an IAM Role and an IAM Instance Profile.
 module "iam_role" {
   source = "./modules/iam_role"
 
+  # Required Parameters
   role_name = "${var.namespace}_${var.environment}_ec2"
   service   = "ec2"
 
+  # Optional Parameters
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
