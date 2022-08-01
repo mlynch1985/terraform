@@ -1,3 +1,4 @@
+/* ToDo: Figure out why the AutoScaling Policy wants to update on each apply */
 resource "aws_launch_template" "this" {
   image_id               = var.image_id
   instance_type          = var.instance_type
@@ -60,7 +61,6 @@ resource "aws_autoscaling_group" "this" {
   min_size                  = var.min_size
   health_check_grace_period = var.healthcheck_grace_period
   health_check_type         = var.healthcheck_type
-  desired_capacity          = var.desired_capacity
   vpc_zone_identifier       = var.subnets
 
   launch_template {

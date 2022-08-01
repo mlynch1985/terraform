@@ -16,7 +16,6 @@ This module creates a Launch Template and an Auto Scaling Group.
 
 ## Optional Input Variables
 
-- `desired_capacity` - The desired capacity of the auto scaling group. Defaults to `1`.
 - `healthcheck_grace_period` - Time in seconds after instance launch before performing healthchecks. Defaults to `300`.
 - `healthcheck_type` - Specify `EC2` or `ELB` to determine how healthchecks should be performed. Defaults to `EC2`.
 - `iam_instance_profile` - Please specify the iam instance profile name to attach to each EC2 instance. Defaults to `""`.
@@ -64,7 +63,6 @@ module "asg" {
   vpc_security_group_ids    = ["sg-1a2b3c4d5e", "sg-6f7g8h9i0k"]
 
   # Optional Parameters
-  desired_capacity          = 3
   healthcheck_grace_period  = 300
   healthcheck_type          = "ELB"
   iam_instance_profile      = "ec2_instance_profile"

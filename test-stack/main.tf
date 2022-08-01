@@ -111,8 +111,9 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 module "kms_key_asg" {
   source = "../custom-modules-examples/kms_key/"
 
-  key_name            = "${var.namespace}/${var.environment}/asg"
   iam_roles           = [module.iam_role.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"]
+  key_name            = "${var.namespace}/${var.environment}/asg"
+  enable_key_rotation = true
   enable_multi_region = false
 
   # Service Linked Role must exist before we can attempt to add it to the key policy
@@ -160,7 +161,6 @@ module "asg" {
   vpc_security_group_ids = [module.vpc.default_security_group.id, module.asg_security_group.id]
 
   # Optional Parameters
-  desired_capacity         = 3
   healthcheck_grace_period = 300
   healthcheck_type         = "EC2"
   iam_instance_profile     = module.iam_role.profile
@@ -205,17 +205,33 @@ module "asg" {
 module "kms_key_s3_bucket" {
   source = "../custom-modules-examples/kms_key/"
 
-  key_name            = "${var.namespace}/${var.environment}/s3_bucket"
   iam_roles           = [module.iam_role.arn]
+  key_name            = "${var.namespace}/${var.environment}/s3_bucket"
+  enable_key_rotation = true
   enable_multi_region = false
 }
 
 module "s3_bucket" {
   source = "../custom-modules-examples/s3_bucket/"
 
+  # Required Parameters
   bucket_name = "${var.namespace}-${var.environment}-app1"
-  key_arn     = module.kms_key_s3_bucket.arn
-  iam_roles   = [module.iam_role.arn]
+
+  # Optional Paramters
+  iam_roles         = [module.iam_role.arn]
+  key_arn           = module.kms_key_s3_bucket.arn
+  versioning_option = ""
+
+  lifecycle_rules = [{
+    id                       = "default"
+    status                   = "Enabled"
+    expire_days              = 90
+    noncurrent_days          = 5
+    noncurrent_storage_class = "GLACIER"
+    noncurrent_versions      = 2
+    transition_days          = 30
+    transition_storage_class = "INTELLIGENT_TIERING"
+  }]
 }
 
 /* ToDo: Implement public load balancers */
