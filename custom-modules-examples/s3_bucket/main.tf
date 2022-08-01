@@ -1,7 +1,10 @@
-#tfsec:ignore:aws-s3-enable-bucket-logging
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "this" {
-  #checkov:skip=CKV_AWS_144:We do not want to backup this bucket as part of the demo
-  #checkov:skip=CKV_AWS_18:We do not want to enable access logging as part of the demo
+  #checkov:skip=CKV_AWS_18:Access Logging disabled for demo purposes
+  #checkov:skip=CKV_AWS_19:KMS Encryption defined at stack level and not within this module
+  #checkov:skip=CKV_AWS_21:Versioning defined at stack level and not within this module
+  #checkov:skip=CKV_AWS_144:Replication disabled for demo purposes
+  #checkov:skip=CKV_AWS_145:KMS Encryption defined at stack level and not within this module
   bucket_prefix = "${var.bucket_name}-"
 }
 
