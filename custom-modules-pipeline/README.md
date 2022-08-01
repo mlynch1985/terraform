@@ -34,4 +34,4 @@ This Terraform stack will provision an S3 bucket, CodeCommit repository and Code
 
 ## Authors
 
-Mike Lynch (mlynch1985@gmail.com)
+Mike Lynch ([mlynch1985@gmail.com](mailto:mlynch1985@gmail.com))

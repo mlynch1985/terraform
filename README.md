@@ -54,4 +54,4 @@ terraform {
 
 ## Authors
 
-Mike Lynch (mlynch1985@gmail.com)
+Mike Lynch ([mlynch1985@gmail.com](mailto:mlynch1985@gmail.com))
