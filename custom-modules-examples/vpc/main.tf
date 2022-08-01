@@ -26,7 +26,7 @@ resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "${var.namespace}_${var.environment}_${var.vpc_type}_default"
+    "Name" = "${var.namespace}_${var.environment}_default"
   }
 }
 

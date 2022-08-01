@@ -127,10 +127,10 @@ module "kms_key_asg" {
   ]
 }
 
-module "asg_security_group" {
+module "alb_security_group" {
   source = "../custom-modules-examples/security_group/"
 
-  group_name_prefix = "${var.namespace}-${var.environment}-asg"
+  group_name_prefix = "${var.namespace}-${var.environment}-alb"
   vpc_id            = module.vpc.vpc.id
 
   rules = [
@@ -140,6 +140,34 @@ module "asg_security_group" {
       from_port                = "80"
       protocol                 = "tcp"
       source_security_group_id = null
+      to_port                  = "80"
+      type                     = "ingress"
+    },
+    {
+      cidr_blocks              = "0.0.0.0/0"
+      description              = "allow all outbound"
+      from_port                = "0"
+      protocol                 = "-1"
+      source_security_group_id = null
+      to_port                  = "0"
+      type                     = "egress"
+    }
+  ]
+}
+
+module "asg_security_group" {
+  source = "../custom-modules-examples/security_group/"
+
+  group_name_prefix = "${var.namespace}-${var.environment}-asg"
+  vpc_id            = module.vpc.vpc.id
+
+  rules = [
+    {
+      cidr_blocks              = ""
+      description              = "allow inbound from alb"
+      from_port                = "80"
+      protocol                 = "tcp"
+      source_security_group_id = module.alb_security_group.id
       to_port                  = "80"
       type                     = "ingress"
     },

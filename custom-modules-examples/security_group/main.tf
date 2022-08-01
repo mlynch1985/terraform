@@ -18,8 +18,8 @@ resource "aws_security_group" "this" {
 resource "aws_security_group_rule" "this" {
   for_each = { for rule in var.rules : rule.type => rule }
 
-  cidr_blocks              = [each.value.cidr_blocks != "" ? each.value.cidr_blocks : null] #tfsec:ignore:aws-vpc-no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-egress-sgr
-  description              = each.value.description != "" ? each.value.description : null
+  cidr_blocks              = each.value.cidr_blocks != "" ? [each.value.cidr_blocks] : null #tfsec:ignore:aws-vpc-no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-egress-sgr
+  description              = each.value.description != "" ? each.value.description : ""
   from_port                = each.value.from_port
   protocol                 = each.value.protocol
   security_group_id        = aws_security_group.this.id
