@@ -1,39 +1,49 @@
-KMS Key Module
-===========
+# KMS Key Module
 
-This module will create a single or multi region KMS Key and Key Alias
+This module will create a single or multi region KMS key and key alias.
 
-Required Input Variables
-----------------------
+---
 
-- `key_name` - Specify a friendly name excluding "alias/" to be assigned to the Key Alias
-- `iam_roles` - Provide a list of IAM Role ARNs to grant key usage permission
+## Required Input Variables
 
-Optional Input Variables
-----------------------
+- `iam_roles` - Specify a list of valid IAM Roles to be granted KMS Key Usage access.
+- `key_name` - Specify a valid KMS Key Name to be used for the Alias.
 
-- `enable_multi_region` - Specify either `true` or `false` to enable this KMS key to be multi-region. Defaults to `false`
+---
 
-Usage
------
+## Optional Input Variables
+
+- `enable_key_rotation` - Specify either `true` or `false` to enable automatic key rotation. Defaults to `true`.
+- `enable_multi_region` - Specify either `true` or `false` to enable multi-region support. Defaults to `false`.
+
+---
+
+## Output Variables
+
+- `id` - The KMS Key [Key ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key#key_id)
+- `arn` - The KMS Key [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key#arn)
+- `name` - The KMS Key [Alias](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias#name)
+
+---
+
+## Usage
 
 ```hcl
 module "kms_key" {
-  source = "./modules/kms"
+  source = "./modules/kms_key"
 
-  key_name            = "use1/dev/app1_bucket"
-  iam_roles           = [var.iam_role1, var.iam_role2, var.iam_role3]
+  # Required Parameters
+  iam_roles           = [var.iam_role1.arn, var.iam_role2.arn, var.iam_role3.arn]
+  key_name            = "use1d/app1_bucket"
+
+  # Optional Parameters
+  enable_key_rotation = true
   enable_multi_region = false
 }
 ```
 
-Outputs
-----------------------
+---
 
-- `arn` - The ARN of the KMS Key
-- `name` - The KMS Key Alias name
+## Authors
 
-Authors
-----------------------
-
-mlynch1985@gmail.com
+Mike Lynch ([mlynch1985@gmail.com](mailto:mlynch1985@gmail.com))

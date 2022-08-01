@@ -200,25 +200,22 @@ module "asg" {
     chkconfig httpd on
     EOF
   )
-
-  # Local File User Data Script
-  # user_data = filebase64("userdata.sh")
 }
 
-# module "kms_key_s3_bucket" {
-#   source = "../custom-modules-examples/kms_key/"
+module "kms_key_s3_bucket" {
+  source = "../custom-modules-examples/kms_key/"
 
-#   key_name            = "${var.namespace}/${var.environment}/s3_bucket"
-#   iam_roles           = [module.iam_role.arn]
-#   enable_multi_region = false
-# }
+  key_name            = "${var.namespace}/${var.environment}/s3_bucket"
+  iam_roles           = [module.iam_role.arn]
+  enable_multi_region = false
+}
 
-# module "s3_bucket" {
-#   source = "../custom-modules-examples/s3_bucket/"
+module "s3_bucket" {
+  source = "../custom-modules-examples/s3_bucket/"
 
-#   bucket_name = "${var.namespace}-${var.environment}-app1"
-#   key_arn     = module.kms_key_s3_bucket.arn
-#   iam_roles   = [module.iam_role.arn]
-# }
+  bucket_name = "${var.namespace}-${var.environment}-app1"
+  key_arn     = module.kms_key_s3_bucket.arn
+  iam_roles   = [module.iam_role.arn]
+}
 
 /* ToDo: Implement public load balancers */

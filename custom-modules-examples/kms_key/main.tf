@@ -1,6 +1,6 @@
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_policy_document" "kms_key_policy" {
+data "aws_iam_policy_document" "this" {
   #checkov:skip=CKV_AWS_109:We are enabling access via IAM Roles and Users
   #checkov:skip=CKV_AWS_111:We are enabling access via IAM Roles and Users
   statement {
@@ -35,14 +35,14 @@ data "aws_iam_policy_document" "kms_key_policy" {
   }
 }
 
-resource "aws_kms_key" "kms_key" {
-  deletion_window_in_days = 30
-  enable_key_rotation     = true
+resource "aws_kms_key" "this" {
+  deletion_window_in_days = 7
+  enable_key_rotation     = var.enable_key_rotation
   multi_region            = var.enable_multi_region
-  policy                  = data.aws_iam_policy_document.kms_key_policy.json
+  policy                  = data.aws_iam_policy_document.this.json
 }
 
-resource "aws_kms_alias" "kms_key_alias" {
+resource "aws_kms_alias" "this" {
   name          = "alias/${var.key_name}"
-  target_key_id = aws_kms_key.kms_key.key_id
+  target_key_id = aws_kms_key.this.key_id
 }

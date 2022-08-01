@@ -1,11 +1,13 @@
-variable "key_name" {
-  description = "Please specify a valid KMS Key Name to be used for the Alias"
-  type        = string
+variable "enable_key_rotation" {
+  description = "Please specify either \"true\" or \"false\" to enable automatic key rotation"
+  type        = bool
+  default     = true
+}
 
-  validation {
-    condition     = can(regex("^[a-zA-Z0-9-_/]{1,32}$", var.key_name))
-    error_message = "Please specify a valid KMS Key Name (^[a-zA-Z0-9-_/]{1,32}$)"
-  }
+variable "enable_multi_region" {
+  description = "Please specify either \"true\" or \"false\" to enable multi-region support"
+  type        = bool
+  default     = false
 }
 
 variable "iam_roles" {
@@ -20,8 +22,12 @@ variable "iam_roles" {
   }
 }
 
-variable "enable_multi_region" {
-  description = "Please specify either \"true\" or \"false\" to enable Multi-Region support for the KMS Key"
-  type        = bool
-  default     = false
+variable "key_name" {
+  description = "Please specify a valid KMS Key Name to be used for the Alias"
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9-_/]{1,32}$", var.key_name))
+    error_message = "Please specify a valid KMS Key Name (^[a-zA-Z0-9-_/]{1,32}$)"
+  }
 }
