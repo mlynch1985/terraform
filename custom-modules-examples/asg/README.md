@@ -55,34 +55,34 @@ module "asg" {
   source = "./modules/asg"
 
   # Required Parameters
-  image_id                  = "ami-0a1b2c3d4e5f6g7h8i9"
-  instance_type             = "c5.xlarge"
-  kms_key_arn               = "arn:aws:kms:us-east-1:123456789012:key/1a2b3c4d-1a2b-3c4d-5e6f-1a2b3c4d5e6f"
-  server_name               = "app_server"
-  subnets                   = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
-  vpc_security_group_ids    = ["sg-1a2b3c4d5e", "sg-6f7g8h9i0k"]
+  image_id               = "ami-0a1b2c3d4e5f6g7h8i9"
+  instance_type          = "c5.xlarge"
+  kms_key_arn            = "arn:aws:kms:us-east-1:123456789012:key/1a2b3c4d-1a2b-3c4d-5e6f-1a2b3c4d5e6f"
+  server_name            = "app_server"
+  subnets                = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
+  vpc_security_group_ids = ["sg-1a2b3c4d5e", "sg-6f7g8h9i0k"]
 
   # Optional Parameters
-  healthcheck_grace_period  = 300
-  healthcheck_type          = "ELB"
-  iam_instance_profile      = "ec2_instance_profile"
-  max_size                  = 6
-  min_size                  = 1
+  healthcheck_grace_period = 300
+  healthcheck_type         = "ELB"
+  iam_instance_profile     = "ec2_instance_profile"
+  max_size                 = 6
+  min_size                 = 1
 
   block_device_mappings = [
     {
-      device_name: "/dev/xvda"
-      volume_type: "gp3"
-      volume_size: "50"
-      iops: "3000"
-      delete_on_termination: true
+      device_name : "/dev/xvda"
+      volume_type : "gp3"
+      volume_size : "50"
+      iops : "3000"
+      delete_on_termination : true
     },
     {
-      device_name: "xvdf"
-      volume_type: "gp3"
-      volume_size: "100"
-      iops: null
-      delete_on_termination: true
+      device_name : "xvdf"
+      volume_type : "gp3"
+      volume_size : "100"
+      iops : null
+      delete_on_termination : true
     }
   ]
 

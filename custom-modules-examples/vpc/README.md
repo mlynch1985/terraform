@@ -42,8 +42,8 @@ module "vpc" {
   source = "./modules/vpc"
 
   # Required Parameters
-  environment          = "dev"
-  namespace            = "use1d"
+  environment = "dev"
+  namespace   = "use1d"
 
   # Optional Parameters
   cidr_block           = "10.0.0.0/16"
@@ -56,7 +56,6 @@ module "vpc" {
   target_az_count      = 3
   tgw_id               = ""
   vpc_type             = "hub"
-
 }
 ```
 

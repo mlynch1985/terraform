@@ -47,11 +47,13 @@ data "aws_ami" "amazonlinux2" {
 module "ipam" {
   source = "../custom-modules-examples/ipam/"
 
+  # Required Parameters
+  ipam_cidr = "10.0.0.0/8"
+
   # Optional Parameters
   allocation_default_netmask_length = 20
   allocation_max_netmask_length     = 28
   allocation_min_netmask_length     = 16
-  ipam_cidr                         = "10.0.0.0/8"
 }
 
 module "vpc" {
@@ -111,8 +113,11 @@ resource "aws_iam_service_linked_role" "autoscaling" {
 module "kms_key_asg" {
   source = "../custom-modules-examples/kms_key/"
 
-  iam_roles           = [module.iam_role.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"]
-  key_name            = "${var.namespace}/${var.environment}/asg"
+  # Required Parameters
+  iam_roles = [module.iam_role.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"]
+  key_name  = "${var.namespace}/${var.environment}/asg"
+
+  # Optional Parameters
   enable_key_rotation = true
   enable_multi_region = false
 
@@ -205,8 +210,11 @@ module "asg" {
 module "kms_key_s3_bucket" {
   source = "../custom-modules-examples/kms_key/"
 
-  iam_roles           = [module.iam_role.arn]
-  key_name            = "${var.namespace}/${var.environment}/s3_bucket"
+  # Required Parameters
+  iam_roles = [module.iam_role.arn]
+  key_name  = "${var.namespace}/${var.environment}/s3_bucket"
+
+  # Optional Parameters
   enable_key_rotation = true
   enable_multi_region = false
 }

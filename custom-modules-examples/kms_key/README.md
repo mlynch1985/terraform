@@ -33,8 +33,8 @@ module "kms_key" {
   source = "./modules/kms_key"
 
   # Required Parameters
-  iam_roles           = [var.iam_role1.arn, var.iam_role2.arn, var.iam_role3.arn]
-  key_name            = "use1d/app1_bucket"
+  iam_roles = [var.iam_role1.arn, var.iam_role2.arn, var.iam_role3.arn]
+  key_name  = "use1d/app1_bucket"
 
   # Optional Parameters
   enable_key_rotation = true

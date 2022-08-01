@@ -45,7 +45,7 @@ module "security_group" {
 
   # Required Parameters
   group_name_prefix = "use1d-ec2"
-  vpc_id = "vpc-1a2b3c4d5e6f7g8h9"
+  vpc_id            = "vpc-1a2b3c4d5e6f7g8h9"
 
   # Optional Parameters
   rules = [

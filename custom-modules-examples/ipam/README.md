@@ -6,7 +6,7 @@ This module creates an IPAM Pool and allocates one CIDR into the current region.
 
 ## Required Input Variables
 
-- **None**
+- `ipam_cidr` - Specify the IPAM Pool CIDR.
 
 ---
 
@@ -15,7 +15,6 @@ This module creates an IPAM Pool and allocates one CIDR into the current region.
 - `allocation_default_netmask_length` - Specify the default netmask length for new VPC CIDRs. Default is `20`.
 - `allocation_max_netmask_length` - Specify the maximum netmask length for new VPC CIDRs. Default is `28`.
 - `allocation_min_netmask_length` - Specify the minimum netmask length for new VPC CIDRs. Default is `16`.
-- `ipam_cidr` - Specify the IPAM Pool CIDR. Default is `10.0.0.0/8`.
 
 ---
 
@@ -35,11 +34,13 @@ This module creates an IPAM Pool and allocates one CIDR into the current region.
 module "ipam_pool" {
   source = "./modules/ipam"
 
+  # Required Parameters
+  ipam_cidr = "10.0.0.0/8"
+
   # Optional Parameters
   allocation_default_netmask_length = 20
   allocation_max_netmask_length     = 28
   allocation_min_netmask_length     = 16
-  ipam_cidr                         = "10.0.0.0/8"
 }
 ```
 
