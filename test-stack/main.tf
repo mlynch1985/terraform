@@ -70,7 +70,7 @@ module "vpc" {
   enable_flow_logs     = true
   ipam_pool_id         = module.ipam.pool_id
   ipam_pool_netmask    = 20
-  subnet_size_offset   = 4
+  subnet_size_offset   = 6
   target_az_count      = 3
   tgw_id               = ""
   vpc_type             = "hub"
@@ -270,4 +270,53 @@ module "s3_bucket" {
   }]
 }
 
-/* ToDo: Implement public load balancers */
+module "elb" {
+  source = "../custom-modules-examples/elb/"
+
+  # Required Parameters
+  is_internal = false
+  lb_type     = "application"
+  name        = "${var.namespace}-${var.environment}"
+  subnets     = module.vpc.public_subnets[*].id
+
+  # Optional Parameters
+  bucket_name                      = ""
+  drop_invalid_header_fields       = true
+  enable_access_logs               = false
+  enable_cross_zone_load_balancing = null
+  security_groups                  = [module.alb_security_group.id]
+
+  listeners = [
+    {
+      certificate_arn   = ""
+      listener_port     = 80
+      listener_protocol = "HTTP" # HTTP|HTTPS|TCP|TLS
+      ssl_policy        = ""     # HTTPS|TLS
+
+      default_action = {
+        action_type = "fixed-response" # fixed-response|forward|redirect
+
+        fixed_response = [{
+          content_type      = "text/plain" # text/plain | text/css | text/html
+          fixed_status_code = 200          # 200-500
+          message_body      = "Hello World!"
+        }]
+
+        forward = [{
+          enable_stickiness   = null
+          stickiness_duration = 0
+          target_group_arn    = ""
+          target_group_weight = 0
+        }]
+
+        redirect = [{
+          redirect_host        = "" # #{host}
+          redirect_path        = ""
+          redirect_port        = 0  # #{port}
+          redirect_protocol    = "" # HTTP|HTTPS|#{protocol}
+          redirect_status_code = "" # HTTP_301 | HTTP_302
+        }]
+      }
+    }
+  ]
+}
