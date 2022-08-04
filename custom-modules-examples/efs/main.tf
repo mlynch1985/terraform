@@ -1,4 +1,5 @@
 resource "aws_efs_file_system" "this" {
+  #checkov:skip=CKV_AWS_184:KMS key is parameterized
   encrypted                       = true
   kms_key_id                      = var.kms_key_arn != "" ? var.kms_key_arn : null
   performance_mode                = var.performance_mode
