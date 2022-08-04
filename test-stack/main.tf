@@ -188,6 +188,55 @@ module "asg_security_group" {
   ]
 }
 
+module "efs_security_group" {
+  source = "../custom-modules-examples/security_group/"
+
+  group_name_prefix = "${var.namespace}-${var.environment}-efs"
+  vpc_id            = module.vpc.vpc.id
+
+  rules = [
+    {
+      cidr_blocks              = ""
+      description              = "allow inbound from asg"
+      from_port                = "2049"
+      protocol                 = "tcp"
+      source_security_group_id = module.asg_security_group.id
+      to_port                  = "2049"
+      type                     = "ingress"
+    },
+    {
+      cidr_blocks              = "0.0.0.0/0"
+      description              = "allow all outbound"
+      from_port                = "0"
+      protocol                 = "-1"
+      source_security_group_id = null
+      to_port                  = "0"
+      type                     = "egress"
+    }
+  ]
+}
+
+module "efs" {
+  source = "../custom-modules-examples/efs/"
+
+  # Require Parameters
+  enable_lifecycle_policy = true
+  iam_role                = module.iam_role.arn
+  performance_mode        = "generalPurpose"
+  security_groups         = [module.efs_security_group.id]
+  subnets                 = module.vpc.private_subnets[*].id
+  throughput_mode         = "bursting"
+
+  # Optional Parameters
+  kms_key_arn            = ""
+  provisioned_throughput = 0
+
+  # Ensure the Security Group creation has completed prior to creating EFS share
+  depends_on = [
+    module.efs_security_group.id
+  ]
+}
+
 module "asg" {
   source = "../custom-modules-examples/asg/"
 
@@ -215,29 +264,29 @@ module "asg" {
       throughput : 0
       volume_type : "gp3"
       volume_size : 50
-    },
-    {
-      device_name : "xvdf"
-      delete_on_termination : true
-      encrypted : true
-      iops : 0
-      kms_key_id : module.kms_key_asg.arn
-      throughput : 0
-      volume_type : "gp3"
-      volume_size : 100
     }
   ]
 
   # Inline User Data Script
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    yum upgrade -y
-    yum install -y httpd
-    echo "Hello World from $(hostname -f)" > /var/www/html/index.html
+    amazon-linux-extras install -y epel
+    yum install -q -y amazon-efs-utils
+    mkdir -p /var/www/html
+    echo "${module.efs.id}:/ /var/www/html efs _netdev,tls,iam 0 0" >> /etc/fstab
+    mount -a
+    yum install -y -q httpd
+    echo "Hello World from $(hostname -f)" >> /var/www/html/index.html
     service httpd start
     chkconfig httpd on
+    yum upgrade -y -q
     EOF
   )
+
+  # Ensure the EFS Share creation completed prior to creating the ASG
+  depends_on = [
+    module.efs.id
+  ]
 }
 
 module "kms_key_s3_bucket" {
