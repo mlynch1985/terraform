@@ -1,12 +1,11 @@
-#tfsec:ignore:aws-elb-http-not-used aws-elb-alb-not-public
 resource "aws_lb" "this" {
-  #checkov:skip=CKV_AWS_28:Not using a WAF for demo purposes only
   #checkov:skip=CKV_AWS_91:Access Logging is parameterized
   #checkov:skip=CKV_AWS_150:Disabling terminatio protection for demo purposes only
+  #checkov:skip=CKV2_AWS_28:Not using a WAF for demo purposes only
   drop_invalid_header_fields       = var.lb_type == "application" ? var.drop_invalid_header_fields : null
   enable_cross_zone_load_balancing = var.lb_type == "network" ? var.enable_cross_zone_load_balancing : null
   idle_timeout                     = var.lb_type == "application" ? var.idle_timeout : null
-  internal                         = var.is_internal
+  internal                         = var.is_internal #tfsec:ignore:aws-elb-alb-not-public
   load_balancer_type               = var.lb_type
   security_groups                  = var.lb_type == "application" ? var.security_groups : null
   subnets                          = var.subnets
@@ -29,7 +28,7 @@ resource "aws_lb_listener" "this" {
   certificate_arn   = each.value.certificate_arn != "" ? each.value.certificate_arn : null
   load_balancer_arn = aws_lb.this.arn
   port              = each.value.listener_port != 0 ? each.value.listener_port : null
-  protocol          = each.value.listener_protocol != "" ? each.value.listener_protocol : null
+  protocol          = each.value.listener_protocol != "" ? each.value.listener_protocol : null #tfsec:ignore:aws-elb-http-not-used
   ssl_policy        = each.value.ssl_policy != "" ? each.value.ssl_policy : null
 
   default_action {

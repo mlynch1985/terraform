@@ -1,4 +1,3 @@
-/* ToDo: Figure out why the AutoScaling Policy wants to update on each apply */
 resource "aws_launch_template" "this" {
   image_id               = var.image_id
   instance_type          = var.instance_type
@@ -13,13 +12,13 @@ resource "aws_launch_template" "this" {
       device_name = block_device_mappings.value.device_name
 
       ebs {
-        delete_on_termination = block_device_mappings.value.delete_on_termination == false ? false : true
-        encrypted             = block_device_mappings.value.encrypted == true ? true : false
+        delete_on_termination = block_device_mappings.value.delete_on_termination
+        encrypted             = block_device_mappings.value.encrypted
         iops                  = block_device_mappings.value.iops >= 3000 ? block_device_mappings.value.iops : null
         kms_key_id            = block_device_mappings.value.kms_key_id != "" ? block_device_mappings.value.kms_key_id : null
         throughput            = block_device_mappings.value.throughput >= 125 ? block_device_mappings.value.throughput : null
-        volume_size           = block_device_mappings.value.volume_size >= 25 ? block_device_mappings.value.volume_size : 50
-        volume_type           = block_device_mappings.value.volume_type != "" ? block_device_mappings.value.volume_type : "gp3"
+        volume_size           = block_device_mappings.value.volume_size
+        volume_type           = block_device_mappings.value.volume_type
       }
     }
   }
@@ -78,14 +77,13 @@ resource "aws_autoscaling_group" "this" {
 resource "aws_autoscaling_policy" "this" {
   name                   = "${var.server_name}-cpu-based-scaling"
   autoscaling_group_name = aws_autoscaling_group.this.name
-  adjustment_type        = "ChangeInCapacity"
   policy_type            = "TargetTrackingScaling"
 
   target_tracking_configuration {
+    target_value = 80
+
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
-
-    target_value = 80
   }
 }
