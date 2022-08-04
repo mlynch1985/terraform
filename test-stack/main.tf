@@ -74,6 +74,11 @@ module "vpc" {
   target_az_count      = 3
   tgw_id               = ""
   vpc_type             = "hub"
+
+  # Ensures the IPAM is fully established before trying to provision a CIDR for this VPC
+  depends_on = [
+    module.ipam.cidr
+  ]
 }
 
 module "iam_role" {
