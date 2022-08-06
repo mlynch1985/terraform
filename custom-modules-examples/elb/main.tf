@@ -1,6 +1,8 @@
 resource "aws_lb" "this" {
   #checkov:skip=CKV_AWS_91:Access Logging is parameterized
+  #checkov:skip=CKV_AWS_131:Drop invalid headers is parameterized
   #checkov:skip=CKV_AWS_150:Disabling terminatio protection for demo purposes only
+  #checkov:skip=CKV_AWS_152:Cross-Zone load balancing is parameterized
   #checkov:skip=CKV2_AWS_28:Not using a WAF for demo purposes only
   drop_invalid_header_fields       = var.lb_type == "application" ? var.drop_invalid_header_fields : null
   enable_cross_zone_load_balancing = var.lb_type == "network" ? var.enable_cross_zone_load_balancing : null
