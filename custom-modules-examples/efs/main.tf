@@ -48,9 +48,9 @@ EOF
 }
 
 resource "aws_efs_mount_target" "this" {
-  for_each = var.subnets
+  count = length(var.subnets)
 
   file_system_id  = aws_efs_file_system.this.id
   security_groups = var.security_groups
-  subnet_id       = each.value
+  subnet_id       = var.subnets[count.index]
 }

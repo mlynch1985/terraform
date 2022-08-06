@@ -37,7 +37,7 @@ variable "security_groups" {
 
 variable "subnets" {
   description = "Specify a list of subnet IDs to create mount targets in"
-  type        = set(string)
+  type        = list(string)
 
   validation {
     condition = alltrue([

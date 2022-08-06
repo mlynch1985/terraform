@@ -48,14 +48,18 @@ resource "aws_lb_listener" "this" {
       for_each = each.value.default_action.action_type == "forward" ? each.value.default_action.forward : []
 
       content {
-        target_group {
-          arn    = forward.value.target_group_arn != "" ? forward.value.target_group_arn : null
-          weight = forward.value.target_group_weight != 0 ? forward.value.target_group_weight : null
+        dynamic "target_group" {
+          for_each = forward.value.target_group_arn
+
+          content {
+            arn    = target_group.value != "" ? target_group.value : null
+            weight = forward.value.target_group_weight != 0 ? forward.value.target_group_weight : null
+          }
         }
 
         stickiness {
-          duration = forward.value.stickiness_duration != 0 ? forward.value.stickiness_duration : null
-          enabled  = forward.value.enable_stickiness != "" ? forward.value.enable_stickiness : null
+          duration = forward.value.stickiness_duration != 0 ? forward.value.stickiness_duration : 3600
+          enabled  = forward.value.enable_stickiness != "" ? forward.value.enable_stickiness : false
         }
       }
     }

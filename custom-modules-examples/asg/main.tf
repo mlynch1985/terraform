@@ -60,6 +60,7 @@ resource "aws_autoscaling_group" "this" {
   min_size                  = var.min_size
   health_check_grace_period = var.healthcheck_grace_period
   health_check_type         = var.healthcheck_type
+  target_group_arns         = [for group in aws_lb_target_group.this : group.arn]
   vpc_zone_identifier       = var.subnets
 
   launch_template {
@@ -85,5 +86,32 @@ resource "aws_autoscaling_policy" "this" {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
+  }
+}
+
+resource "aws_lb_target_group" "this" {
+  for_each = { for group in var.target_groups : group.group_port => group }
+
+  deregistration_delay = each.value.deregistration_delay != 0 ? each.value.deregistration_delay : null
+  port                 = each.value.group_port
+  protocol             = each.value.group_protocol
+  target_type          = each.value.target_type != "" ? each.value.target_type : "instance"
+  vpc_id               = each.value.vpc_id
+
+  health_check {
+    enabled             = each.value.enable_healthcheck
+    healthy_threshold   = each.value.healthy_threshold != 0 ? each.value.healthy_threshold : null
+    interval            = each.value.health_check_interval != 0 ? each.value.health_check_interval : null
+    matcher             = each.value.health_check_matcher != "" ? each.value.health_check_matcher : null
+    path                = each.value.health_check_path != "" ? each.value.health_check_path : null
+    port                = each.value.health_check_port != 0 ? each.value.health_check_port : null
+    protocol            = each.value.health_check_protocol != "" ? each.value.health_check_protocol : null
+    timeout             = each.value.health_check_timeout != 0 ? each.value.health_check_timeout : null
+    unhealthy_threshold = each.value.unhealthy_threshold != 0 ? each.value.unhealthy_threshold : null
+  }
+
+  stickiness {
+    enabled = each.value.enable_stickiness
+    type    = each.value.stickiness_type != "" ? each.value.stickiness_type : "lb_cookie"
   }
 }

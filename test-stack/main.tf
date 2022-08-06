@@ -44,17 +44,17 @@ data "aws_ami" "amazonlinux2" {
   }
 }
 
-module "ipam" {
-  source = "../custom-modules-examples/ipam/"
+# module "ipam" {
+#   source = "../custom-modules-examples/ipam/"
 
-  # Required Parameters
-  ipam_cidr = "10.0.0.0/8"
+#   # Required Parameters
+#   ipam_cidr = "10.0.0.0/8"
 
-  # Optional Parameters
-  allocation_default_netmask_length = 20
-  allocation_max_netmask_length     = 28
-  allocation_min_netmask_length     = 16
-}
+#   # Optional Parameters
+#   allocation_default_netmask_length = 20
+#   allocation_max_netmask_length     = 28
+#   allocation_min_netmask_length     = 16
+# }
 
 module "vpc" {
   source = "../custom-modules-examples/vpc/"
@@ -64,21 +64,21 @@ module "vpc" {
   namespace   = var.namespace
 
   # Optional Parameters
-  cidr_block           = ""
+  cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
   enable_flow_logs     = true
-  ipam_pool_id         = module.ipam.pool_id
-  ipam_pool_netmask    = 20
-  subnet_size_offset   = 6
-  target_az_count      = 3
-  tgw_id               = ""
-  vpc_type             = "hub"
+  # ipam_pool_id         = module.ipam.pool_id
+  # ipam_pool_netmask    = 20
+  subnet_size_offset = 6
+  target_az_count    = 3
+  tgw_id             = ""
+  vpc_type           = "hub"
 
   # Ensures the IPAM is fully established before trying to provision a CIDR for this VPC
-  depends_on = [
-    module.ipam.cidr
-  ]
+  # depends_on = [
+  #   module.ipam.cidr
+  # ]
 }
 
 module "iam_role" {
@@ -256,14 +256,35 @@ module "asg" {
 
   block_device_mappings = [
     {
-      device_name : "/dev/xvda"
-      delete_on_termination : true
-      encrypted : true
-      iops : 0
-      kms_key_id : module.kms_key_asg.arn
-      throughput : 0
-      volume_type : "gp3"
-      volume_size : 50
+      device_name           = "/dev/xvda"
+      delete_on_termination = true
+      encrypted             = true
+      iops                  = 0
+      kms_key_id            = module.kms_key_asg.arn
+      throughput            = 0
+      volume_type           = "gp3"
+      volume_size           = 50
+    }
+  ]
+
+  target_groups = [
+    {
+      deregistration_delay  = 0    # 300 seconds
+      enable_healthcheck    = true # true
+      enable_stickiness     = true # false
+      group_port            = 80
+      group_protocol        = "HTTP"
+      health_check_interval = 0 # 30
+      health_check_matcher  = "200-299"
+      health_check_path     = "/"
+      health_check_port     = 0  # traffic_port
+      health_check_protocol = "" # HTTP
+      health_check_timeout  = 0  # 5 seconds
+      healthy_threshold     = 0  # 3 count
+      stickiness_type       = "" # lb_cookie
+      target_type           = "" # instance
+      unhealthy_threshold   = 0  # 3 count
+      vpc_id                = module.vpc.vpc.id
     }
   ]
 
@@ -348,18 +369,18 @@ module "elb" {
       ssl_policy        = ""     # HTTPS|TLS
 
       default_action = {
-        action_type = "fixed-response" # fixed-response|forward|redirect
+        action_type = "forward" # fixed-response|forward|redirect
 
         fixed_response = [{
-          content_type      = "text/plain" # text/plain | text/css | text/html
-          fixed_status_code = 200          # 200-500
-          message_body      = "Hello World!"
+          content_type      = "" # text/plain | text/css | text/html
+          fixed_status_code = 0  # 200-500
+          message_body      = ""
         }]
 
         forward = [{
-          enable_stickiness   = null
-          stickiness_duration = 0
-          target_group_arn    = ""
+          enable_stickiness   = true # false
+          stickiness_duration = 3600 # 3600 seconds / 10 hours
+          target_group_arn    = [for group in module.asg.target_groups : group.arn]
           target_group_weight = 0
         }]
 

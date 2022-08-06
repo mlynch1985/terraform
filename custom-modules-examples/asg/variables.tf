@@ -85,17 +85,6 @@ variable "block_device_mappings" {
   }]
 }
 
-variable "desired_capacity" {
-  description = "The desired capacity of the auto scaling group"
-  type        = number
-  default     = 1
-
-  validation {
-    condition     = var.desired_capacity >= 1 && var.desired_capacity <= 16
-    error_message = "Please specify a valid desired capacity between 1 and 16"
-  }
-}
-
 variable "healthcheck_grace_period" {
   description = "Time in seconds after instance launch before performing healthchecks"
   type        = number
@@ -143,6 +132,29 @@ variable "min_size" {
     condition     = var.min_size >= 1 && var.min_size <= 16
     error_message = "Please specify a min size between 1 and 16"
   }
+}
+
+variable "target_groups" {
+  description = "Specify a list of target group maps to create"
+  type = list(object({
+    deregistration_delay  = number
+    enable_healthcheck    = bool
+    enable_stickiness     = bool
+    group_port            = number
+    group_protocol        = string
+    health_check_interval = number
+    health_check_matcher  = string
+    health_check_path     = string
+    health_check_port     = number
+    health_check_protocol = string
+    health_check_timeout  = number
+    healthy_threshold     = number
+    stickiness_type       = string
+    target_type           = string
+    unhealthy_threshold   = number
+    vpc_id                = string
+  }))
+  default = []
 }
 
 variable "user_data" {

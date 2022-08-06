@@ -97,7 +97,7 @@ variable "listeners" {
       forward = list(object({
         enable_stickiness   = bool
         stickiness_duration = number
-        target_group_arn    = string
+        target_group_arn    = any
         target_group_weight = number
       }))
 

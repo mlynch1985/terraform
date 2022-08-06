@@ -36,15 +36,40 @@ This module creates a Launch Template and an Auto Scaling Group.
   volume_size           = 50
   volume_type           = "gp3"
 }]
+
+```
+
+- `target_groups` - Specify a list of target group maps to attach to each to the ASG. Default:
+
+```hcl
+[{
+      deregistration_delay  = 0 # 300 seconds
+      enable_healthcheck    = true # true
+      enable_stickiness     = true # false
+      group_port            = 80
+      group_protocol        = "HTTP"
+      health_check_interval = 0 # 30
+      health_check_matcher  = "200-299"
+      health_check_path     = "/"
+      health_check_port     = 0  # traffic_port
+      health_check_protocol = "" # HTTP
+      health_check_timeout  = 0  # 5 seconds
+      healthy_threshold     = 0  # 3 count
+      stickiness_type       = "" # lb_cookie
+      target_type           = "" # instance
+      unhealthy_threshold   = 0  # 3 count
+      vpc_id                = vpc-1a2b3c4d5e6f7g8h9
+}]
 ```
 
 ---
 
 ## Output Variables
 
-- `id` - The AutoScalingGroup [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#id)
-- `arn` - The AutoScalingGroup [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#arn)
-- `name` - The AutoScalingGroup [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#name)
+- `asg_id` - The AutoScalingGroup [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#id)
+- `asg_arn` - The AutoScalingGroup [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#arn)
+- `asg_name` - The AutoScalingGroup [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#name)
+- `target_groups` - List of [Target Groups](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/target_group)
 
 ---
 
@@ -71,18 +96,39 @@ module "asg" {
 
   block_device_mappings = [
     {
-      device_name : "/dev/xvda"
-      volume_type : "gp3"
-      volume_size : "50"
-      iops : "3000"
-      delete_on_termination : true
+      device_name = "/dev/xvda"
+      volume_type = "gp3"
+      volume_size = "50"
+      iops = "3000"
+      delete_on_termination = true
     },
     {
-      device_name : "xvdf"
-      volume_type : "gp3"
-      volume_size : "100"
-      iops : null
-      delete_on_termination : true
+      device_name = "xvdf"
+      volume_type = "gp3"
+      volume_size = "100"
+      iops = null
+      delete_on_termination = true
+    }
+  ]
+
+  target_groups = [
+    {
+      deregistration_delay  = 0 # 300 seconds
+      enable_healthcheck    = true # true
+      enable_stickiness     = true # false
+      group_port            = 80
+      group_protocol        = "HTTP"
+      health_check_interval = 0 # 30
+      health_check_matcher  = "200-299"
+      health_check_path     = "/"
+      health_check_port     = 0  # traffic_port
+      health_check_protocol = "" # HTTP
+      health_check_timeout  = 0  # 5 seconds
+      healthy_threshold     = 0  # 3 count
+      stickiness_type       = "" # lb_cookie
+      target_type           = "" # instance
+      unhealthy_threshold   = 0  # 3 count
+      vpc_id                = vpc-1a2b3c4d5e6f7g8h9
     }
   ]
 

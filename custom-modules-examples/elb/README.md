@@ -61,18 +61,18 @@ module "elb" {
       ssl_policy        = "" # HTTPS|TLS
 
       default_action = {
-        action_type = "fixed-response" # fixed-response|forward|redirect
+        action_type = "forward" # fixed-response|forward|redirect
 
         fixed_response = [{
-          content_type      = "text/plain" # text/plain | text/css | text/html
-          fixed_status_code = 200 # 200-500
-          message_body      = "Hello World!"
+          content_type      = "" # text/plain | text/css | text/html
+          fixed_status_code = 0 # 200-500
+          message_body      = ""
         }]
 
         forward = [{
-          enable_stickiness   = null
-          stickiness_duration = 0
-          target_group_arn    = ""
+          enable_stickiness   = true # false
+          stickiness_duration = 3600 # 3600 seconds / 10 hours
+          target_group_arn    = [for group in module.asg.target_groups : group.arn]
           target_group_weight = 0
         }]
 
