@@ -1,0 +1,6 @@
+creator      = "Mike Lynch"
+environment  = "dev"
+namespace    = "mltest"
+organization = "Lynchbros"
+owner        = "Mike Lynch"
+region       = "us-east-1"
