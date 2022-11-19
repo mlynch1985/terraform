@@ -59,6 +59,7 @@ resource "aws_subnet" "hub-public" {
   vpc_id            = aws_vpc.hub.id
   cidr_block        = cidrsubnet(aws_vpc.hub.cidr_block, 4, count.index)
   availability_zone = data.aws_availability_zones.zones.names[count.index]
+  map_public_ip_on_launch = false
 
   tags = {
     "Name" = "hub-public-${local.az_index[count.index]}",
@@ -72,6 +73,7 @@ resource "aws_subnet" "hub-private" {
   vpc_id            = aws_vpc.hub.id
   cidr_block        = cidrsubnet(aws_vpc.hub.cidr_block, 4, count.index + 4)
   availability_zone = data.aws_availability_zones.zones.names[count.index]
+  map_public_ip_on_launch = false
 
   tags = {
     "Name" = "hub-private-${local.az_index[count.index]}",
@@ -85,6 +87,7 @@ resource "aws_subnet" "hub-tgw" {
   vpc_id            = aws_vpc.hub.id
   cidr_block        = cidrsubnet(aws_vpc.hub.cidr_block, 4, count.index + 8)
   availability_zone = data.aws_availability_zones.zones.names[count.index]
+  map_public_ip_on_launch = false
 
   tags = {
     "Name" = "hub-tgw-${local.az_index[count.index]}",
@@ -151,6 +154,7 @@ resource "aws_internet_gateway" "hub-igw" {
 }
 
 resource "aws_eip" "hub-ngw" {
+  #checkov:skip=CKV2_AWS_19:We are intentionally not assigning these to EC2 Instances but rather NAT Gateways as part of this demo
   count = 4
 
   tags = {
