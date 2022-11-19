@@ -21,25 +21,30 @@ provider "aws" {
   }
 }
 
-locals {
-  az_index = ["a", "b", "c", "d", "e", "f"]
+module "ipam" {
+  source = "./modules/ipam/"
+
+  allocation_default_netmask_length = 16
+  cidr = "10.0.0.0/8"
+  region = var.region
 }
 
-data "aws_caller_identity" "current" {}
+module "vpc-hub" {
+  source = "./modules/vpc-hub/"
 
-data "aws_availability_zones" "zones" {
-  state = "available"
+  ipam_pool_id = module.ipam.pool_id
+  ipam_pool_netmask= 16
+  subnet_size_offset = 4
+  target_az_count = 4
+  tgw_cidr = module.ipam.cidr
 }
 
-data "aws_ami" "amazonlinux2" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-gp2"]
-  }
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
+module "vpc-spoke1" {
+  source = "./modules/vpc-spoke/"
+
+  ipam_pool_id = module.ipam.pool_id
+  ipam_pool_netmask= 16
+  subnet_size_offset = 4
+  target_az_count = 4
+  tgw_id = module.vpc-hub.tgw_id
 }
