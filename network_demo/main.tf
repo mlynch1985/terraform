@@ -1,4 +1,12 @@
 terraform {
+  cloud {
+    organization = "lynchbros"
+
+    workspaces {
+      name = "ml-test"
+    }
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
