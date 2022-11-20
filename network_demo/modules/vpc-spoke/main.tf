@@ -1,5 +1,5 @@
+#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 resource "aws_vpc" "spoke" {
-  #tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
   #checkov:skip=CKV2_AWS_11:Ensure VPC flow logging is enabled in all VPCs
   ipv4_ipam_pool_id   = var.ipam_pool_id
   ipv4_netmask_length = var.ipam_pool_netmask
