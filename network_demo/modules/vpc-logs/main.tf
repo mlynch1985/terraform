@@ -1,6 +1,8 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "kms_key_policy" {
+  #checkov:skip=CKV_AWS_109:Ensure IAM policies does not allow permissions management / resource exposure without constraints
+  #checkov:skip=CKV_AWS_111:Ensure IAM policies does not allow write access without constraints
   statement {
     sid    = "Enable Admin Management"
     effect = "Allow"
