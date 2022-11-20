@@ -25,26 +25,33 @@ module "ipam" {
   source = "./modules/ipam/"
 
   allocation_default_netmask_length = 16
-  cidr = "10.0.0.0/8"
-  region = var.region
+  cidr                              = "10.0.0.0/8"
+  region                            = var.region
 }
 
 module "vpc-hub" {
   source = "./modules/vpc-hub/"
 
-  ipam_pool_id = module.ipam.pool_id
-  ipam_pool_netmask= 16
+  ipam_pool_id       = module.ipam.pool_id
+  ipam_pool_netmask  = 16
   subnet_size_offset = 4
-  target_az_count = 4
-  tgw_cidr = module.ipam.cidr
+  target_az_count    = 4
+  tgw_cidr           = module.ipam.cidr
 }
 
 module "vpc-spoke1" {
   source = "./modules/vpc-spoke/"
 
-  ipam_pool_id = module.ipam.pool_id
-  ipam_pool_netmask= 16
+  ipam_pool_id       = module.ipam.pool_id
+  ipam_pool_netmask  = 16
   subnet_size_offset = 4
-  target_az_count = 4
-  tgw_id = module.vpc-hub.tgw_id
+  target_az_count    = 4
+  tgw_id             = module.vpc-hub.tgw_id
+}
+
+module "vpc-flow-logs" {
+  source = "./modules/vpc-logs/"
+
+  region  = var.region
+  vpc_ids = [module.vpc-hub.vpc_id, module.vpc-spoke1.vpc_id]
 }

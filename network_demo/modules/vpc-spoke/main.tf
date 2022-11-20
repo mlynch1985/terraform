@@ -7,32 +7,6 @@ resource "aws_vpc" "spoke" {
   }
 }
 
-resource "aws_default_network_acl" "spoke" {
-  default_network_acl_id = aws_vpc.spoke.default_network_acl_id
-
-  ingress {
-    protocol   = -1
-    rule_no    = 100
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0
-  }
-
-  egress {
-    protocol   = -1
-    rule_no    = 100
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0
-  }
-
-  tags = {
-    "Name" = "spoke-default"
-  }
-}
-
 resource "aws_default_route_table" "spoke" {
   default_route_table_id = aws_vpc.spoke.default_route_table_id
 
