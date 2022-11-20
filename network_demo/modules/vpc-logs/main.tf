@@ -2,9 +2,24 @@ data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "kms_key_policy" {
   statement {
-    sid     = "Enable Admin Management"
-    effect  = "Allow"
-    actions = ["kms:*"]
+    sid    = "Enable Admin Management"
+    effect = "Allow"
+    actions = [
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:TagResource",
+      "kms:UntagResource",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion"
+    ]
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_AWSAdministratorAccess_a2e28668d8977ed1"]
@@ -65,6 +80,7 @@ resource "aws_iam_role_policy" "vpc_flow_logs" {
   name_prefix = "vpc-flow-logs-${var.region}"
   role        = aws_iam_role.vpc_flow_logs.id
 
+  #tfsec:ignore:aws-iam-no-policy-wildcards
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
