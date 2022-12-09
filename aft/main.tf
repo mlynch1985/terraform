@@ -31,13 +31,15 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
+# module "control_tower_account_factory" {
 module "aft-initiator" {
-  source = "git@github.com:aws-ia/terraform-aws-control_tower_account_factory.git"
+  # source = "git@github.com:aws-ia/terraform-aws-control_tower_account_factory.git"
+  source  = "aws-ia/control_tower_account_factory/aws"
+  version = "1.6.7"
 
   aft_feature_cloudtrail_data_events      = false
   aft_feature_delete_default_vpcs_enabled = true
   aft_feature_enterprise_support          = false
-  aft_framework_repo_url                  = "https://github.com/aws-ia/terraform-aws-control_tower_account_factory.git"
   aft_management_account_id               = "067521573221"
   aft_metrics_reporting                   = true
   audit_account_id                        = "203495621194"
