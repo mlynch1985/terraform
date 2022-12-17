@@ -3,7 +3,7 @@ resource "aws_launch_template" "this" {
   instance_type          = var.instance_type
   name_prefix            = var.server_name
   user_data              = var.user_data
-  vpc_security_group_ids = var.vpc_security_group_ids
+  vpc_security_group_ids = var.security_group_ids
 
   dynamic "block_device_mappings" {
     for_each = var.block_device_mappings
@@ -49,10 +49,7 @@ resource "aws_autoscaling_group" "this" {
   // Use the "autoscaling_attachment" resource to manage ELB/TargetGroup attachments
   // Ref: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_attachment
   lifecycle {
-    ignore_changes = [
-      load_balancers,
-      target_group_arns
-    ]
+    ignore_changes = [load_balancers, target_group_arns]
   }
 
   name_prefix               = var.server_name
@@ -90,7 +87,7 @@ resource "aws_autoscaling_policy" "this" {
 }
 
 resource "aws_lb_target_group" "this" {
-  for_each = { for group in var.target_groups : group.group_port => group }
+  for_each = var.target_groups
 
   deregistration_delay = each.value.deregistration_delay != 0 ? each.value.deregistration_delay : null
   port                 = each.value.group_port
