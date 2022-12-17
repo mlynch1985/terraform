@@ -12,9 +12,10 @@ This repository contains various Terraform based projects I am currently or have
 
 ## Projects
 
-- [Custom Modules Pipeline](https://github.com/mlynch1985/terraform/tree/main/custom-modules-pipeline)
-- [Custom Modules Examples](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples)
-- [Test Stack](https://github.com/mlynch1985/terraform/tree/main/test-stack)
+- [Custom Modules Examples](./custom-modules-examples/README.md)
+- [Custom Modules Pipeline](./custom-modules-pipeline/README.md)
+- [Custom Modules Tests](./custom-modules-tests/README.md)
+- [Test Stack](./test-stack/README.md)
 
 ----
 
