@@ -19,7 +19,7 @@ resource "aws_security_group" "tester" {
 }
 
 module "asg" {
-  source = "../../custom-modules-examples/asg/"
+  source = "../../../../custom-modules-examples/asg"
 
   image_id               = data.aws_ami.amazonlinux2.id
   instance_type          = "c5.large"

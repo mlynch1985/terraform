@@ -128,7 +128,7 @@ module "asg" {
       health_check_path     = "/"
       health_check_port     = 80
       health_check_protocol = "HTTP"
-      health_check_timeout  = 5 seconds
+      health_check_timeout  = 5
       healthy_threshold     = 3
       stickiness_type       = "lb_cookie"
       target_type           = "instance"

@@ -14,7 +14,6 @@ This repository contains various Terraform based projects I am currently or have
 
 - [Custom Modules Examples](./custom-modules-examples/README.md)
 - [Custom Modules Pipeline](./custom-modules-pipeline/README.md)
-- [Custom Modules Tests](./custom-modules-tests/README.md)
 - [Test Stack](./test-stack/README.md)
 
 ----
