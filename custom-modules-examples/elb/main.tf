@@ -14,24 +14,25 @@ resource "aws_lb" "this" {
 
   access_logs {
     bucket  = var.bucket_name
-    enabled = var.enable_access_logs
+    enabled = var.bucket_name != null ? true : false
   }
 
   tags = {
-    "Name" = var.name
+    "Name" = var.name_tag
   }
 }
 
 resource "aws_lb_listener" "this" {
   #checkov:skip=CKV_AWS_2:Protocol is parameterized
   #checkov:skip=CKV_AWS_103:TLS is parameterized
-  for_each = { for listener in var.listeners : listener.listener_protocol => listener }
+  for_each = var.listeners
 
-  certificate_arn   = each.value.certificate_arn != "" ? each.value.certificate_arn : null
   load_balancer_arn = aws_lb.this.arn
-  port              = each.value.listener_port != 0 ? each.value.listener_port : null
-  protocol          = each.value.listener_protocol != "" ? each.value.listener_protocol : null #tfsec:ignore:aws-elb-http-not-used
-  ssl_policy        = each.value.ssl_policy != "" ? each.value.ssl_policy : null
+  alpn_policy       = each.value.alpn_policy
+  certificate_arn   = each.value.certificate_arn
+  port              = each.value.listener_port
+  protocol          = each.value.listener_protocol
+  ssl_policy        = each.value.ssl_policy
 
   default_action {
     type = each.value.default_action.action_type
@@ -40,9 +41,9 @@ resource "aws_lb_listener" "this" {
       for_each = each.value.default_action.action_type == "fixed-response" ? each.value.default_action.fixed_response : []
 
       content {
-        content_type = fixed_response.value.content_type != "" ? fixed_response.value.content_type : null
-        message_body = fixed_response.value.message_body != "" ? fixed_response.value.message_body : null
-        status_code  = fixed_response.value.fixed_status_code != 0 ? fixed_response.value.fixed_status_code : null
+        content_type = fixed_response.value.content_type
+        message_body = fixed_response.value.message_body
+        status_code  = fixed_response.value.fixed_status_code
       }
     }
 
@@ -51,17 +52,16 @@ resource "aws_lb_listener" "this" {
 
       content {
         dynamic "target_group" {
-          for_each = forward.value.target_group_arn
+          for_each = forward.value.target_group_arns
 
           content {
-            arn    = target_group.value != "" ? target_group.value : null
-            weight = forward.value.target_group_weight != 0 ? forward.value.target_group_weight : null
+            arn = target_group.value != "" ? target_group.value : null
           }
         }
 
         stickiness {
           duration = forward.value.stickiness_duration != 0 ? forward.value.stickiness_duration : 3600
-          enabled  = forward.value.enable_stickiness != "" ? forward.value.enable_stickiness : false
+          enabled  = forward.value.enable_stickiness
         }
       }
     }
@@ -70,11 +70,11 @@ resource "aws_lb_listener" "this" {
       for_each = each.value.default_action.action_type == "redirect" ? each.value.default_action.redirect : []
 
       content {
-        host        = redirect.value.redirect_host != "" ? redirect.value.redirect_host : null
-        path        = redirect.value.redirect_path != "" ? redirect.value.redirect_path : null
-        port        = redirect.value.redirect_port != 0 ? redirect.value.redirect_port : null
-        protocol    = redirect.value.redirect_protocol != "" ? redirect.value.redirect_protocol : null
-        status_code = redirect.value.redirect_status_code != 0 ? redirect.value.redirect_status_code : null
+        status_code = redirect.value.redirect_status_code
+        host        = redirect.value.redirect_host
+        path        = redirect.value.redirect_path
+        port        = redirect.value.redirect_port
+        protocol    = redirect.value.redirect_protocol
       }
     }
   }

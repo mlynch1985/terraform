@@ -4,33 +4,68 @@ This module creates an Elastic Load Balancer without any Listener nor Target Gro
 
 ---
 
-## Required Input Variables
+## Input Variables
 
-- `is_internal` - Set to `true` if this is a private ELB or `false` if its public facing.
-- `lb_type` - Specify the type of load balancer to deploy.
-- `name` - Specify the ELB name prefix.
-- `subnets` - List of subnet IDs to deploy the ELB into.
-
----
-
-## Optional Input Variables
-
-- `bucket_name` - Specify a S3 Bucket Name to receive access logs. Defaults to `""`.
-- `drop_invalid_header_fields` - Set to `true` to drop invalid headers for ALB only. Defaults to `true`.
-- `enable_access_logs` - Set to `true` to enable access logs to sent to the S3 bucket. Defaults to `false`.
-- `enable_cross_zone_load_balancing` - Specify the amount of seconds before timing out idle connections. Defaults to `60`.
-- `security_groups` - Provide a list of security group IDs to attach to an ALB. Defaults to `[]`.
-
-- `listeners` - Specify a list of listener maps to create. Defaults to `[]`.
+| Name | Type | Required | Default | Description |
+| ---- | ---- | -------- | ------- | ----------- |
+| `bucket_name` | String | No | `null` | Specify a S3 Bucket Name if you would like to enable ELB Access Logs to be enabled |
+| `drop_invalid_header_fields` | Boolean | No | `false` | For ALBs only, set to `true` to enable this feature |
+| `enable_cross_zone_load_balancing` | Boolean | No | `false` | For NLBs only, set to `true` to enable this feature |
+| `idle_timeout` | Number | No | `null` | For ALBs only, specify a connection timeout in seconds (Allowed Values: 10-300) |
+| `is_internal` | Boolean | Yes | `false` | Set to `true` if you would like to provision this ELB in private subnets only |
+| `lb_type` | String | Yes | N/A | Select which type of ELB to deploy (Allowed Values: `application` \| `network` \| `gateway`) |
+| `listeners` | map(Object) | No | `{}` | Provide a map of ELB Listener Objects to attach to the ELB. [See Below](#listeners) |
+| `name_tag` | String | No | `null` | Specify a Tag Value to add to the Name tag for the ELB |
+| `security_groups` | list(String) | No | `[]` | For ALBs only, provide a list of Security Group IDs to be attached to the listener |
+| `subnets` | list(String) | Yes | N/A | Provide a list of Subnet IDs to provision the ELB into |
 
 ---
+
+### Listeners
+
+```hcl
+[{
+  "alpn_policy"       = null | "HTTP1Only" | "HTTP2Only" | "HTTP2Optional" | "HTTP2Preferred" | "None"
+  "certificate_arn"   = null
+  "listener_port"     = 80 | null
+  "listener_protocol" = "HTTP" | "HTTPS" | "TCP" | "TLS" | null
+  "ssl_policy"        = null | "ELBSecurityPolicy-2016-08" | REFERENCE - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies
+
+  "default_action" = [{
+    "action_type" = "forward" | "fixed-response" | "redirect"
+
+    "fixed_response" = [{
+      "content_type"      = null | "text/plain" | "text/css" | "text/html"
+      "message_body"      = null
+      "fixed_status_code" = null | 200-500
+    }]
+
+    "forward" = [{
+      "target_group_arns"   = []
+      "stickiness_duration" = 1-604800
+      "enable_stickiness"   = true | false
+    }]
+
+    "redirect" = [{
+      "redirect_status_code" = "HTTP_301" | "HTTP_302"
+      "redirect_host"        = null | "#{host}"
+      "redirect_path"        = null | "#{path}" | "/"
+      "redirect_port"        = null | "#{port}" | 1-65535
+      "redirect_protocol"    = null | "#{protocol}" | "HTTP" | "HTTPS"
+    }]
+  }]
+}]
+
+```
 
 ## Output Variables
 
-- `id` - The Load Balancer [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#id)
-- `arn` - The Load Balancer [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#arn)
-- `name` - The Load Balancer [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#name)
-- `dns_name` - The Load Balancer [DNS Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#dns_name)
+| Name | Resource Type | Description |
+| ---- | ------------- | ----------- |
+| `id` | [Load Balancer ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#id) | The `ID` of the new Load Balancer |
+| `arn` | [Load Balancer ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#arn) | The `ARN` of the new Load Balancer |
+| `name` | [Load Balancer Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#name) | The `Name` of the new Load Balancer |
+| `dns_name` | [Load Balancer DNS](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#dns_name) | The `DNS` of the new Load Balancer |
 
 ---
 
@@ -53,39 +88,63 @@ module "elb" {
   enable_cross_zone_load_balancing = null
   security_groups                  = ["sg-1a2b3c4d5e", "sg-6f7g8h9i0k"]
 
-  listeners = [
-    {
-      certificate_arn = ""
-      listener_port     = 80
-      listener_protocol = "HTTP" # HTTP|HTTPS|TCP|TLS
-      ssl_policy        = "" # HTTPS|TLS
+  listeners = {
+    "listener_1" = [
+      "alpn_policy"       = null
+      "certificate_arn"   = null
+      "listener_port"     = 80
+      "listener_protocol" = "HTTP"
+      "ssl_policy"        = null
 
-      default_action = {
-        action_type = "forward" # fixed-response|forward|redirect
+      "default_action" = [{
+        "action_type" = "forward"
 
-        fixed_response = [{
-          content_type      = "" # text/plain | text/css | text/html
-          fixed_status_code = 0 # 200-500
-          message_body      = ""
+        "forward" = [{
+          "target_group_arns"   = [TBD]
+          "stickiness_duration" = 3600
+          "enable_stickiness"   = true
         }]
+      }]
+    ]
+  },
+    "listener_2" = [
+      "alpn_policy"       = null
+      "certificate_arn"   = null
+      "listener_port"     = 81
+      "listener_protocol" = "HTTP"
+      "ssl_policy"        = null
 
-        forward = [{
-          enable_stickiness   = true # false
-          stickiness_duration = 3600 # 3600 seconds / 10 hours
-          target_group_arn    = [for group in module.asg.target_groups : group.arn]
-          target_group_weight = 0
-        }]
+      "default_action" = [{
+        "action_type" = "fixed-response"
 
-        redirect = [{
-          redirect_host        = "" # #{host}
-          redirect_path        = ""
-          redirect_port        = 0 # #{port}
-          redirect_protocol    = "" # HTTP|HTTPS|#{protocol}
-          redirect_status_code = "" # HTTP_301 | HTTP_302
+        "fixed_response" = [{
+          "content_type"      = "text/plain"
+          "message_body"      = "Hello World!"
+          "fixed_status_code" = 200
         }]
-      }
-    }
-  ]
+      }]
+    ]
+  },
+    "listener_3" = [
+      "alpn_policy"       = null
+      "certificate_arn"   = null
+      "listener_port"     = 82
+      "listener_protocol" = "HTTP"
+      "ssl_policy"        = null
+
+      "default_action" = [{
+        "action_type" = "redirect"
+
+        "redirect" = [{
+          "redirect_status_code" = "HTTP_302"
+          "redirect_host"        = "#{host}"
+          "redirect_path"        = "#{path}/app"
+          "redirect_port"        = "#{port}"
+          "redirect_protocol"    = "#{protocol}"
+        }]
+      }]
+    ]
+  },
 }
 ```
 

@@ -116,8 +116,8 @@ module "asg" {
   subnets                  = ["subnet-1a2b3c4d5e", "subnet-6f7g8h9i0k"]
   security_group_ids       = ["sg-1a2b3c4d5e", "sg-6f7g8h9i0k"]
 
-  target_groups = [
-    {
+  target_groups = {
+    "group_1" = {
       deregistration_delay  = 30
       enable_healthcheck    = true
       enable_stickiness     = true
@@ -135,7 +135,7 @@ module "asg" {
       unhealthy_threshold   = 3
       vpc_id                = "vpc-1a2b3c4d5e6f7g8h9"
     }
-  ]
+  }
 
   # Inline User Data Script
   user_data = base64encode(<<-EOF
