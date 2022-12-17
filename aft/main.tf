@@ -35,7 +35,7 @@ data "aws_caller_identity" "current" {}
 module "aft-initiator" {
   # source = "git@github.com:aws-ia/terraform-aws-control_tower_account_factory.git"
   source  = "aws-ia/control_tower_account_factory/aws"
-  version = "1.6.7"
+  version = "1.7.0"
 
   aft_feature_cloudtrail_data_events      = false
   aft_feature_delete_default_vpcs_enabled = true
