@@ -1,7 +1,7 @@
 resource "aws_efs_file_system" "this" {
   #checkov:skip=CKV_AWS_184:KMS key is parameterized
   encrypted                       = true
-  kms_key_id                      = var.kms_key_arn != "" ? var.kms_key_arn : null
+  kms_key_id                      = var.kms_key_arn
   performance_mode                = var.performance_mode
   provisioned_throughput_in_mibps = var.throughput_mode == "provisioned" && var.provisioned_throughput != 0 ? var.provisioned_throughput : null
   throughput_mode                 = var.throughput_mode
@@ -27,7 +27,7 @@ resource "aws_efs_file_system_policy" "this" {
           "Sid": "GrantAsgIamRole",
           "Effect": "Allow",
           "Principal": {
-            "AWS": "${var.iam_role}"
+            "AWS": ${jsonencode(var.iam_roles)}
           },
           "Resource": "${aws_efs_file_system.this.arn}",
           "Action": [

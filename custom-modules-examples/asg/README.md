@@ -68,7 +68,7 @@ This module creates a Launch Template and an Auto Scaling Group. Optionally it w
 ## Output Variables
 
 | Name | Resource Type | Description |
-| ---- | ------------- | ------------- |
+| ---- | ------------- | ----------- |
 | `asg_id` | [AutoScalingGroup ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#id) | The `ID` of the new AutoScalingGroup |
 | `asg_arn` | [AutoScalingGroup ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#arn) | The `ARN` of the new AutoScalingGroup |
 | `asg_name` | [AutoScalingGroup Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group#name) | The `Name` of the new AutoScalingGroup |

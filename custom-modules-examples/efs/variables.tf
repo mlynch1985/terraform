@@ -1,25 +1,51 @@
 variable "enable_lifecycle_policy" {
   description = "Set to true to enable an EFS lifecycle policy"
   type        = bool
+  default     = "false"
 }
 
-variable "iam_role" {
-  description = "Please specify an IAM Role to be granted access to the EFS Share"
-  type        = string
+variable "iam_roles" {
+  description = "Please specify a list of IAM Role to be granted access to the EFS Share"
+  type        = list(string)
 
   validation {
-    condition     = can(regex("^arn:aws:iam::[0-9]{12}:role/[a-zA-Z0-9-_./]{1,96}$", var.iam_role))
-    error_message = "Please specify a valid IAM Role to be granted access to the EFS Share"
+    condition = alltrue([
+      for role in var.iam_roles : can(regex("^arn:aws:iam::[0-9]{12}:role/[a-zA-Z0-9-_./]{1,96}$", role))
+    ])
+    error_message = "Please specify a list of valid IAM Role ARNs"
+  }
+}
+
+variable "kms_key_arn" {
+  description = "Please specify the KMS Key ARN to encrypt the file system"
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.kms_key_arn == null || can(regex("^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$", var.kms_key_arn))
+    error_message = "Please specify a valid KMS Key ARN (^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$)"
   }
 }
 
 variable "performance_mode" {
   description = "Specify the EFS File System performance mode"
   type        = string
+  default     = "generalPurpose"
 
   validation {
     condition     = contains(["generalPurpose", "maxIO"], var.performance_mode)
     error_message = "Specify a valid EFS File System performance mode"
+  }
+}
+
+variable "provisioned_throughput" {
+  description = "Specify the desired amount in MIBs of throughput"
+  type        = number
+  default     = 125
+
+  validation {
+    condition     = var.provisioned_throughput >= 1 && var.provisioned_throughput <= 1024
+    error_message = "Specify the desired amount in MIBs of throughput between 1 and 1024"
   }
 }
 
@@ -50,31 +76,10 @@ variable "subnets" {
 variable "throughput_mode" {
   description = "Specify the EFS File System throughput mode"
   type        = string
+  default     = "elastic"
 
   validation {
-    condition     = contains(["bursting", "provisioned"], var.throughput_mode)
+    condition     = contains(["bursting", "elastic", "provisioned"], var.throughput_mode)
     error_message = "Specify a valid EFS File System throughput mode"
-  }
-}
-
-variable "kms_key_arn" {
-  description = "Please specify the KMS Key ARN to encrypt the file system"
-  type        = string
-  default     = ""
-
-  validation {
-    condition     = can(regex("^$|^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$", var.kms_key_arn))
-    error_message = "Please specify a valid KMS Key ARN (^arn:aws:kms:[a-z][a-z]-[a-z]+-[1-9]:[0-9]{12}:key/[a-zA-Z0-9-]{36}$)"
-  }
-}
-
-variable "provisioned_throughput" {
-  description = "Specify the desired amount in MIBs of throughput"
-  type        = number
-  default     = 0
-
-  validation {
-    condition     = var.provisioned_throughput >= 0 && var.provisioned_throughput <= 1024
-    error_message = "Specify the desired amount in MIBs of throughput between 0 and 1024"
   }
 }
