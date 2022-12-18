@@ -109,7 +109,7 @@ module "elb" {
     },
     "https_fixed" = {
       alpn_policy       = null
-      certificate_arn   = "arn:aws:acm:{REGION}:{ACCOUNT_ID}}:certificate/1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p"
+      certificate_arn   = "arn:aws:acm:{REGION}:{ACCOUNT_ID}:certificate/1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p"
       listener_port     = 443
       listener_protocol = "HTTPS"
       ssl_policy        = "ELBSecurityPolicy-2016-08"
