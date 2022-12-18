@@ -4,26 +4,25 @@ This module creates an IAM Role and an IAM Instance Profile.
 
 ---
 
-## Required Input Variables
+## Input Variables
 
-- `role_name` - Specify a name prefix for the IAM Role.
-- `service` - Specify the AWS Service name prefix without the \".amazonaws.com\" domain.
-
----
-
-## Optional Input Variables
-
-- `inline_policy_json` - Provide a JSON IAM Policy to attach to this role.
-- `managed_policy_arns` - Provide a list of managed IAM policies ARNs to attach to this role.
+| Name | Type | Required | Default | Description |
+| ---- | ---- | -------- | ------- | ----------- |
+| `inline_policy_json` | list(Object) | No | `[]` | Provide a list of IAM Inline Policy Objects to attach to this role |
+| `managed_policy_arns` | list(String) | No | `[]` | Provide a list of Manged IAM Policy ARNs to attach to this role |
+| `role_name` | string | No | `null` | Provide a short name to be used as the IAM Role Name Prefix |
+| `service` | string | Yes | N/A | Provide the AWS Service Name prefix excluding the "amazonaws.com" domain to be used in the Trust Policy |
 
 ---
 
 ## Output Variables
 
-- `id` - The IAM Role [ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#id)
-- `arn` - The IAM Role [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#arn)
-- `name` - The IAM Role [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role#name)
-- `profile` - The IAM Instance Profile [Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile#name)
+| Name | Resource Type | Description |
+| ---- | ------------- | ----------- |
+| `id` | [IAM Role ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#id) | The `ID` of the new IAM Role |
+| `arn` | [IAM Role ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#arn) | The `ARN` of the new IAM Role |
+| `name` | [IAM Role Name](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#name) | The `Name` of the new IAM Role |
+| `profile` | [IAM Instance Profile](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile#name) | The `Name` of the new IAM Instance Profile |
 
 ---
 
@@ -33,31 +32,43 @@ This module creates an IAM Role and an IAM Instance Profile.
 module "iam_role" {
   source = "./modules/iam_role"
 
-  # Required Parameters
-  role_name = "${var.namespace}_${var.environment}_ec2"
-  service   = "ec2"
-
-  # Optional Parameters
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
-    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  ]
-
-  inline_policy_json = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
+  inline_policy_json = [
     {
-      "Action": [
-        "s3:GetObject"
-      ],
-      "Effect": "Allow",
-      "Resource": "arn:aws:s3:::my-bucket/*"
+      Version = "2012-10-17"
+      Statement = [{
+        Sid    = "GrantS3ReadOnly"
+        Effect = "Allow"
+        Action = [
+          "s3:Get*",
+          "s3:List*"
+        ]
+        Resource   = ["*"]
+        Conditions = []
+      }]
+    },
+    {
+      Version = "2012-10-17"
+      Statement = [{
+        Sid    = "GrantCloudWatchLogs"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource   = ["*"]
+        Conditions = []
+      }]
     }
   ]
-}
-EOF
-}
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+  ]
+
+  role_name = "iam_role_tester"
+  service   = "ec2"
 ```
 
 ---
