@@ -31,7 +31,7 @@ resource "aws_lb_listener" "this" {
   alpn_policy       = each.value.alpn_policy
   certificate_arn   = each.value.certificate_arn
   port              = each.value.listener_port
-  protocol          = each.value.listener_protocol
+  protocol          = each.value.listener_protocol #tfsec:ignore:aws-elb-http-not-used
   ssl_policy        = each.value.ssl_policy
 
   default_action {
