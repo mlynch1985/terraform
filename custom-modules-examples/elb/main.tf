@@ -14,7 +14,7 @@ resource "aws_lb" "this" {
 
   access_logs {
     bucket  = var.bucket_name
-    enabled = var.bucket_name != null ? true : false
+    enabled = var.bucket_name != "" ? true : false
   }
 
   tags = {

@@ -1,10 +1,10 @@
 variable "bucket_name" {
   description = "Please specify a S3 Bucket Name to receive access logs"
   type        = string
-  default     = null
+  default     = ""
 
   validation {
-    condition     = var.bucket_name == null || can(regex("^$|^[a-z0-9.-]{3,63}$", var.bucket_name))
+    condition     = can(regex("^$|^[a-z0-9.-]{3,63}$", var.bucket_name))
     error_message = "Must be a valid S3 Bucket Name (^[a-z0-9.-]{3,63}$)"
   }
 }
@@ -89,7 +89,7 @@ variable "listeners" {
 variable "name_tag" {
   description = "Specify the tag value for the Name tag"
   type        = string
-  defualt     = null
+  default     = null
 
   validation {
     condition     = var.name_tag == null || can(regex("^[0-9a-zA-Z-_]{1,64}$", var.name_tag))
