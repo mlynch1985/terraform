@@ -6,13 +6,15 @@ Below are customized Terraform modules that can be published and consumed across
 
 ## Table of Contents
 
-- [Auto Scaling Group](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/asg)
-- [IAM Role](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/iam_role)
-- [IPAM](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/ipam)
-- [KMS Key](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/kms_key)
-- [S3 Bucket](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/s3_bucket)
-- [Security Group](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/security_group)
-- [VPC](https://github.com/mlynch1985/terraform/tree/main/custom-modules-examples/vpc)
+- [Auto Scaling Group](./asg/README.md)
+- [Elastic File Store](./efs/README.md)
+- [Elastic Load Balancer](./elb/README.md)
+- [IAM Role](./iam_role/README.md)
+- [IPAM](./asg/README.md)
+- [KMS Key](./kms_key/README.md)
+- [S3 Bucket](./s3_bucket/README.md)
+- [Security Group](./security_group/README.md)
+- [VPC](./vpc/README.md)
 
 ---
 
