@@ -4,25 +4,24 @@ This module will create a single or multi region KMS key and key alias.
 
 ---
 
-## Required Input Variables
+## Input Variables
 
-- `iam_roles` - Specify a list of valid IAM Roles to be granted KMS Key Usage access.
-- `key_name` - Specify a valid KMS Key Name to be used for the Alias.
-
----
-
-## Optional Input Variables
-
-- `enable_key_rotation` - Specify either `true` or `false` to enable automatic key rotation. Defaults to `true`.
-- `enable_multi_region` - Specify either `true` or `false` to enable multi-region support. Defaults to `false`.
+| Name | Type | Required | Default | Description |
+| ---- | ---- | -------- | ------- | ----------- |
+| `enable_key_rotation` | Boolean | No | `true` | Set to `true` if you would like the KMS Key to rotate each year |
+| `enable_multi_region` | Boolean | No | `false` | Set to `true` if this KMS Key should be available in multiple regions |
+| `iam_roles` | list(String) | Yes | N/A | Provide a list of IAM Role ARNs to be granted KMS Key Usage access in the key policy |
+| `key_name` | string | Yes | N/A | Provide a friendly name to identify this KMS Key in the console |
 
 ---
 
 ## Output Variables
 
-- `id` - The KMS Key [Key ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key#key_id)
-- `arn` - The KMS Key [ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key#arn)
-- `name` - The KMS Key [Alias](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias#name)
+| Name | Resource Type | Description |
+| ---- | ------------- | ----------- |
+| `id` | [KMS Key ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#id) | The `ID` of the new KMS Key |
+| `arn` | [KMS Key ARN](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#arn) | The `ARN` of the new KMS Key |
+| `name` | [KMS Key Alias](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias#name) | The `Key Alias` of the new KMS Key |
 
 ---
 
@@ -32,13 +31,10 @@ This module will create a single or multi region KMS key and key alias.
 module "kms_key" {
   source = "./modules/kms_key"
 
-  # Required Parameters
-  iam_roles = [var.iam_role1.arn, var.iam_role2.arn, var.iam_role3.arn]
-  key_name  = "use1d/app1_bucket"
-
-  # Optional Parameters
   enable_key_rotation = true
   enable_multi_region = false
+  iam_roles = [var.iam_role1.arn, var.iam_role2.arn, var.iam_role3.arn]
+  key_name  = "use1d/app1_bucket"
 }
 ```
 
