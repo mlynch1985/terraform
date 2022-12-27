@@ -84,6 +84,15 @@ resource "aws_security_group" "tester" {
   description = "SG Used to test the ASG Terraform Module"
   vpc_id      = var.vpc_id
 
+  ingress {
+    description      = "Allow all inbound"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "TCP"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
   egress {
     description      = "Allow all outbound"
     from_port        = 0
@@ -101,30 +110,30 @@ resource "aws_security_group" "tester" {
 module "asg" {
   source = "../../../../custom-modules-examples/asg"
 
-  block_device_mappings = [
-    {
+  block_device_mappings = {
+    "root_drive" = {
       device_name           = "/dev/xvda"
       delete_on_termination = true
       encrypted             = true
-      iops                  = "3000"
+      iops                  = 3000
       kms_key_id            = aws_kms_key.tester.arn
-      throughput            = "125"
-      volume_size           = "50"
+      throughput            = 125
+      volume_size           = 50
       volume_type           = "gp3"
     },
-    {
+    "data_drive" = {
       device_name           = "xvdf"
       delete_on_termination = true
       encrypted             = true
-      iops                  = "3000"
+      iops                  = 3000
       kms_key_id            = aws_kms_key.tester.arn
-      throughput            = "500"
-      volume_size           = "250"
+      throughput            = 500
+      volume_size           = 250
       volume_type           = "gp3"
     }
-  ]
+  }
 
-  healthcheck_grace_period = 300
+  healthcheck_grace_period = 180
   healthcheck_type         = "EC2"
   iam_instance_profile     = aws_iam_instance_profile.tester.name
   image_id                 = data.aws_ami.amazonlinux2.id
@@ -143,7 +152,7 @@ module "asg" {
       group_port            = 80
       group_protocol        = "HTTP"
       health_check_interval = 30
-      health_check_matcher  = "200-399"
+      health_check_matcher  = "200-299"
       health_check_path     = "/"
       health_check_port     = 80
       health_check_protocol = "HTTP"
@@ -159,7 +168,10 @@ module "asg" {
   # Inline User Data Script
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    yum upgrade -y
+    mkfs -t xfs /dev/xvdf
+    mkdir -p /var/html
+    echo "/dev/xvdf    /var/html    xfs    defaults    0    2" >> /etc/fstab
+    mount -a
     yum install -y httpd
     echo "Hello World from $(hostname -f)" > /var/www/html/index.html
     service httpd start

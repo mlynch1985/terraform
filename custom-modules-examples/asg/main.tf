@@ -49,7 +49,7 @@ resource "aws_autoscaling_group" "this" {
   // Use the "autoscaling_attachment" resource to manage ELB/TargetGroup attachments
   // Ref: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_attachment
   lifecycle {
-    ignore_changes = [load_balancers, target_group_arns]
+    ignore_changes = [load_balancers, target_group_arns, desired_capacity]
   }
 
   name_prefix               = var.server_name
@@ -59,10 +59,15 @@ resource "aws_autoscaling_group" "this" {
   health_check_type         = var.healthcheck_type
   target_group_arns         = [for group in aws_lb_target_group.this : group.arn]
   vpc_zone_identifier       = var.subnets
+  force_delete              = true
 
   launch_template {
     id      = aws_launch_template.this.id
-    version = "$Latest"
+    version = aws_launch_template.this.latest_version
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
   }
 
   tag {
@@ -89,26 +94,26 @@ resource "aws_autoscaling_policy" "this" {
 resource "aws_lb_target_group" "this" {
   for_each = var.target_groups
 
-  deregistration_delay = each.value.deregistration_delay != 0 ? each.value.deregistration_delay : null
+  deregistration_delay = each.value.deregistration_delay
   port                 = each.value.group_port
   protocol             = each.value.group_protocol
-  target_type          = each.value.target_type != "" ? each.value.target_type : "instance"
+  target_type          = each.value.target_type
   vpc_id               = each.value.vpc_id
 
   health_check {
     enabled             = each.value.enable_healthcheck
-    healthy_threshold   = each.value.healthy_threshold != 0 ? each.value.healthy_threshold : null
-    interval            = each.value.health_check_interval != 0 ? each.value.health_check_interval : null
-    matcher             = each.value.health_check_matcher != "" ? each.value.health_check_matcher : null
-    path                = each.value.health_check_path != "" ? each.value.health_check_path : null
-    port                = each.value.health_check_port != 0 ? each.value.health_check_port : null
-    protocol            = each.value.health_check_protocol != "" ? each.value.health_check_protocol : null
-    timeout             = each.value.health_check_timeout != 0 ? each.value.health_check_timeout : null
-    unhealthy_threshold = each.value.unhealthy_threshold != 0 ? each.value.unhealthy_threshold : null
+    healthy_threshold   = each.value.healthy_threshold
+    interval            = each.value.health_check_interval
+    matcher             = each.value.health_check_matcher
+    path                = each.value.health_check_path
+    port                = each.value.health_check_port
+    protocol            = each.value.health_check_protocol
+    timeout             = each.value.health_check_timeout
+    unhealthy_threshold = each.value.unhealthy_threshold
   }
 
   stickiness {
     enabled = each.value.enable_stickiness
-    type    = each.value.stickiness_type != "" ? each.value.stickiness_type : "lb_cookie"
+    type    = each.value.stickiness_type
   }
 }

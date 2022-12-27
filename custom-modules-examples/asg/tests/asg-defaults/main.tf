@@ -21,9 +21,9 @@ resource "aws_security_group" "tester" {
 module "asg" {
   source = "../../../../custom-modules-examples/asg"
 
-  image_id               = data.aws_ami.amazonlinux2.id
-  instance_type          = "c5.large"
-  server_name            = "asg_module_tester"
-  subnets                = data.aws_subnets.tester.ids
-  vpc_security_group_ids = [aws_security_group.tester.id]
+  image_id           = data.aws_ami.amazonlinux2.id
+  instance_type      = "c5.large"
+  server_name        = "asg_module_tester"
+  subnets            = data.aws_subnets.tester.ids
+  security_group_ids = [aws_security_group.tester.id]
 }

@@ -1,6 +1,6 @@
 variable "block_device_mappings" {
   description = "Specify a list of block device mapping objects to attach to each instance"
-  type = list(object({
+  type = map(object({
     device_name           = string
     delete_on_termination = bool
     encrypted             = bool
@@ -10,16 +10,7 @@ variable "block_device_mappings" {
     volume_size           = number
     volume_type           = string
   }))
-  default = [{
-    device_name           = "/dev/xvda"
-    delete_on_termination = true
-    encrypted             = false
-    iops                  = 0
-    kms_key_id            = ""
-    throughput            = 0
-    volume_size           = 50
-    volume_type           = "gp3"
-  }]
+  default = {}
 }
 
 variable "healthcheck_grace_period" {
@@ -47,10 +38,10 @@ variable "healthcheck_type" {
 variable "iam_instance_profile" {
   description = "Please specify the iam instance profile name to attach to each EC2 instance"
   type        = string
-  default     = ""
+  default     = null
 
   validation {
-    condition     = can(regex("^$|^[0-9a-zA-Z-_]{1,64}$", var.iam_instance_profile))
+    condition     = var.iam_instance_profile == null || can(regex("^[0-9a-zA-Z-_]{1,64}$", var.iam_instance_profile))
     error_message = "Please specify a valid IAM Instance Profile Name between 1 and 64 characters long (^[0-9a-zA-Z-_]{1,64}$)"
   }
 }
@@ -73,14 +64,14 @@ variable "instance_type" {
   validation {
     condition = contains([
       "t3.micro", "t3.medium", "t3.large", "t3.xlarge",
-      "m5.micro", "m5.medium", "m5.large", "m5.xlarge",
-      "c5.micro", "c5.medium", "c5.large", "c5.xlarge"
+      "m5.medium", "m5.large", "m5.xlarge", "m5.2xlarge",
+      "c5.medium", "c5.large", "c5.xlarge", "c5.2xlarge"
     ], var.instance_type)
     error_message = <<-EOF
       Please specify an approved instance_type only:
         "t3.micro", "t3.medium", "t3.large", "t3.xlarge",
-        "m5.micro", "m5.medium", "m5.large", "m5.xlarge",
-        "c5.micro", "c5.medium", "c5.large", "c5.xlarge"
+        "m5.medium", "m5.large", "m5.xlarge", "m5.2xlarge",
+        "c5.medium", "c5.large", "c5.xlarge", "c5.2xlarge"
 EOF
   }
 }
@@ -91,8 +82,8 @@ variable "max_size" {
   default     = 1
 
   validation {
-    condition     = var.max_size >= 1 && var.max_size <= 16
-    error_message = "Please specify a max size between 1 and 16"
+    condition     = var.max_size >= 1 && var.max_size <= 32
+    error_message = "Please specify a max size between 1 and 32"
   }
 }
 
@@ -102,8 +93,8 @@ variable "min_size" {
   default     = 1
 
   validation {
-    condition     = var.min_size >= 1 && var.min_size <= 16
-    error_message = "Please specify a min size between 1 and 16"
+    condition     = var.min_size >= 1 && var.min_size <= 32
+    error_message = "Please specify a min size between 1 and 32"
   }
 }
 
@@ -123,9 +114,9 @@ variable "subnets" {
 
   validation {
     condition = alltrue([
-      for subnet in var.subnets : can(regex("^subnet-[0-9a-zA-Z]{17}$", subnet))
+      for subnet in var.subnets : can(regex("^subnet-[0-9a-zA-Z]{5,17}$", subnet))
     ])
-    error_message = "Please specify a list containing at least one valid Subnet ID (^subnet-[0-9a-zA-Z]{17}$)"
+    error_message = "Please specify a list containing at least one valid Subnet ID (^subnet-[0-9a-zA-Z]{5,17}$)"
   }
 }
 
@@ -135,9 +126,9 @@ variable "security_group_ids" {
 
   validation {
     condition = alltrue([
-      for group_id in var.security_group_ids : can(regex("^sg-[0-9a-zA-Z]{17}$", group_id))
+      for group_id in var.security_group_ids : can(regex("^sg-[0-9a-zA-Z]{5,17}$", group_id))
     ])
-    error_message = "Please specify a list containing at least one valid Security Group ID (^sg-[0-9a-zA-Z]{17}$)"
+    error_message = "Please specify a list containing at least one valid Security Group ID (^sg-[0-9a-zA-Z]{5,17}$)"
   }
 }
 
@@ -167,5 +158,5 @@ variable "target_groups" {
 variable "user_data" {
   description = "Specify a path to a userdata script"
   type        = string
-  default     = ""
+  default     = null
 }
