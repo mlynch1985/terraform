@@ -8,7 +8,7 @@ This module creates a Launch Template and an Auto Scaling Group. Optionally it w
 
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
-| `block_device_mappings` | list(object) | No | [See Below](#block-device-mappings) | A list of Block Device Mapping Objects to be attached |
+| `block_device_mappings` | map(object) | No | [See Below](#block-device-mappings) | A list of Block Device Mapping Objects to be attached |
 | `healthcheck_grace_period` | Number | No | `300` | The time in seconds after launching the EC2 Instance before healthchecks are performed |
 | `healthcheck_type` | String | No | `EC2` | The type of healthcheck to be performed on the EC2 Instances (Allowed Values: `EC2` \| `ELB`) |
 | `iam_instance_profile` | String | No | `""` | The IAM Instance Profile Name to be attached to each EC2 Instance |
