@@ -20,16 +20,6 @@ data "aws_subnets" "tester" {
   }
 }
 
-variable "vpc_id" {
-  description = "Please specify a VPC ID"
-  type        = string
-
-  validation {
-    condition     = can(regex("^vpc-[0-9a-zA-Z]{17}$", var.vpc_id))
-    error_message = "Please specify a valid VPC ID (^vpc-[0-9a-zA-Z]{17}$)"
-  }
-}
-
 variable "region" {
   description = "Specify the AWS region to deploy resources into"
   type        = string
@@ -37,5 +27,25 @@ variable "region" {
   validation {
     condition     = can(regex("[a-z][a-z]-[a-z]+-[1-9]", var.region))
     error_message = "Must be a valid AWS Region name"
+  }
+}
+
+variable "remote_cidr" {
+  description = "Please specify a /32 CIDR to allow remote HTTP access to"
+  type        = string
+
+  validation {
+    condition     = can(regex("([\\d]{1,3})(.[0-9]{1,3}){3}/32$", var.remote_cidr))
+    error_message = "Please specify a /32 CIDR to allow remote HTTP access to"
+  }
+}
+
+variable "vpc_id" {
+  description = "Please specify a VPC ID"
+  type        = string
+
+  validation {
+    condition     = can(regex("^vpc-[0-9a-zA-Z]{17}$", var.vpc_id))
+    error_message = "Please specify a valid VPC ID (^vpc-[0-9a-zA-Z]{17}$)"
   }
 }
