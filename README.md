@@ -38,7 +38,7 @@ This repository contains various Terraform based projects I am currently or have
 - Create a workspace for your project
 - In the terraform code block add the below configuration
 
-```hcl
+```terraform
 terraform {
   cloud {
     organization = "{{ORG_NAME}}"
