@@ -38,13 +38,13 @@ module "aft-initiator" {
   version = "1.7.0"
 
   account_customizations_repo_branch              = "main"
-  account_customizations_repo_name                = "awsml-axiamed/aft-account-customizations"
+  account_customizations_repo_name                = "awsml-axiamed-org/aft-account-customizations"
   account_provisioning_customizations_repo_branch = "main"
-  account_provisioning_customizations_repo_name   = "awsml-axiamed/aft-account-provisioning-customizations"
+  account_provisioning_customizations_repo_name   = "awsml-axiamed-org/aft-account-provisioning-customizations"
   account_request_repo_branch                     = "main"
-  account_request_repo_name                       = "awsml-axiamed/aft-account-request"
+  account_request_repo_name                       = "awsml-axiamed-org/aft-account-request"
   global_customizations_repo_branch               = "main"
-  global_customizations_repo_name                 = "awsml-axiamed/aft-global-customizations"
+  global_customizations_repo_name                 = "awsml-axiamed-org/aft-global-customizations"
   aft_feature_cloudtrail_data_events              = false
   aft_feature_delete_default_vpcs_enabled         = true
   aft_feature_enterprise_support                  = false
