@@ -33,9 +33,9 @@ data "aws_caller_identity" "current" {}
 
 # module "control_tower_account_factory" {
 module "aft-initiator" {
-  # source = "git@github.com:aws-ia/terraform-aws-control_tower_account_factory.git"
-  source  = "aws-ia/control_tower_account_factory/aws"
-  version = "1.7.0"
+  source = "git@github.com:aws-ia/terraform-aws-control_tower_account_factory.git"
+  # source  = "aws-ia/control_tower_account_factory/aws"
+  # version = "1.8.0"
 
   account_customizations_repo_branch              = "main"
   account_customizations_repo_name                = "awsml-axiamed-organization/aft-account-customizations"
