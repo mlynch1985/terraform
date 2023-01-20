@@ -56,7 +56,7 @@ module "aft-initiator" {
   ct_management_account_id                        = data.aws_caller_identity.current.account_id
   log_archive_account_id                          = "890487267480"
   maximum_concurrent_customizations               = 5
-  terraform_version                               = "0.15.5"
+  terraform_version                               = "1.3.7" # "0.15.5"
   tf_backend_secondary_region                     = "us-east-1"
   vcs_provider                                    = "github"
 }
