@@ -29,9 +29,6 @@ provider "aws" {
   }
 }
 
-data "aws_caller_identity" "current" {}
-
-# module "control_tower_account_factory" {
 module "aft-initiator" {
   source = "git@github.com:aws-ia/terraform-aws-control_tower_account_factory.git"
   # source  = "aws-ia/control_tower_account_factory/aws"
@@ -53,10 +50,10 @@ module "aft-initiator" {
   audit_account_id                                = "203495621194"
   cloudwatch_log_group_retention                  = 30
   ct_home_region                                  = var.region
-  ct_management_account_id                        = data.aws_caller_identity.current.account_id
+  ct_management_account_id                        = "525260847144"
   log_archive_account_id                          = "890487267480"
   maximum_concurrent_customizations               = 10
-  terraform_version                               = "1.3.7" # "0.15.5"
+  terraform_version                               = "1.3.7"
   tf_backend_secondary_region                     = "us-east-1"
   vcs_provider                                    = "github"
 }
