@@ -1,3 +1,6 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 variable "azs" {
   description = "A list of availability zones names or ids in the region"
   type        = list(string)
@@ -73,13 +76,11 @@ variable "public_subnets" {
 variable "private_subnets" {
   description = "A list of private subnets inside the VPC"
   type        = list(string)
-  default     = []
 }
 
 variable "transit_subnets" {
   description = "A list of transit subnets inside the VPC"
   type        = list(string)
-  default     = []
 }
 
 variable "secondary_cidr_blocks" {
@@ -97,7 +98,6 @@ variable "tgw_cidr_route" {
 variable "tgw_id" {
   description = "Optionally provide a Transit Gateway ID to create an attachment to this VPC"
   type        = string
-  default     = ""
 }
 
 variable "appliance_mode_support" {

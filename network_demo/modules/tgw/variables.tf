@@ -43,6 +43,7 @@ variable "enable_dns_support" {
 variable "ram_name" {
   description = "The name of the resource share of TGW"
   type        = string
+  default     = ""
 }
 
 variable "ram_allow_external_principals" {

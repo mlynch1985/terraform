@@ -25,7 +25,7 @@ output "ec2_transit_gateway_propagation_default_route_table_id" {
 
 output "ram_resource_share_id" {
   description = "The Amazon Resource Name (ARN) of the resource share"
-  value       = aws_ram_resource_share.this.id
+  value       = aws_ram_resource_share.this[*].id
 }
 
 output "ram_principal_association_id" {

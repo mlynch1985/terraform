@@ -7,47 +7,21 @@ terraform {
   }
 }
 
-locals {
-  hub_account_id   = ""
-  spoke_account_id = ""
+provider "aws" {
+  region = local.region1_name
 }
 
 provider "aws" {
-  region = "us-east-2"
+  region = local.region1_name
+  alias  = "region1"
 }
 
 provider "aws" {
-  region = "us-east-2"
-  alias  = "nonprod-hub-use2"
-  assume_role {
-    role_arn     = "arn:aws:iam::${hub_account_id}:role/AWSControlTowerExecution"
-    session_name = "nonprod-hub-use2"
-  }
+  region = local.region2_name
+  alias  = "region2"
 }
 
 provider "aws" {
-  region = "us-west-2"
-  alias  = "nonprod-hub-usw2"
-  assume_role {
-    role_arn     = "arn:aws:iam::${hub_account_id}:role/AWSControlTowerExecution"
-    session_name = "nonprod-hub-usw2"
-  }
-}
-
-provider "aws" {
-  region = "us-east-2"
-  alias  = "nonprod-spoke-use2"
-  assume_role {
-    role_arn     = "arn:aws:iam::${spoke_account_id}:role/AWSControlTowerExecution"
-    session_name = "nonprod-spoke-use2"
-  }
-}
-
-provider "aws" {
-  region = "us-west-2"
-  alias  = "nonprod-spoke-usw2"
-  assume_role {
-    role_arn     = "arn:aws:iam::${spoke_account_id}:role/AWSControlTowerExecution"
-    session_name = "nonprod-spoke-usw2"
-  }
+  region = local.region3_name
+  alias  = "region3"
 }
