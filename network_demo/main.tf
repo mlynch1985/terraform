@@ -775,20 +775,45 @@ module "tgw_rtb_tgw_peer_region3_to_region2" {
   depends_on = [module.tgw_region1, module.tgw_region2, module.tgw_region3]
 }
 
+##########################################################################
+# DEPLOY EC2 INSTANCE TO TEST CONNECTIVITY THROUGH SESSION MANAGER
+##########################################################################
 
-# # Uncomment if using cross account- attachments
-# resource "aws_ec2_transit_gateway_vpc_attachment_accepter" "vpc_region1_spoke" {
-#   transit_gateway_attachment_id = module.vpc_region1_spoke.tgw_attachment_id[0]
-#   provider                      = aws.region1
+module "ec2_region1" {
+  source = "./modules/ec2"
 
-#   tags = {
-#     Name = "spoke"
-#   }
+  subnet_id = module.vpc_region1_spoke.private_subnets[0]
+  vpc_id    = module.vpc_region1_spoke.vpc_id
 
-#   lifecycle {
-#     ignore_changes = [
-#       transit_gateway_default_route_table_association,
-#       transit_gateway_default_route_table_propagation
-#     ]
-#   }
-# }
+  providers = {
+    aws = aws.region1
+  }
+
+  depends_on = [module.tgw_rtb_spoke_region1]
+}
+
+module "ec2_region2" {
+  source = "./modules/ec2"
+
+  subnet_id = module.vpc_region2_spoke.private_subnets[0]
+  vpc_id    = module.vpc_region2_spoke.vpc_id
+
+  providers = {
+    aws = aws.region2
+  }
+
+  depends_on = [module.tgw_rtb_spoke_region2]
+}
+
+module "ec2_region3" {
+  source = "./modules/ec2"
+
+  subnet_id = module.vpc_region3_spoke.private_subnets[0]
+  vpc_id    = module.vpc_region3_spoke.vpc_id
+
+  providers = {
+    aws = aws.region3
+  }
+
+  depends_on = [module.tgw_rtb_spoke_region3]
+}
