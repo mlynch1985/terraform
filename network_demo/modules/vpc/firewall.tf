@@ -89,6 +89,11 @@ data "aws_iam_policy_document" "fw_loggroup" {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
   }
   statement {
     sid    = "Allow AWS Firewall Logs to use the key"

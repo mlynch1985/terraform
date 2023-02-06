@@ -1,7 +1,4 @@
 data "aws_iam_policy_document" "kms_key_policy" {
-  #checkov:skip=CKV_AWS_109:Ensure IAM policies does not allow permissions management / resource exposure without constraints
-  #checkov:skip=CKV_AWS_111:Ensure IAM policies does not allow write access without constraints
-
   statement {
     sid    = "Enable Admin Management"
     effect = "Allow"
@@ -26,6 +23,11 @@ data "aws_iam_policy_document" "kms_key_policy" {
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
     resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
   }
   statement {
     sid    = "Enable AutoScalingServiceRole"
@@ -43,6 +45,11 @@ data "aws_iam_policy_document" "kms_key_policy" {
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"]
     }
     resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
   }
 }
 

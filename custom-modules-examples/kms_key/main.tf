@@ -1,8 +1,6 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "this" {
-  #checkov:skip=CKV_AWS_109:We are enabling access via IAM Roles and Users
-  #checkov:skip=CKV_AWS_111:We are enabling access via IAM Roles and Users
   statement {
     sid       = "Enable IAM User Permissions"
     resources = ["*"]
@@ -22,10 +20,14 @@ data "aws_iam_policy_document" "this" {
       "kms:ScheduleKeyDeletion",
       "kms:CancelKeyDeletion"
     ]
-
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
     }
   }
 
@@ -42,10 +44,14 @@ data "aws_iam_policy_document" "this" {
       "kms:ListGrants",
       "kms:RevokeGrant",
     ]
-
     principals {
       type        = "AWS"
       identifiers = var.iam_roles
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
     }
   }
 }

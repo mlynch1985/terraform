@@ -21,7 +21,8 @@ resource "aws_iam_instance_profile" "this" {
 }
 
 resource "aws_security_group" "this" {
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
+  description = "Network Demo Security Group"
 
   ingress {
     description = "Allow ICMP"
@@ -63,10 +64,19 @@ resource "aws_security_group" "this" {
 resource "aws_instance" "web" {
   ami                         = data.aws_ami.amazonlinux2.id
   associate_public_ip_address = false
+  ebs_optimized               = true
   iam_instance_profile        = aws_iam_instance_profile.this.name
   instance_type               = "t3.small"
+  monitoring                  = true
   subnet_id                   = var.subnet_id
   vpc_security_group_ids      = [aws_security_group.this.id]
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_put_response_hop_limit = 1
+    http_tokens                 = "required"
+    instance_metadata_tags      = "disabled"
+  }
 
   root_block_device {
     encrypted   = true
