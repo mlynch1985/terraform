@@ -95,6 +95,7 @@ resource "aws_iam_role" "this" {
   inline_policy {
     name = "CloudWatch_Logs"
 
+    #tfsec:ignore:aws-iam-no-policy-wildcards
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [
@@ -107,7 +108,7 @@ resource "aws_iam_role" "this" {
             "logs:DescribeLogStreams"
           ]
           Effect   = "Allow"
-          Resource = "*" #tfsec:ignore:aws-iam-no-policy-wildcards
+          Resource = "*"
         }
       ]
     })
