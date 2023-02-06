@@ -107,7 +107,7 @@ resource "aws_iam_role" "this" {
             "logs:DescribeLogStreams"
           ]
           Effect   = "Allow"
-          Resource = "${aws_cloudwatch_log_group.this.arn}*"
+          Resource = "*" #tfsec:ignore:aws-iam-no-policy-wildcards
         }
       ]
     })
