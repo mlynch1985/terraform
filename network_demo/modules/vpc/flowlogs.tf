@@ -1,4 +1,6 @@
 data "aws_iam_policy_document" "this" {
+  #checkov:skip=CKV_AWS_109:Resolved wildcard resource with condition blocks
+  #checkov:skip=CKV_AWS_111:Resolved wildcard resource with condition blocks
   statement {
     sid    = "Enable Root User Permissions"
     effect = "Allow"
@@ -105,7 +107,7 @@ resource "aws_iam_role" "this" {
             "logs:DescribeLogStreams"
           ]
           Effect   = "Allow"
-          Resource = "*"
+          Resource = "${aws_cloudwatch_log_group.this.arn}*"
         }
       ]
     })

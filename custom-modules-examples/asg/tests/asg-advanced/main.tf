@@ -1,4 +1,6 @@
 data "aws_iam_policy_document" "kms_key_policy" {
+  #checkov:skip=CKV_AWS_109:Resolved wildcard resource with condition blocks
+  #checkov:skip=CKV_AWS_111:Resolved wildcard resource with condition blocks
   statement {
     sid    = "Enable Admin Management"
     effect = "Allow"

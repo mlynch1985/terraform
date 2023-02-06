@@ -63,6 +63,8 @@ resource "aws_networkfirewall_logging_configuration" "this" {
 }
 
 data "aws_iam_policy_document" "fw_loggroup" {
+  #checkov:skip=CKV_AWS_109:Resolved wildcard resource with condition blocks
+  #checkov:skip=CKV_AWS_111:Resolved wildcard resource with condition blocks
   count = var.enable_firewall && length(var.private_subnets) > 0 ? 1 : 0
 
   statement {

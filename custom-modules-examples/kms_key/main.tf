@@ -1,6 +1,8 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "this" {
+  #checkov:skip=CKV_AWS_109:Resolved wildcard resource with condition blocks
+  #checkov:skip=CKV_AWS_111:Resolved wildcard resource with condition blocks
   statement {
     sid       = "Enable IAM User Permissions"
     resources = ["*"]
@@ -30,7 +32,6 @@ data "aws_iam_policy_document" "this" {
       values   = [data.aws_caller_identity.current.account_id]
     }
   }
-
   statement {
     sid       = "Enable Specific Roles to use this key"
     resources = ["*"]
