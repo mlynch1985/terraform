@@ -34,7 +34,7 @@ provider "aws" {
 module "aft-initiator" {
   # source = "git@github.com:aws-ia/terraform-aws-control_tower_account_factory.git"
   source  = "aws-ia/control_tower_account_factory/aws"
-  version = "1.8.0"
+  version = "1.9.0"
 
   account_customizations_repo_branch              = "main"
   account_customizations_repo_name                = "awsml-axiamed-organization/aft-account-customizations"
