@@ -18,24 +18,20 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
-
-  default_tags {
-    tags = {
-      Creator      = var.creator
-      Environment  = var.environment
-      Namespace    = var.namespace
-      Organization = var.organization
-      Owner        = var.owner
-    }
-  }
+  region = "us-east-2"
 }
 
 module "aft-initiator" {
-  # source = "git@github.com:aws-ia/terraform-aws-control_tower_account_factory.git"
   source  = "aws-ia/control_tower_account_factory/aws"
-  version = "1.9.0"
+  version = "1.9.1"
 
+  ct_management_account_id                        = "525260847144"
+  aft_management_account_id                       = "067521573221"
+  audit_account_id                                = "203495621194"
+  log_archive_account_id                          = "890487267480"
+  ct_home_region                                  = "us-east-2"
+  tf_backend_secondary_region                     = "us-east-1"
+  vcs_provider                                    = "github"
   account_customizations_repo_branch              = "main"
   account_customizations_repo_name                = "awsml-axiamed-organization/aft-account-customizations"
   account_provisioning_customizations_repo_branch = "main"
@@ -47,15 +43,8 @@ module "aft-initiator" {
   aft_feature_cloudtrail_data_events              = false
   aft_feature_delete_default_vpcs_enabled         = true
   aft_feature_enterprise_support                  = false
-  aft_management_account_id                       = "067521573221"
   aft_metrics_reporting                           = true
-  audit_account_id                                = "203495621194"
   cloudwatch_log_group_retention                  = 30
-  ct_home_region                                  = var.region
-  ct_management_account_id                        = "525260847144"
-  log_archive_account_id                          = "890487267480"
   maximum_concurrent_customizations               = 10
   terraform_version                               = "1.3.7"
-  tf_backend_secondary_region                     = "us-east-1"
-  vcs_provider                                    = "github"
 }
