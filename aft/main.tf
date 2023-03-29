@@ -23,7 +23,7 @@ provider "aws" {
 
 module "aft-initiator" {
   source  = "aws-ia/control_tower_account_factory/aws"
-  version = "1.9.1"
+  version = "1.9.2"
 
   ct_management_account_id                        = "525260847144"
   aft_management_account_id                       = "067521573221"
@@ -44,7 +44,7 @@ module "aft-initiator" {
   aft_feature_delete_default_vpcs_enabled         = true
   aft_feature_enterprise_support                  = false
   aft_metrics_reporting                           = true
-  cloudwatch_log_group_retention                  = 30
+  cloudwatch_log_group_retention                  = 7
   maximum_concurrent_customizations               = 10
-  terraform_version                               = "1.3.7"
+  terraform_version                               = "1.4.2"
 }
