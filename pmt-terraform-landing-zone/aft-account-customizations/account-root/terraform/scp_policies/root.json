@@ -1,0 +1,128 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Deny",
+            "Action": [
+                "guardduty:AcceptInvitation",
+                "guardduty:ArchiveFindings",
+                "guardduty:CreateDetector",
+                "guardduty:CreateFilter",
+                "guardduty:CreateIPSet",
+                "guardduty:CreateMembers",
+                "guardduty:CreatePublishingDestination",
+                "guardduty:CreateSampleFindings",
+                "guardduty:CreateThreatIntelSet",
+                "guardduty:DeclineInvitations",
+                "guardduty:DeleteDetector",
+                "guardduty:DeleteFilter",
+                "guardduty:DeleteInvitations",
+                "guardduty:DeleteIPSet",
+                "guardduty:DeleteMembers",
+                "guardduty:DeletePublishingDestination",
+                "guardduty:DeleteThreatIntelSet",
+                "guardduty:DisassociateFromMasterAccount",
+                "guardduty:DisassociateMembers",
+                "guardduty:InviteMembers",
+                "guardduty:StartMonitoringMembers",
+                "guardduty:StopMonitoringMembers",
+                "guardduty:TagResource",
+                "guardduty:UnarchiveFindings",
+                "guardduty:UntagResource",
+                "guardduty:UpdateDetector",
+                "guardduty:UpdateFilter",
+                "guardduty:UpdateFindingsFeedback",
+                "guardduty:UpdateIPSet",
+                "guardduty:UpdatePublishingDestination",
+                "guardduty:UpdateThreatIntelSet"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLike": {
+                    "aws:PrincipalARN": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/AWSAFT*"
+                    ]
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": [
+                "securityhub:DeleteInvitations",
+                "securityhub:DisableSecurityHub",
+                "securityhub:DisassociateFromMasterAccount",
+                "securityhub:DeleteMembers",
+                "securityhub:DisassociateMembers"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLike": {
+                    "aws:PrincipalARN": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/AWSAFT*"
+                    ]
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": [
+                "config:DeleteConfigRule",
+                "config:DeleteConfigurationRecorder",
+                "config:DeleteDeliveryChannel",
+                "config:StopConfigurationRecorder"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLike": {
+                    "aws:PrincipalARN": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/AWSAFT*"
+                    ]
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": [
+                "cloudwatch:DeleteAlarms",
+                "cloudwatch:DeleteDashboards",
+                "cloudwatch:DisableAlarmActions",
+                "cloudwatch:PutDashboard",
+                "cloudwatch:PutMetricAlarm",
+                "cloudwatch:SetAlarmState"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLike": {
+                    "aws:PrincipalARN": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/AWSAFT*"
+                    ]
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": [
+                "ec2:AttachInternetGateway",
+                "ec2:CreateInternetGateway",
+                "ec2:CreateEgressOnlyInternetGateway",
+                "ec2:CreateVpcPeeringConnection",
+                "ec2:AcceptVpcPeeringConnection",
+                "globalaccelerator:Create*",
+                "globalaccelerator:Update*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLike": {
+                    "aws:PrincipalARN": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/AWSAFT*"
+                    ]
+                }
+            }
+        }
+    ]
+}
