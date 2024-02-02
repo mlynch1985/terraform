@@ -1,0 +1,40 @@
+{
+  "ignore_rules": {
+    "id": []
+  },
+  "variables": {
+    "api_gw_logging_settings": ["ERROR", "INFO"],
+    "authorized_tcp_ports": ["443-445", "1020-1025"],
+    "authorized_udp_ports": ["500-501", "1020-1025"],
+    "backup_plan_schedule": "cron(0 0 1,15 * *)",
+    "backup_plan_required_retention_days": 35,
+    "blocked_actions_patterns": ["kms:\\*"],     
+    "core_iam_roles": [],
+    "ecs_version": "1.4.0",
+    "elbv2_acm_arns": [],
+    "elasticache_cluster_snapshot_retention_period": 15,
+    "excluded_public_buckets": [],
+    "enforce_s3_lifecycle_policy": [
+      {
+        "bucket_names": [".*"],
+        "target_transition_days": 15,
+        "target_expiration_days": 30,
+        "target_transition_storage_class": "INTELLIGENT_TIERING",
+        "target_prefix": ""
+      }
+    ],
+
+    "secrets_maximum_allowed_rotation_frequency": 25,
+    "kinesis_firehose_delivery_stream_arns": "aws_kinesis_firehose_delivery_stream.example",
+    "secret_keys": ["password", "passwd"],
+    "web_acl_arns": [],
+    "web_acl_ids": [],
+    "AlbDesyncModeCheckParamDesyncMode": ["defensive", "strictest"],
+    "iam_policies_not_allowed": [
+      "arn:aws:iam::aws:policy/AdministratorAccess",
+      "arn:aws:iam::aws:policy/PowerUserAccess"
+    ],
+    "iam_core_roles": []
+  },
+  "frameworks": {}
+}
