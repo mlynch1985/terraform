@@ -1,12 +1,12 @@
-# This AWS Content is provided subject to the terms of the AWS Customer Agreement 
-# available at http://aws.amazon.com/agreement or other written agreement between 
-# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both. 
+# This AWS Content is provided subject to the terms of the AWS Customer Agreement
+# available at http://aws.amazon.com/agreement or other written agreement between
+# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
 # Rule Identifier:
 #    EFS_ENCRYPTED_CHECK
 #
 # Description:
-#    Checks if Amazon Elastic File System (Amazon EFS) is configured to encrypt the file data using AWS Key Management Service (AWS KMS). 
+#    Checks if Amazon Elastic File System (Amazon EFS) is configured to encrypt the file data using AWS Key Management Service (AWS KMS).
 #    The rule is NON_COMPLIANT if the encrypted key is set to false on DescribeFileSystems or if the KmsKeyId key on DescribeFileSystems does not match the KmsKeyId parameter.
 #
 # Resource Types:
@@ -29,9 +29,9 @@ title := "EFS_ENCRYPTED_CHECK"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_encrypt(values) {
 	not object.get(values, "encrypted", false)

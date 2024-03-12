@@ -33,9 +33,9 @@ title := "S3_BUCKET_ACL_PROHIBITED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations contains response if {
 	id := "S3-5"

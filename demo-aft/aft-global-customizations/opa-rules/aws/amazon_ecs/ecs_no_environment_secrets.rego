@@ -34,9 +34,9 @@ level := "CRITICAL"
 
 title := "ECS_NO_ENVIRONMENT_SECRETS"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations contains response if {
 	id := "ECS-4"

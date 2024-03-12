@@ -34,9 +34,9 @@ id := "CODEBUILD-1"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations contains response if {
 	terraform.resources[j].type == resource_type

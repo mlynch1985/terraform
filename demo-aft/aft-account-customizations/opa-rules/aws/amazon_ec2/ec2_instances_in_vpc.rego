@@ -30,9 +30,9 @@ title := "INSTANCES_IN_VPC"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "EC2-4"

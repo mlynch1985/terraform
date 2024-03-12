@@ -32,9 +32,9 @@ title := "MULTI_REGION_CLOUD_TRAIL_ENABLED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "CLOUDTRAIL-6"

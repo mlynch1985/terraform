@@ -35,9 +35,9 @@ id := "VPC-1"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 ingress_egress_missing if {
 	vals := terraform.resources[j].values

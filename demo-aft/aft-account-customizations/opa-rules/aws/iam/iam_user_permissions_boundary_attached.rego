@@ -29,8 +29,8 @@ title := "IAM_USER_PERMISSIONS_BOUNDARY_ATTACHED"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
-owner := "UNKNOWN"
+cust_id := "TBD"
+owner := "TBD"
 
 iam_resource_types = ["aws_iam_user"]
 

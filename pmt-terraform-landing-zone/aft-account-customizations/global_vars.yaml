@@ -1,0 +1,28 @@
+# © 2024 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
+# This AWS Content is provided subject to the terms of the AWS Customer Agreement available at
+# http://aws.amazon.com/agreement or other written agreement between Customer and either
+# Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
+
+---
+# CT Enabled Regions
+region1: us-east-1 # CT Home Region
+region2: us-east-2
+region3: us-west-2
+region4: us-west-1
+
+# Control Tower Management (Root) Account Name (case-sensitive)
+ct_management_account_name: CT-Management
+
+# Audit Account Name (case-sensitive)
+audit_account_name: Audit
+
+# Log Archive Account Name (case-sensitive)
+log_archive_account_name: Log Archive
+
+# Network Account Name (case-sensitive)
+network_account_name: Network
+
+# Route53 AWS Private Domains
+route53_aws_private_domains:
+  - shared.dev.demo.cloud
+  - shared.test.demo.cloud

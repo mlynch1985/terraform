@@ -31,9 +31,9 @@ level := "HIGH"
 
 title := "IAM_NO_INLINE_POLICIES_CHECK"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 iam_principal_types = [
 	"aws_iam_user_policy",

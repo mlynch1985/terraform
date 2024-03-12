@@ -32,9 +32,9 @@ title := "CLOUD_TRAIL_ENABLED"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_cloudtrail_disabled(values) {
 	actions := object.get(values.resource_changes[j].change, "actions", "")

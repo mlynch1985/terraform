@@ -1,13 +1,13 @@
-# This AWS Content is provided subject to the terms of the AWS Customer Agreement 
-# available at http://aws.amazon.com/agreement or other written agreement between 
-# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both. 
+# This AWS Content is provided subject to the terms of the AWS Customer Agreement
+# available at http://aws.amazon.com/agreement or other written agreement between
+# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
 # Rule Identifier:
 #    EFS_ACCESS_POINT_ENFORCE_ROOT_DIRECTORY
 #
 # Description:
-#    Checks if Amazon Elastic File System (Amazon EFS) access points are configured to enforce a root directory. 
-#    The rule is NON_COMPLIANT if the value of 'Path' is set to '/' (default root directory of the file system). 
+#    Checks if Amazon Elastic File System (Amazon EFS) access points are configured to enforce a root directory.
+#    The rule is NON_COMPLIANT if the value of 'Path' is set to '/' (default root directory of the file system).
 #
 # Resource Types:
 #    aws_efs_access_point
@@ -31,9 +31,9 @@ title := "EFS_ACCESS_POINT_ENFORCE_ROOT_DIRECTORY"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_root_directory_path(values) if {
 	object.get(values, "root_directory", []) == []

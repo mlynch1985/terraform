@@ -35,9 +35,9 @@ id := "NETWORK_FIREWALL-2"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 empty_rule := [{
 	"destination": [],

@@ -34,9 +34,9 @@ title := "S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_sse_res_not_exists(rep, bucket_addr) if {
 	count(rep) == 0

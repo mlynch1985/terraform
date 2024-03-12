@@ -31,9 +31,9 @@ title := "CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "CLOUDTRAIL-1"

@@ -10,6 +10,7 @@ phases:
     on-failure: ABORT
     commands:
       - set -e
+
       # Populate Required Variables
       - DEFAULT_PATH=$(pwd)
       - TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
@@ -22,11 +23,12 @@ phases:
       - AFT_ADMIN_ROLE_NAME=$(aws ssm get-parameter --name /aft/resources/iam/aft-administrator-role-name | jq --raw-output ".Parameter.Value")
       - AFT_ADMIN_ROLE_ARN=arn:$AWS_PARTITION:iam::$AFT_MGMT_ACCOUNT:role/$AFT_ADMIN_ROLE_NAME
       - ROLE_SESSION_NAME=$(aws ssm get-parameter --name /aft/resources/iam/aft-session-name | jq --raw-output ".Parameter.Value")
+
       - |
         CUSTOMIZATION=$(aws dynamodb get-item --table-name aft-request-metadata --key "{\"id\": {\"S\": \"$VENDED_ACCOUNT_ID\"}}" --attributes-to-get "account_customizations_name" | jq --raw-output ".Item.account_customizations_name.S")
 
-      # Check if customization directory exists
       - |
+        # Check if customization directory exists
         if [[ ! -z "$CUSTOMIZATION" ]]; then
           if [[ ! -d "$DEFAULT_PATH/$CUSTOMIZATION" ]]; then
             echo "Error: ${CUSTOMIZATION} directory does not exist"
@@ -51,7 +53,7 @@ phases:
             ssh-add ~/.ssh/ssh_key
           fi
 
-          # Clone AFT
+          # Clone AFT Source Code
           AWS_MODULE_SOURCE=$(aws ssm get-parameter --name "/aft/config/aft-pipeline-code-source/repo-url" --query "Parameter.Value" --output text)
           AWS_MODULE_GIT_REF=$(aws ssm get-parameter --name "/aft/config/aft-pipeline-code-source/repo-git-ref" --query "Parameter.Value" --output text)
           git config --global credential.helper '!aws codecommit credential-helper $@'
@@ -74,6 +76,30 @@ phases:
           # Generate session profiles
           chmod +x $DEFAULT_PATH/aws-aft-core-framework/sources/scripts/creds.sh
           $DEFAULT_PATH/aws-aft-core-framework/sources/scripts/creds.sh
+
+          # Install Terraform
+          mkdir -p /opt/aft/bin
+          cd /tmp
+          echo "Installing Terraform"
+          curl -q -o terraform_${TF_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+          unzip -q -o terraform_${TF_VERSION}_linux_amd64.zip
+          mv terraform /opt/aft/bin
+          /opt/aft/bin/terraform --version
+
+          # Install TFSEC
+          echo "Installing TFSEC"
+          curl -q -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+          tfsec --version
+
+          # Install Checkov
+          echo "Installing Checkov"
+          pip3 install checkov
+          checkov --version
+
+          # Install OPA
+          echo "Installing OPA"
+          curl -L -q -o /opt/aft/bin/opa https://github.com/open-policy-agent/opa/releases/latest/download/opa_linux_amd64
+          chmod 755 /opt/aft/bin/opa
         fi
 
   pre_build:
@@ -91,86 +117,102 @@ phases:
     on-failure: ABORT
     commands:
       - |
-        # Populate Required Variables
-        source $DEFAULT_PATH/aft-venv/bin/activate
+        if [[ ! -z "$CUSTOMIZATION" ]]; then
+          source $DEFAULT_PATH/aft-venv/bin/activate
 
-        TF_BACKEND_REGION=$(aws ssm get-parameter --name "/aft/config/oss-backend/primary-region" --query "Parameter.Value" --output text)
-        TF_KMS_KEY_ID=$(aws ssm get-parameter --name "/aft/config/oss-backend/kms-key-id" --query "Parameter.Value" --output text)
-        TF_DDB_TABLE=$(aws ssm get-parameter --name "/aft/config/oss-backend/table-id" --query "Parameter.Value" --output text)
-        TF_S3_BUCKET=$(aws ssm get-parameter --name "/aft/config/oss-backend/bucket-id" --query "Parameter.Value" --output text)
-        TF_S3_KEY=$VENDED_ACCOUNT_ID-aft-account-customizations/terraform.tfstate
+          TF_BACKEND_REGION=$(aws ssm get-parameter --name "/aft/config/oss-backend/primary-region" --query "Parameter.Value" --output text)
+          TF_KMS_KEY_ID=$(aws ssm get-parameter --name "/aft/config/oss-backend/kms-key-id" --query "Parameter.Value" --output text)
+          TF_DDB_TABLE=$(aws ssm get-parameter --name "/aft/config/oss-backend/table-id" --query "Parameter.Value" --output text)
+          TF_S3_BUCKET=$(aws ssm get-parameter --name "/aft/config/oss-backend/bucket-id" --query "Parameter.Value" --output text)
+          TF_S3_KEY=$VENDED_ACCOUNT_ID-aft-account-customizations/terraform.tfstate
 
-        # Install Terraform
-        cd /tmp
-        echo "Installing Terraform"
-        curl -q -o terraform_${TF_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
-        mkdir -p /opt/aft/bin
-        unzip -q -o terraform_${TF_VERSION}_linux_amd64.zip
-        mv terraform /opt/aft/bin
-        /opt/aft/bin/terraform -no-color --version
+          # Execute Jinja to setup our backend and provider configurations
+          cd $DEFAULT_PATH/$CUSTOMIZATION/terraform
+          for f in *.jinja; do jinja2 $f -D timestamp="$TIMESTAMP" -D tf_distribution_type=$TF_DISTRIBUTION -D provider_region=$CT_MGMT_REGION -D region=$TF_BACKEND_REGION -D aft_admin_role_arn=$AFT_EXEC_ROLE_ARN -D target_admin_role_arn=$VENDED_EXEC_ROLE_ARN -D bucket=$TF_S3_BUCKET -D key=$TF_S3_KEY -D dynamodb_table=$TF_DDB_TABLE -D kms_key_id=$TF_KMS_KEY_ID >> ./$(basename $f .jinja).tf; done
 
-        # Execute Jinja to setup our backend and provider configurations
-        cd $DEFAULT_PATH/$CUSTOMIZATION/terraform
-        for f in *.jinja; do jinja2 $f -D timestamp="$TIMESTAMP" -D tf_distribution_type=$TF_DISTRIBUTION -D provider_region=$CT_MGMT_REGION -D region=$TF_BACKEND_REGION -D aft_admin_role_arn=$AFT_EXEC_ROLE_ARN -D target_admin_role_arn=$VENDED_EXEC_ROLE_ARN -D bucket=$TF_S3_BUCKET -D key=$TF_S3_KEY -D dynamodb_table=$TF_DDB_TABLE -D kms_key_id=$TF_KMS_KEY_ID >> ./$(basename $f .jinja).tf; done
+          cd $DEFAULT_PATH/$CUSTOMIZATION/terraform
+          export AWS_PROFILE=aft-management-admin
 
-        cd $DEFAULT_PATH/$CUSTOMIZATION/terraform
-        export AWS_PROFILE=aft-management-admin
+          echo ""
+          cat aft-providers.tf
+          echo ""
+          cat backend.tf
+          echo ""
 
-        # Set our required variables
-        TF_PLAN_BIN="/tmp/tfplan.bin"
-        TF_PLAN_JSON="/tmp/tfplan.json"
-        OPA_SCAN_OUTPUT="/tmp/opa_scan_output.json"
+          # Set our required variables
+          TF_PLAN_BIN="/tmp/tfplan.bin"
+          TF_PLAN_JSON="/tmp/tfplan.json"
+          TFSEC_OUTPUT="/tmp/tfsec_output"
+          CHECKOV_SCAN_OUTPUT="/tmp/checkov_scan_output.json"
+          OPA_SCAN_OUTPUT="/tmp/opa_scan_output.json"
 
-        # Create our error handler function to reuse later
-        capture_errors() {
-          if [ $? -ne 0 ]; then
-            echo -e "ERROR: $1 \n"
-            echo $?
+          # Create our error handler function to reuse later
+          capture_errors() {
+            if [ $? -ne 0 ]; then
+              echo -e "ERROR: $1 \n"
+              echo $?
+              sleep 15
+              aws codebuild stop-build --id $CODEBUILD_BUILD_ID
+            fi
+          }
+
+          # Combine our Global and Customization specific OPA Rego Rules
+          mkdir -p /tmp/opa
+          yes | cp -vrf $DEFAULT_PATH/opa-rules/ /tmp/opa/
+
+          if [ -d "$DEFAULT_PATH/$CUSTOMIZATION/opa-rules" ]; then
+            yes | cp -vrf $DEFAULT_PATH/$CUSTOMIZATION/opa-rules/* /tmp/opa/
+          fi
+
+          # Initialize Terraform
+          /opt/aft/bin/terraform init -upgrade
+          capture_errors "Failed to execute terraform init"
+
+          # Generate a Terraform Plan file and convert to JSON format needed by OPA
+          /opt/aft/bin/terraform plan -input=false -refresh -no-color -out=$TF_PLAN_BIN
+          capture_errors "Failed to execute terraform plan"
+
+          /opt/aft/bin/terraform show -json $TF_PLAN_BIN > $TF_PLAN_JSON
+          capture_errors "Failed to convert TF plan to JSON format"
+
+          # Scan using TFSEC
+          tfsec . --force-all-dirs -m LOW --format lovely,json --out $TFSEC_OUTPUT
+          capture_errors "Failed to execute TFSEC scan"
+
+          TFSEC_FINDINGS=$(jq '.results | length ' ${TFSEC_OUTPUT}.json)
+
+          echo -e "\nTFSEC Scan Failure Count: $TFSEC_FINDINGS\n"
+
+          # Scan using Checkov
+          checkov --directory . --quiet --enable-secret-scan-all-files --output cli --output json --output-file-path console,$CHECKOV_SCAN_OUTPUT
+          capture_errors "Failed to execute Checkov scan"
+
+          CHECKOV_FINDINGS=$(jq -r '.summary.failed' $CHECKOV_SCAN_OUTPUT)
+
+          echo -e "\nCHECKOV Scan Failure Count: $CHECKOV_FINDINGS\n"
+
+          # Scan using OPA
+          /opt/aft/bin/opa eval "data.aws" --data=$DEFAULT_PATH/opa-rules/ --format=pretty --input=$TF_PLAN_JSON > $OPA_SCAN_OUTPUT
+          capture_errors "Failed to execute OPA scan"
+
+          OPA_FINDINGS=$(jq -r '.. | .message? | select(. != null)' $OPA_SCAN_OUTPUT | jq -s 'length')
+
+          echo -e "\nOPA Scan Failure Count: $OPA_FINDINGS\n"
+          jq -r '.. | .message? | select(. != null)' $OPA_SCAN_OUTPUT
+
+          # Test and report if there are any findings
+          if [[ $TFSEC_FINDINGS -gt 0 ]] || [[ $CHECKOV_FINDINGS -gt 0 ]] || [[ $OPA_FINDINGS -gt 0 ]]
+          then
+            echo -e "\nERROR: Scan failed test(s). Please review the above messages on guidance of how to resolve the findings"
+            echo -e "\nINFO: Stopping CodeBuild job execution...\n"
             sleep 15
             aws codebuild stop-build --id $CODEBUILD_BUILD_ID
           fi
-        }
 
-        # Combine our Global and Customization specific OPA Rego Rules
-        mkdir -p /tmp/opa
-        yes | cp -vrf $DEFAULT_PATH/opa-rules/ /tmp/opa/
-
-        if [ -d "$DEFAULT_PATH/$CUSTOMIZATION/opa-rules" ]; then
-          yes | cp -vrf $DEFAULT_PATH/$CUSTOMIZATION/opa-rules/* /tmp/opa/
+          # If all is clear, proceed with applying our desired changes
+          /opt/aft/bin/terraform apply -no-color $TF_PLAN_BIN
+          capture_errors "Failed to execute terraform apply"
         fi
-
-        # Initialize Terraform
-        /opt/aft/bin/terraform init -no-color -upgrade
-        capture_errors "Failed to execute terraform init"
-
-        # Generate a Terraform Plan file and convert to JSON format needed by OPA
-        /opt/aft/bin/terraform plan -input=false -refresh -no-color -out=$TF_PLAN_BIN
-        capture_errors "Failed to execute terraform plan"
-
-        /opt/aft/bin/terraform show -json $TF_PLAN_BIN > $TF_PLAN_JSON
-        capture_errors "Failed to convert TF plan to JSON format"
-
-        # Install and execute our OPA Scan
-        curl -L -o /opt/aft/bin/opa https://github.com/open-policy-agent/opa/releases/download/v0.54.0/opa_linux_amd64 && chmod 755 /opt/aft/bin/opa
-        /opt/aft/bin/opa eval "data.aws" --data=/tmp/opa --format=pretty --input=$TF_PLAN_JSON > $OPA_SCAN_OUTPUT
-        capture_errors "Failed to execute OPA scan"
-
-        OPA_FINDINGS=$(jq -r '.. | .message? | select(. != null)' $OPA_SCAN_OUTPUT | jq -s 'length')
-
-        echo -e "\nOPA Scan Failure Count: $OPA_FINDINGS\n"
-        jq -r '.. | .message? | select(. != null)' $OPA_SCAN_OUTPUT
-
-        # Test and report if OPA has any findings
-        if [[ $OPA_FINDINGS -gt 0 ]]; then
-          echo -e "\nERROR: OPA Scan failed $OPA_FINDINGS test(s). Please review the above messages on guidance of how to resolve the OPA_FINDINGS"
-          echo -e "\nINFO: Stopping CodeBuild job execution...\n"
-          sleep 15
-          aws codebuild stop-build --id $CODEBUILD_BUILD_ID
-        fi
-
-        # If all is clear, proceed with applying our desired changes
-        /opt/aft/bin/terraform apply -no-color $TF_PLAN_BIN
-        capture_errors "Failed to execute terraform apply"
 
   post_build:
     on-failure: ABORT

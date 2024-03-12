@@ -35,9 +35,9 @@ title := "VPC_FLOW_LOGS_ENABLED"
 
 id := "VPC-3"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 has_vpc_and_flowlog {
 	# must contain both aws_vpc and aws_flow_log resource types to qualify

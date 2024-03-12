@@ -30,9 +30,9 @@ resource_type := "aws_launch_configuration"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 title := "AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED"
 

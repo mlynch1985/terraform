@@ -3,8 +3,6 @@
 # http://aws.amazon.com/agreement or other written agreement between Customer and either
 # Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
-data "aws_region" "current" {}
-
 resource "aws_ec2_transit_gateway" "this" {
   amazon_side_asn                 = var.amazon_side_asn
   auto_accept_shared_attachments  = "disable"

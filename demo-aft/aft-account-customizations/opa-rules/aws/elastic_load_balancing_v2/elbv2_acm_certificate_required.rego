@@ -36,9 +36,9 @@ title := "ELBV2_ACM_CERTIFICATE_REQUIRED"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 # Step 5:  Fail the check if the ARN is for a certificate stored in IAM.
 check_specific_acm_arn {

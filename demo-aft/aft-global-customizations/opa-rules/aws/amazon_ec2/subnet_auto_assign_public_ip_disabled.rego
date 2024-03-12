@@ -30,9 +30,9 @@ title := "SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 resource_type := "aws_subnet"
 

@@ -14,6 +14,7 @@ module "dev_vpc_inspection_region1" {
   domain                     = "dev"
   azs                        = slice(data.aws_availability_zones.region1.zone_ids, 0, 3)
   firewall_delete_protection = false # Testing
+  firewall_enabled           = false # Testing
   ipam_pool_id               = module.dev_ipam.pools_level_2["${local.global_vars.region1}/Infrastructure_Dev"].id
   private_subnet_names       = ["dev_inspection_private_a", "dev_inspection_private_b", "dev_inspection_private_c"]
   transit_subnet_names       = ["dev_inspection_transit_a", "dev_inspection_transit_b", "dev_inspection_transit_c"]
@@ -32,6 +33,7 @@ module "dev_vpc_inspection_region2" {
   domain                     = "dev"
   azs                        = slice(data.aws_availability_zones.region2.zone_ids, 0, 3)
   firewall_delete_protection = false # Testing
+  firewall_enabled           = false # Testing
   ipam_pool_id               = module.dev_ipam.pools_level_2["${local.global_vars.region2}/Infrastructure_Dev"].id
   private_subnet_names       = ["dev_inspection_private_a", "dev_inspection_private_b", "dev_inspection_private_c"]
   transit_subnet_names       = ["dev_inspection_transit_a", "dev_inspection_transit_b", "dev_inspection_transit_c"]
@@ -52,6 +54,7 @@ module "dev_vpc_inspection_region3" {
   domain                     = "dev"
   azs                        = slice(data.aws_availability_zones.region3.zone_ids, 0, 3)
   firewall_delete_protection = false # Testing
+  firewall_enabled           = false # Testing
   ipam_pool_id               = module.dev_ipam.pools_level_2["${local.global_vars.region3}/Infrastructure_Dev"].id
   private_subnet_names       = ["dev_inspection_private_a", "dev_inspection_private_b", "dev_inspection_private_c"]
   transit_subnet_names       = ["dev_inspection_transit_a", "dev_inspection_transit_b", "dev_inspection_transit_c"]
@@ -72,6 +75,7 @@ module "dev_vpc_inspection_region3" {
 #   domain                     = "dev"
 #   azs                        = slice(data.aws_availability_zones.region4.zone_ids, 0, 3)
 #   firewall_delete_protection = false # Testing
+#   firewall_enabled = false # Testing
 #   ipam_pool_id               = module.dev_ipam.pools_level_2["${local.global_vars.region4}/Infrastructure_Dev"].id
 #   private_subnet_names       = ["dev_inspection_private_a", "dev_inspection_private_b", "dev_inspection_private_c"]
 #   transit_subnet_names       = ["dev_inspection_transit_a", "dev_inspection_transit_b", "dev_inspection_transit_c"]

@@ -34,9 +34,9 @@ resource_type := "aws_secretsmanager_secret"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 title := "SECRETSMANAGER_ROTATION_ENABLED_CHECK"
 

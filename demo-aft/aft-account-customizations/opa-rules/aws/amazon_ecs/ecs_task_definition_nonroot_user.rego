@@ -33,9 +33,9 @@ resource_type := "aws_ecs_task_definition"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 title := "ECS_TASK_DEFINITION_NONROOT_USER"
 

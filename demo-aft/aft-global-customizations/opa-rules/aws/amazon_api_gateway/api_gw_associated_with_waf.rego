@@ -37,9 +37,9 @@ id := "AMAZON_API_GATEWAY-2"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 #check to see that the web acl arn in the terraform plan exists in the config.json list of web acl arns
 has_api_stage_waf_association_arn {

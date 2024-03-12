@@ -34,9 +34,9 @@ id := "AMAZON_API_GATEWAY-1"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	input.configuration.root_module.resources[i].type == resource_type

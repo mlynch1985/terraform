@@ -1,4 +1,4 @@
-# © 2023 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
+# © 2024 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
 # This AWS Content is provided subject to the terms of the AWS Customer Agreement available at
 # http://aws.amazon.com/agreement or other written agreement between Customer and either
 # Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
@@ -37,19 +37,17 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
-.terraform.lock.hcl
-
-# Local tf dev files
-aft-providers.tf
-providers.tf
-backend.tf
-
-# aft specific
-account_list.json
-ipam_cidrs*
 
 # General
 .DS_Store
 .AppleDouble
 .LSOverride
-pre-api-helpers-dev.sh
+
+# Ignore local testing
+aft-providers.tf
+providers.tf
+backend.tf
+customize_codebuild_jobs.log
+
+# Ignore the terraform lock file to enable auto-upgrade of dependency on pipeline execution
+*.terraform.lock*

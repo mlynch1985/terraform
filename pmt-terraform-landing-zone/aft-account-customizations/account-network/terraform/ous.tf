@@ -1,53 +1,63 @@
-# © 2023 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
+# © 2024 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
 # This AWS Content is provided subject to the terms of the AWS Customer Agreement available at
 # http://aws.amazon.com/agreement or other written agreement between Customer and either
 # Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
-data "aws_organizations_organization" "this" {
+data "aws_organizations_organization" "current" {
   provider = aws.ct-management
 }
 
-data "aws_organizations_organizational_units" "root" {
+data "aws_organizations_organizational_units" "level_one" {
+  parent_id = data.aws_organizations_organization.current.roots[0].id
   provider  = aws.ct-management
-  parent_id = data.aws_organizations_organization.this.roots[0].id
 }
 
-data "aws_organizations_organizational_units" "exceptions" {
+data "aws_organizations_organizational_units" "level_two" {
+  for_each  = local.level_one_ous
+  parent_id = each.value.id
   provider  = aws.ct-management
-  parent_id = [for ou in data.aws_organizations_organizational_units.root.children : ou.id if ou.name == "Exceptions"][0]
 }
 
-data "aws_organizations_organizational_units" "sandbox" {
+data "aws_organizations_organizational_units" "level_three" {
+  for_each  = local.level_two_ous
+  parent_id = each.value.id
   provider  = aws.ct-management
-  parent_id = [for ou in data.aws_organizations_organizational_units.root.children : ou.id if ou.name == "Sandbox"][0]
 }
 
-data "aws_organizations_organizational_units" "security" {
+data "aws_organizations_organizational_units" "level_four" {
+  for_each  = local.level_three_ous
+  parent_id = each.value.id
   provider  = aws.ct-management
-  parent_id = [for ou in data.aws_organizations_organizational_units.root.children : ou.id if ou.name == "Security"][0]
 }
 
-data "aws_organizations_organizational_units" "deployments" {
+data "aws_organizations_organizational_units" "level_five" {
+  for_each  = local.level_four_ous
+  parent_id = each.value.id
   provider  = aws.ct-management
-  parent_id = [for ou in data.aws_organizations_organizational_units.root.children : ou.id if ou.name == "Deployments"][0]
 }
 
-data "aws_organizations_organizational_units" "workloads" {
-  provider  = aws.ct-management
-  parent_id = [for ou in data.aws_organizations_organizational_units.root.children : ou.id if ou.name == "Workloads"][0]
-}
+locals {
+  level_one_ous = { for ou in data.aws_organizations_organizational_units.level_one.children : ou.name => ou }
 
-data "aws_organizations_organizational_units" "policy-staging" {
-  provider  = aws.ct-management
-  parent_id = [for ou in data.aws_organizations_organizational_units.root.children : ou.id if ou.name == "Policy Staging"][0]
-}
+  level_two_ous = merge([
+    for parent_name, ou in data.aws_organizations_organizational_units.level_two :
+    { for child in ou.children : "${parent_name}/${child.name}" => child }
+  ]...)
 
-data "aws_organizations_organizational_units" "suspended" {
-  provider  = aws.ct-management
-  parent_id = [for ou in data.aws_organizations_organizational_units.root.children : ou.id if ou.name == "Suspended"][0]
-}
+  level_three_ous = merge([
+    for parent_name, ou in data.aws_organizations_organizational_units.level_three :
+    { for child in ou.children : "${parent_name}/${child.name}" => child }
+  ]...)
 
-data "aws_organizations_organizational_units" "infrastructure" {
-  provider  = aws.ct-management
-  parent_id = [for ou in data.aws_organizations_organizational_units.root.children : ou.id if ou.name == "Infrastructure"][0]
+  level_four_ous = merge([
+    for parent_name, ou in data.aws_organizations_organizational_units.level_four :
+    { for child in ou.children : "${parent_name}/${child.name}" => child }
+  ]...)
+
+  level_five_ous = merge([
+    for parent_name, ou in data.aws_organizations_organizational_units.level_five :
+    { for child in ou.children : "${parent_name}/${child.name}" => child }
+  ]...)
+
+  all_ous = merge(local.level_one_ous, local.level_two_ous, local.level_three_ous, local.level_four_ous, local.level_five_ous)
 }

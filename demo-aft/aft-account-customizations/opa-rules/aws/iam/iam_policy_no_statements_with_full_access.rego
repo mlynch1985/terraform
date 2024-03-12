@@ -31,8 +31,8 @@ title := "IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
-owner := "UNKNOWN"
+cust_id := "TBD"
+owner := "TBD"
 
 iam_resources := [
 	"aws_iam_policy",

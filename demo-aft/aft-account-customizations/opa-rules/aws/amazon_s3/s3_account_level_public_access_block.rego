@@ -33,9 +33,9 @@ title := "S3_ACCOUNT_LEVEL_PUBLIC_ACCESS_BLOCKS"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "S3-1"

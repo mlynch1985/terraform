@@ -1,13 +1,13 @@
-# This AWS Content is provided subject to the terms of the AWS Customer Agreement 
-# available at http://aws.amazon.com/agreement or other written agreement between 
-# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both. 
+# This AWS Content is provided subject to the terms of the AWS Customer Agreement
+# available at http://aws.amazon.com/agreement or other written agreement between
+# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
 # Rule Identifier:
 #    EFS_ACCESS_POINT_ENFORCE_USER_IDENTITY
 #
 # Description:
-#    Checks if Amazon Elastic File System (Amazon EFS) access points are configured to enforce a user identity. 
-#    The rule is NON_COMPLIANT if 'PosixUser' is not defined or if parameters are provided and there is no match in the corresponding parameter. 
+#    Checks if Amazon Elastic File System (Amazon EFS) access points are configured to enforce a user identity.
+#    The rule is NON_COMPLIANT if 'PosixUser' is not defined or if parameters are provided and there is no match in the corresponding parameter.
 #
 # Resource Types:
 #    aws_efs_access_point
@@ -27,9 +27,9 @@ resource_type := "aws_efs_access_point"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 title := "EFS_ACCESS_POINT_ENFORCE_USER_IDENTITY"
 

@@ -33,8 +33,8 @@ import future.keywords.in
 title := "RDS_DB_INSTANCE_BACKUP_PLAN_ATTACHED"
 resource_type := "aws_db_instance"
 retention_days := "35" # Check if the retention period is set to 35
-cust_id := "Bofa-axiamed"
-owner := "UNKNOWN"
+cust_id := "TBD"
+owner := "TBD"
 
 # Check Backup plan attached to RDS DB Instance
 has_rds_and_backup_selection {

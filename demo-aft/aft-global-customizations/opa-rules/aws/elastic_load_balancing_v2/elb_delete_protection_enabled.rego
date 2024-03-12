@@ -36,9 +36,9 @@ id := "ELB-4"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	# Check if the rule should be ignored for this resource

@@ -32,9 +32,9 @@ title := "ALB_HTTP_DROP_INVALID_HEADER_ENABLED"
 
 id := "ALB-2"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 level := "HIGH"
 

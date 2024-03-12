@@ -35,9 +35,9 @@ id := "AMAZON_GUARDDUTY-1"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_guardduty_disabled(values) {
 	actions := object.get(values.resource_changes[j].change, "actions", "")

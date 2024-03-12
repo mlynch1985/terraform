@@ -33,9 +33,9 @@ title := "RDS_INSTANCE_DEFAULT_ADMIN_CHECK"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations contains response if {
 	id := "RDS-4"

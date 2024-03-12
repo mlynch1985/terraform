@@ -32,9 +32,9 @@ title := "CLOUDTRAIL_S3_DATAEVENTS_ENABLED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 check_events(res) {
 	object.get(res, "event_selector", []) == []

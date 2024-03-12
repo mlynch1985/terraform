@@ -30,9 +30,9 @@ level := "HIGH"
 
 title := "NO_UNRESTRICTED_ROUTE_TO_IGW"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 resource_type := ["aws_route", "aws_route_table"]
 

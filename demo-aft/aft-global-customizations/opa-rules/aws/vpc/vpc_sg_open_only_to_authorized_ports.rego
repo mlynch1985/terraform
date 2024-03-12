@@ -35,9 +35,9 @@ id := "VPC-2"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 #comepare the port range configured to the authorized_ports list
 check_range(range, to_port, from_port) {

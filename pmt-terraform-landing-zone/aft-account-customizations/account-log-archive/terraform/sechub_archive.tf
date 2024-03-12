@@ -1,10 +1,11 @@
-# © 2023 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
+# © 2024 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
 # This AWS Content is provided subject to the terms of the AWS Customer Agreement available at
 # http://aws.amazon.com/agreement or other written agreement between Customer and either
 # Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
 locals {
-  stack_name = "sechub_archive"
+  stack_name         = "sechub_archive"
+  stack_replica_name = "sechub_archive_r"
 }
 
 resource "aws_cloudwatch_event_bus" "sechub_archive" {
@@ -12,6 +13,7 @@ resource "aws_cloudwatch_event_bus" "sechub_archive" {
 }
 
 data "aws_iam_policy_document" "bus_policy" {
+  #checkov:skip=CKV_AWS_111:Condition is restricting to accounts only within the organizations.
   statement {
     sid       = "AuditAccountAccess"
     actions   = ["events:PutEvents"]
@@ -19,7 +21,7 @@ data "aws_iam_policy_document" "bus_policy" {
     principals {
       type = "AWS"
       # A known predticable role name created in audit account
-      identifiers = ["arn:aws:iam::${data.aws_ssm_parameter.audit_account_id.value}:role/aft/sechub_archive_eventbridge"]
+      identifiers = ["arn:aws:iam::${local.audit_account_id}:role/aft/sechub_archive_eventbridge"]
     }
   }
   statement {
@@ -82,7 +84,7 @@ resource "aws_cloudwatch_event_rule" "sechub_archive" {
   name           = local.stack_name
   description    = "Stream all Security Hub Finding events to Kinesis Firehose"
   event_pattern = jsonencode({
-    account     = [nonsensitive(data.aws_ssm_parameter.audit_account_id.value)]
+    account     = [local.audit_account_id]
     source      = ["aws.securityhub"]
     detail-type = ["Security Hub Findings - Imported"]
   })
@@ -97,8 +99,13 @@ resource "aws_cloudwatch_event_target" "sechub_archive" {
 
 resource "aws_cloudwatch_log_group" "sechub_archive" {
   name              = local.stack_name
-  kms_key_id        = module.sechub_archive_kms_key.arn
-  retention_in_days = 90
+  kms_key_id        = module.sechub_archive_kms_key_region1.arn
+  retention_in_days = 365
+
+  # CLOUDWATCH-1 - Skipping OPA check for cloudwatch log group encryption as it is a false positive
+  tags = {
+    "opa_skip" = "CLOUDWATCH-1"
+  }
 }
 
 resource "aws_cloudwatch_log_stream" "sechub_archive" {
@@ -129,7 +136,7 @@ data "aws_iam_policy_document" "firehose" {
       "kms:Decrypt",
       "kms:GenerateDataKey"
     ]
-    resources = [module.sechub_archive_kms_key.arn]
+    resources = [module.sechub_archive_kms_key_region1.arn]
     condition {
       test     = "StringEquals"
       variable = "kms:ViaService"
@@ -167,7 +174,7 @@ resource "aws_kinesis_firehose_delivery_stream" "sechub_archive" {
   server_side_encryption {
     enabled  = true
     key_type = "CUSTOMER_MANAGED_CMK"
-    key_arn  = module.sechub_archive_kms_key.arn
+    key_arn  = module.sechub_archive_kms_key_region1.arn
   }
 
   extended_s3_configuration {
@@ -176,7 +183,7 @@ resource "aws_kinesis_firehose_delivery_stream" "sechub_archive" {
     buffering_size     = 128
     buffering_interval = 60
     compression_format = "GZIP"
-    kms_key_arn        = module.sechub_archive_kms_key.arn
+    kms_key_arn        = module.sechub_archive_kms_key_region1.arn
     # https://docs.aws.amazon.com/firehose/latest/dev/s3-prefixes.html
     prefix              = "AWSLogs/!{partitionKeyFromQuery:account_id}/!{partitionKeyFromQuery:region}/!{partitionKeyFromQuery:source}/"
     error_output_prefix = "errors/!{timestamp:yyyy}/!{timestamp:MM}/!{timestamp:dd}/!{timestamp:HH}/!{firehose:error-output-type}/"
@@ -208,281 +215,9 @@ resource "aws_kinesis_firehose_delivery_stream" "sechub_archive" {
     }
   }
   depends_on = [
-    module.sechub_archive_kms_key,
+    module.sechub_archive_kms_key_region1,
     module.firehose_role.aws_iam_role_policy_attachment,
     module.firehose_role.aws_iam_policy,
     module.firehose_role
   ]
-}
-
-module "sechub_archive_kms_key" {
-  source = "../../modules/kms_key"
-
-  key_name   = "aft/${local.stack_name}"
-  key_policy = data.aws_iam_policy_document.sechub_archive_kms_key.json
-}
-
-data "aws_iam_policy_document" "sechub_archive_kms_key" {
-  statement {
-    sid = "Enable Specific Roles to use this key"
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
-    ]
-    resources = ["*"]
-    principals {
-      type        = "AWS"
-      identifiers = [module.firehose_role.arn]
-    }
-  }
-  statement {
-    sid = "Allow access for Key Administrators"
-    actions = [
-      "kms:Create*",
-      "kms:Describe*",
-      "kms:Enable*",
-      "kms:List*",
-      "kms:Put*",
-      "kms:Update*",
-      "kms:Revoke*",
-      "kms:Disable*",
-      "kms:Get*",
-      "kms:Delete*",
-      "kms:TagResource",
-      "kms:UntagResource",
-      "kms:ScheduleKeyDeletion",
-      "kms:CancelKeyDeletion"
-    ]
-    resources = ["*"]
-    principals {
-      type = "AWS"
-      identifiers = [
-        # Update to reflect desired key administration role - Example: arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/MyAdminRole
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-      ]
-    }
-  }
-  statement {
-    # https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html#cmk-permissions
-    sid = "Enable CloudWatch Logs to use the key"
-    actions = [
-      "kms:Encrypt*",
-      "kms:Decrypt*",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:Describe*"
-    ]
-    resources = ["*"]
-    principals {
-      type        = "Service"
-      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
-    }
-    condition {
-      test     = "ArnEquals"
-      variable = "kms:EncryptionContext:aws:logs:arn"
-      values   = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${local.stack_name}"]
-    }
-  }
-  statement {
-    sid       = "EnforceIdentityPerimeter"
-    effect    = "Deny"
-    actions   = ["kms:*"]
-    resources = ["*"]
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "StringNotEqualsIfExists"
-      variable = "aws:PrincipalOrgID"
-      values   = [data.aws_organizations_organization.current.id]
-    }
-    condition {
-      test     = "BoolIfExists"
-      variable = "aws:PrincipalIsAWSService"
-      values   = ["false"]
-    }
-  }
-}
-
-module "sechub_archive_access_logs_kms_key" {
-  source = "../../modules/kms_key"
-
-  key_name   = "aft/${local.stack_name}_access_logs"
-  key_policy = data.aws_iam_policy_document.sechub_archive_access_logs_kms_key.json
-}
-
-data "aws_iam_policy_document" "sechub_archive_access_logs_kms_key" {
-  statement {
-    sid = "Allow access for Key Administrators"
-    actions = [
-      "kms:Create*",
-      "kms:Describe*",
-      "kms:Enable*",
-      "kms:List*",
-      "kms:Put*",
-      "kms:Update*",
-      "kms:Revoke*",
-      "kms:Disable*",
-      "kms:Get*",
-      "kms:Delete*",
-      "kms:TagResource",
-      "kms:UntagResource",
-      "kms:ScheduleKeyDeletion",
-      "kms:CancelKeyDeletion"
-    ]
-    resources = ["*"]
-    principals {
-      type = "AWS"
-      identifiers = [
-        # Update to reflect desired key administration role - Example: arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/MyAdminRole
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-      ]
-    }
-  }
-  statement {
-    sid = "Enable S3 Access Logs to use the key"
-    actions = [
-      "kms:Encrypt*",
-      "kms:Decrypt*",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:Describe*"
-    ]
-    resources = ["*"]
-    principals {
-      type        = "Service"
-      identifiers = ["logging.s3.amazonaws.com"]
-    }
-  }
-  statement {
-    sid       = "EnforceIdentityPerimeter"
-    effect    = "Deny"
-    actions   = ["kms:*"]
-    resources = ["*"]
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "StringNotEqualsIfExists"
-      variable = "aws:PrincipalOrgID"
-      values   = [data.aws_organizations_organization.current.id]
-    }
-    condition {
-      test     = "BoolIfExists"
-      variable = "aws:PrincipalIsAWSService"
-      values   = ["false"]
-    }
-  }
-}
-
-
-data "aws_iam_policy_document" "sechub_archive_bucket_policy" {
-
-  statement {
-    sid = "AllowFirehoseAccess"
-    actions = [
-      "s3:AbortMultipartUpload",
-      "s3:DeleteObject",
-      "s3:GetBucketLocation",
-      "s3:GetObject",
-      "s3:GetObjectVersion",
-      "s3:GetBucketVersioning",
-      "s3:ListBucket",
-      "s3:ListBucketMultipartUploads",
-      "s3:PutObject",
-    ]
-    resources = [
-      module.sechub_archive_bucket.arn,
-      "${module.sechub_archive_bucket.arn}/*",
-    ]
-    principals {
-      type        = "AWS"
-      identifiers = [module.firehose_role.arn]
-    }
-  }
-
-  statement {
-    sid     = "EnforceIdentityPerimeter"
-    effect  = "Deny"
-    actions = ["s3:*"]
-    resources = [
-      module.sechub_archive_bucket.arn,
-      "${module.sechub_archive_bucket.arn}/*",
-    ]
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "StringNotEqualsIfExists"
-      variable = "aws:PrincipalOrgID"
-      values   = [data.aws_organizations_organization.current.id]
-    }
-    condition {
-      test     = "BoolIfExists"
-      variable = "aws:PrincipalIsAWSService"
-      values   = ["false"]
-    }
-  }
-
-  statement {
-    sid     = "RestrictToTLSRequestsOnly"
-    effect  = "Deny"
-    actions = ["s3:*"]
-    resources = [
-      module.sechub_archive_bucket.arn,
-      "${module.sechub_archive_bucket.arn}/*",
-    ]
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "Bool"
-      variable = "aws:SecureTransport"
-      values   = ["false"]
-    }
-  }
-
-  statement {
-    sid       = "DenyObjectsThatAreNotSSEKMS"
-    effect    = "Deny"
-    actions   = ["s3:PutObject"]
-    resources = ["${module.sechub_archive_bucket.arn}/*"]
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "Null"
-      variable = "s3:x-amz-server-side-encryption-aws-kms-key-id"
-      values   = ["true"]
-    }
-  }
-}
-
-module "sechub_archive_bucket" {
-  source = "../../modules/s3_bucket"
-
-  bucket_name                      = replace(local.stack_name, "_", "-")
-  bucket_policy                    = data.aws_iam_policy_document.sechub_archive_bucket_policy.json
-  key_arn                          = module.sechub_archive_kms_key.arn
-  access_logs_key_arn              = module.sechub_archive_access_logs_kms_key.arn
-  enable_intelligent_archive_tiers = true
-
-  lifecycle_rules = [{
-    id                       = "default"
-    status                   = "Enabled"
-    expire_days              = 30
-    noncurrent_days          = 30
-    noncurrent_storage_class = "INTELLIGENT_TIERING"
-    noncurrent_versions      = 1
-    transition_days          = 15
-    transition_storage_class = "INTELLIGENT_TIERING"
-  }]
 }

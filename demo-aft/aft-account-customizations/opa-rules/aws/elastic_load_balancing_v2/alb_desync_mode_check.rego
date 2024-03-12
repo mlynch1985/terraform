@@ -33,9 +33,9 @@ title := "ALB_DESYNC_MODE_CHECK"
 
 id := "ALB-1"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 level := "HIGH"
 

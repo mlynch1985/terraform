@@ -34,9 +34,9 @@ title := "ELB_TLS_HTTPS_LISTENERS_ONLY"
 
 id := "ELB-2"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 level := "CRITICAL"
 

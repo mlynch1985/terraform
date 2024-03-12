@@ -33,9 +33,9 @@ level := "CRITICAL"
 
 title := "ECS_CONTAINERS_READONLY_ACCESS"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "ECS-2"

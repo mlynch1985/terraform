@@ -32,9 +32,9 @@ title := "SECRETSMANAGER_USING_CMK"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_using_cmk(values) {
 	not utils.has_key(values, "kms_key_id")

@@ -34,9 +34,9 @@ id := "CODEBUILD-2"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_logs_disabled(lcfg) if {
 	lcfg == []

@@ -5,7 +5,7 @@
 
 terraform {
   backend "s3" {
-    bucket  = "demo-aft-statefile"
+    bucket  = "awsml-aftdemo-state"
     key     = "aft-deploy/terraform.tfstate"
     encrypt = true
     region  = "us-east-1"

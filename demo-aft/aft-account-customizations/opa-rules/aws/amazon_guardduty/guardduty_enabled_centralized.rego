@@ -25,19 +25,17 @@ package aws.amazon_guardduty.guardduty_enabled_centralized
 
 import data.terraform.module as terraform
 import data.utils as utils
+import future.keywords
 
-# This is used for output and resource filtering (from mock data)
 resource_type := "aws_guardduty_detector"
 
 title := "GUARDDUTY_ENABLED_CENTRALIZED"
 
-id := "AMAZON_GUARDDUTY-1"
-
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_guardduty_disabled(values) {
 	actions := object.get(values.resource_changes[j].change, "actions", "")
@@ -48,13 +46,15 @@ is_guardduty_disabled(values) {
 	enabled == false
 }
 
-violations[response] {
-	input.resource_changes[j].type == resource_type
+violations contains response if {
+	id := "AMAZON_GUARDDUTY-1"
+
+	terraform.resources[j].type == resource_type
 
 	# Check if the rule should be ignored for this resource
-	not terraform.skip_resource_evaluation(input.resource_changes[j], id, data.ignore_rules)
+	not terraform.skip_resource_evaluation(terraform.resources[j], id, data.ignore_rules)
 
-	is_guardduty_disabled(input)
+	is_guardduty_disabled(terraform)
 
 	response := terraform.ocsf_response(id, title, {
 		"message": {
@@ -67,7 +67,7 @@ violations[response] {
 			"Description": sprintf(
 				"Resource (%s) is attempting to disable or delete the Amazon GuardDuty detector which is not allowed. Refer to terraform documentation on how prevent disable or deleting the detector. https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/guardduty_detector",
 				[input.resource_changes[j].address],
-			),
+			)
 		},
 		"compliance": {"requirements": ["PCI DSS 3.2.1, Control ID(s): 11.4"]},
 		"resources": {

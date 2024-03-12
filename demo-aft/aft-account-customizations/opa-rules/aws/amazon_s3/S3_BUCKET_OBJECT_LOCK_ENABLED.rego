@@ -29,11 +29,11 @@ import data.utils as utils
 resource_type := "aws_s3_bucket"
 
 title := "S3_BUCKET_OBJECT_LOCK_ENABLED"
-bank_control_id := "UNKNOWN"
-bank_opa_owner := "UNKNOWN"
+bank_control_id := "TBD"
+bank_opa_owner := "TBD"
 level := "HIGH"
-cust_id := "Bofa-axiamed"
-owner := "UNKNOWN"
+cust_id := "TBD"
+owner := "TBD"
 
 violations[response] {
 	id := "S3-15"

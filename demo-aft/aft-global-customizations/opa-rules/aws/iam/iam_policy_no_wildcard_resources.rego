@@ -32,8 +32,8 @@ title := "IAM_POLICY_NO_WILDCARD_RESOURCES"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
-owner := "UNKNOWN"
+cust_id := "TBD"
+owner := "TBD"
 
 iam_resource_types := [
 	"aws_iam_policy",

@@ -1,12 +1,12 @@
-# This AWS Content is provided subject to the terms of the AWS Customer Agreement 
-# available at http://aws.amazon.com/agreement or other written agreement between 
-# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both. 
+# This AWS Content is provided subject to the terms of the AWS Customer Agreement
+# available at http://aws.amazon.com/agreement or other written agreement between
+# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
 # Rule Identifier:
 #    CLOUDWATCH_LOG_GROUP_ENCRYPTED
 #
 # Description:
-#    Checks if a log group in Amazon CloudWatch Logs is encrypted with an AWS Key Management Service (KMS) key. 
+#    Checks if a log group in Amazon CloudWatch Logs is encrypted with an AWS Key Management Service (KMS) key.
 #    The rule is NON_COMPLIANT if no AWS KMS key is configured on the log groups.
 #
 # Resource Types:
@@ -30,9 +30,9 @@ title := "CLOUDWATCH_LOG_GROUP_ENCRYPTED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "CLOUDWATCH-1"

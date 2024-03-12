@@ -9,7 +9,7 @@
 provider "aws" {
   region = "{{ provider_region }}"
   assume_role {
-    role_arn    = "{{ target_admin_role_arn }}"
+    role_arn = "{{ target_admin_role_arn }}"
   }
   default_tags {
     tags = {
@@ -19,8 +19,8 @@ provider "aws" {
 }
 
 provider "aws" {
-  region  = "{{ provider_region }}"
-  alias   = "ct-management"
+  region = "{{ provider_region }}"
+  alias = "ct-management"
   profile = "ct-management"
   default_tags {
     tags = {
@@ -30,33 +30,10 @@ provider "aws" {
 }
 
 provider "aws" {
-  region  = "{{ provider_region }}"
-  alias   = "aft-management"
-  profile = "aft-management"
-  default_tags {
-    tags = {
-      managed_by = "AFT"
-    }
-  }
-}
-
-# AWSAFTExecution in audit account used to define Service Automation IAM Roles from the Audit Account
-provider "aws" {
-  region  = "{{ provider_region }}"
-  alias   = "ct-audit"
-  profile = "ct-audit"
-  default_tags {
-    tags = {
-      managed_by = "AFT"
-    }
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"
-  alias  = "region1"
+  region = local.global_vars.region1
+  alias = "region1"
   assume_role {
-    role_arn    = "{{ target_admin_role_arn }}"
+    role_arn = "{{ target_admin_role_arn }}"
   }
   default_tags {
     tags = {
@@ -66,10 +43,10 @@ provider "aws" {
 }
 
 provider "aws" {
-  region = "us-east-2"
-  alias  = "region2"
+  region = local.global_vars.region2
+  alias = "region2"
   assume_role {
-    role_arn    = "{{ target_admin_role_arn }}"
+    role_arn = "{{ target_admin_role_arn }}"
   }
   default_tags {
     tags = {
@@ -79,10 +56,23 @@ provider "aws" {
 }
 
 provider "aws" {
-  region = "us-west-2"
-  alias  = "region3"
+  region = local.global_vars.region3
+  alias = "region3"
   assume_role {
-    role_arn    = "{{ target_admin_role_arn }}"
+    role_arn = "{{ target_admin_role_arn }}"
+  }
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region = local.global_vars.region4
+  alias = "region4"
+  assume_role {
+    role_arn = "{{ target_admin_role_arn }}"
   }
   default_tags {
     tags = {

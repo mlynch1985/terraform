@@ -1,0 +1,161 @@
+## © 2024 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
+## This AWS Content is provided subject to the terms of the AWS Customer Agreement available at
+## http://aws.amazon.com/agreement or other written agreement between Customer and either
+## Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
+
+## Auto generated providers.tf ##
+## Updated on: {{ timestamp }} ##
+
+provider "aws" {
+  region = local.global_vars.region1
+  assume_role {
+    role_arn    = "{{ target_admin_role_arn }}"
+  }
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region  = local.global_vars.region1
+  alias   = "ct-management"
+  profile = "ct-management"
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region  = local.global_vars.region1
+  alias   = "aft-management"
+  profile = "aft-management"
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region  = local.global_vars.region1
+  alias   = "network-region1"
+  profile = "aft-management-admin"
+
+  assume_role {
+    role_arn     = "arn:aws:iam::${local.network_account_id}:role/AWSAFTExecution"
+    session_name = "AFT_SESSION"
+  }
+
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region  = local.global_vars.region2
+  alias   = "network-region2"
+  profile = "aft-management-admin"
+
+  assume_role {
+    role_arn     = "arn:aws:iam::${local.network_account_id}:role/AWSAFTExecution"
+    session_name = "AFT_SESSION"
+  }
+
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region  = local.global_vars.region3
+  alias   = "network-region3"
+  profile = "aft-management-admin"
+
+  assume_role {
+    role_arn     = "arn:aws:iam::${local.network_account_id}:role/AWSAFTExecution"
+    session_name = "AFT_SESSION"
+  }
+
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region  = local.global_vars.region4
+  alias   = "network-region4"
+  profile = "aft-management-admin"
+
+  assume_role {
+    role_arn     = "arn:aws:iam::${local.network_account_id}:role/AWSAFTExecution"
+    session_name = "AFT_SESSION"
+  }
+
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region = local.global_vars.region1
+  alias  = "region1"
+  assume_role {
+    role_arn    = "{{ target_admin_role_arn }}"
+  }
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region = local.global_vars.region2
+  alias  = "region2"
+  assume_role {
+    role_arn    = "{{ target_admin_role_arn }}"
+  }
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region = local.global_vars.region3
+  alias  = "region3"
+  assume_role {
+    role_arn    = "{{ target_admin_role_arn }}"
+  }
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}
+
+provider "aws" {
+  region = local.global_vars.region4
+  alias  = "region4"
+  assume_role {
+    role_arn    = "{{ target_admin_role_arn }}"
+  }
+  default_tags {
+    tags = {
+      managed_by = "AFT"
+    }
+  }
+}

@@ -35,9 +35,9 @@ title := "ALB_WAF_ENABLED"
 
 id := "ELB-3"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 level := "HIGH"
 

@@ -32,9 +32,9 @@ resource_type := "aws_ecr_repository"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 title := "ECR_PRIVATE_IMAGE_SCANNING_ENABLED"
 

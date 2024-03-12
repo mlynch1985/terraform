@@ -34,9 +34,9 @@ title := "S3_BUCKET_SSL_REQUESTS_ONLY"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "S3-4"

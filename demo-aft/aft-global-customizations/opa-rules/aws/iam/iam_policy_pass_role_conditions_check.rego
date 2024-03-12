@@ -30,8 +30,8 @@ title := "IAM_POLICY_PASS_ROLE_CONDITIONS_CHECK"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
-owner := "UNKNOWN"
+cust_id := "TBD"
+owner := "TBD"
 
 iam_resource_types = [
 	"aws_iam_policy",

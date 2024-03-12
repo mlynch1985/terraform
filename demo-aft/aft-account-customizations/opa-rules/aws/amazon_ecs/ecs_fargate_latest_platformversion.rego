@@ -33,9 +33,9 @@ resource_type := "aws_ecs_service"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 title := "ECS_FARGATE_LATEST_PLATFORM_VERSION"
 

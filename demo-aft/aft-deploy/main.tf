@@ -5,7 +5,7 @@
 
 module "aft-initiator" {
   source  = "aws-ia/control_tower_account_factory/aws"
-  version = "1.11.1"
+  version = "1.12.0"
 
   # Account Info
   ct_management_account_id  = local.ct_management_account_id
@@ -19,13 +19,15 @@ module "aft-initiator" {
   aft_feature_enterprise_support          = false
   aft_feature_delete_default_vpcs_enabled = true
   aft_metrics_reporting                   = true
-  aft_vpc_endpoints                       = true
-  cloudwatch_log_group_retention          = 30 # days
+  backup_recovery_point_retention         = 30  # days
+  cloudwatch_log_group_retention          = 180 # days
   concurrent_account_factory_actions      = 5
   global_codebuild_timeout                = 180 # minutes
   maximum_concurrent_customizations       = 10
 
   # AFT VPC Configuration
+  aft_enable_vpc                 = true
+  aft_vpc_endpoints              = true
   aft_vpc_cidr                   = "192.168.0.0/22"
   aft_vpc_private_subnet_01_cidr = "192.168.0.0/24"
   aft_vpc_private_subnet_02_cidr = "192.168.1.0/24"
@@ -33,6 +35,7 @@ module "aft-initiator" {
   aft_vpc_public_subnet_02_cidr  = "192.168.3.0/24"
 
   # VCS Configuration
+  # github_enterprise_url                           = ""
   aft_framework_repo_url                          = "https://github.com/aws-ia/terraform-aws-control_tower_account_factory.git"
   aft_framework_repo_git_ref                      = "main"
   vcs_provider                                    = "codecommit"
@@ -51,7 +54,7 @@ module "aft-initiator" {
   terraform_distribution      = "oss"
   terraform_org_name          = "null"
   terraform_token             = "null"
-  terraform_version           = "1.6.6"
+  terraform_version           = "1.7.4"
 }
 
 resource "aws_iam_role_policy" "aft_admin_role" {

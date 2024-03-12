@@ -31,8 +31,8 @@ title := "IAM_TRUST_POLICY_CONDITIONS_CHECK"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
-owner := "UNKNOWN"
+cust_id := "TBD"
+owner := "TBD"
 
 iam_principal_types = [
 	"aws_iam_role",

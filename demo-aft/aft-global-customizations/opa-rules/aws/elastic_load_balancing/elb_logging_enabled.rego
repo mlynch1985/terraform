@@ -31,9 +31,9 @@ title := "ELB_LOGGING_ENABLED"
 
 id := "ELB-1"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 level := "HIGH"
 

@@ -42,9 +42,9 @@ title := "IAM_CUSTOMER_POLICY_BLOCKED_KMS_ACTIONS"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 check_iam_kms_actions(tf_resource, blocked_actions_patterns) {
 	terraform.resources[j].type == "aws_iam_policy_document"

@@ -35,9 +35,9 @@ title := "S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_s3_publicly_accessible(s3_tf_resource) if {
 	s3_tf_resource.type == "aws_s3_bucket"

@@ -23,3 +23,18 @@ data "aws_availability_zones" "region3" {
   state    = "available"
   provider = aws.region3
 }
+
+data "aws_sns_topic" "aws_controltower_securitynotification_region1" {
+  name     = "aws-controltower-SecurityNotifications"
+  provider = aws.region1
+}
+
+data "aws_sns_topic" "aws_controltower_securitynotification_region2" {
+  name     = "aws-controltower-SecurityNotifications"
+  provider = aws.region2
+}
+
+data "aws_sns_topic" "aws_controltower_securitynotification_region3" {
+  name     = "aws-controltower-SecurityNotifications"
+  provider = aws.region3
+}

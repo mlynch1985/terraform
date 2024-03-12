@@ -31,9 +31,9 @@ title := "ENCRYPTED_VOLUMES"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_encrypted(res) {
 	not object.get(res.values, "encrypted", false)

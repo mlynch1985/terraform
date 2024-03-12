@@ -30,8 +30,8 @@ title := "IAM_ROLES_ONLY_CORE_ROLES_ALLOWED_ON_ROOT_PATH"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
-owner := "UNKNOWN"
+cust_id := "TBD"
+owner := "TBD"
 
 violations contains response if {
 	id := "IAM-6"

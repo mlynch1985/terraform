@@ -1,13 +1,13 @@
-# This AWS Content is provided subject to the terms of the AWS Customer Agreement 
-# available at http://aws.amazon.com/agreement or other written agreement between 
-# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both. 
+# This AWS Content is provided subject to the terms of the AWS Customer Agreement
+# available at http://aws.amazon.com/agreement or other written agreement between
+# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
 # Rule Identifier:
 #    RDS_AUTOMATIC_MINOR_VERSION_UPGRADE_ENABLED
 #
 # Description:
-#    Checks if Amazon Relational Database Service (RDS) database instances are configured for automatic minor version upgrades. 
-#    The rule is NON_COMPLIANT if the value of 'auto_minor_version_upgrade' is false. 
+#    Checks if Amazon Relational Database Service (RDS) database instances are configured for automatic minor version upgrades.
+#    The rule is NON_COMPLIANT if the value of 'auto_minor_version_upgrade' is false.
 #
 # Resource Types:
 #    aws_db_instance
@@ -30,9 +30,9 @@ title := "RDS_AUTOMATIC_MINOR_VERSION_UPGRADE_ENABLED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "RDS-6"

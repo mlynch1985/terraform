@@ -32,9 +32,9 @@ title := "KMS_SOFT_DELETION_ENABLED"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 days_to_delete := 30
 

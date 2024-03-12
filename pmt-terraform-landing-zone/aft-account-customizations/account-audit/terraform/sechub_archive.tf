@@ -1,4 +1,4 @@
-# © 2023 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
+# © 2024 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
 # This AWS Content is provided subject to the terms of the AWS Customer Agreement available at
 # http://aws.amazon.com/agreement or other written agreement between Customer and either
 # Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "sechub_archive" {
   statement {
     sid       = "AllowEvents"
     actions   = ["events:PutEvents"]
-    resources = ["arn:aws:events:${data.aws_region.current.name}:${data.aws_ssm_parameter.log_archive_account_id.value}:event-bus/${local.stack_name}"]
+    resources = ["arn:aws:events:${data.aws_region.current.name}:${local.log_archive_account_id}:event-bus/${local.stack_name}"]
     condition {
       test     = "StringEquals"
       variable = "aws:ResourceOrgID"
@@ -55,7 +55,7 @@ resource "aws_cloudwatch_event_rule" "sechub_archive" {
 
 resource "aws_cloudwatch_event_target" "sechub_archive" {
   rule     = aws_cloudwatch_event_rule.sechub_archive.name
-  arn      = "arn:aws:events:${data.aws_region.current.name}:${data.aws_ssm_parameter.log_archive_account_id.value}:event-bus/sechub_archive"
+  arn      = "arn:aws:events:${data.aws_region.current.name}:${local.log_archive_account_id}:event-bus/sechub_archive"
   role_arn = module.eventbridge_target_iam_role.arn
 }
 

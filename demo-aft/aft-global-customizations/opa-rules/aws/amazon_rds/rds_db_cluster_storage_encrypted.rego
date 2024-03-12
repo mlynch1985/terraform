@@ -29,9 +29,9 @@ import data.utils as utils
 title := "RDS_DB_CLUSTER_STORAGE_ENCRYPTED"
 resource_type := "aws_rds_cluster"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "RDS-9"

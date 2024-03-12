@@ -35,9 +35,9 @@ level := "CRITICAL"
 
 title := "WAFV2_LOGGING_ENABLED"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 has_wafacl_and_logging_config {
 	# must contain both aws_wafv2_web_acl_logging_configuration and aws_wafv2_web_acl resource types to qualify

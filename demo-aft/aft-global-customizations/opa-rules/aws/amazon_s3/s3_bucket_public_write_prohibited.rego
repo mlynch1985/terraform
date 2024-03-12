@@ -35,9 +35,9 @@ title := "S3_BUCKET_PUBLIC_WRITE_PROHIBITED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_acl_public_read(res, acl_res) if {
 	bucket_addr = res.address

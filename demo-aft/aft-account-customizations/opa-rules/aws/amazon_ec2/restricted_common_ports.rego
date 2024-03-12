@@ -31,9 +31,9 @@ title := "RESTRICTED_INCOMING_TRAFFIC"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 common_ports := [20, 21, 3389, 3306, 4333]
 

@@ -34,9 +34,9 @@ title := "WAF_REGIONAL_WEBACL_NOT_EMPTY"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 has_rule_associated(rule) {
 	rule.rule_id.references == []

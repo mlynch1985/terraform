@@ -36,9 +36,9 @@ id := "NETWORK_FIREWALL-1"
 
 level := "HIGH"
 
-cust_id := "Bofa-AxiaMed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 stateful_or_stateless_not_empty(values) {
 	either := any([

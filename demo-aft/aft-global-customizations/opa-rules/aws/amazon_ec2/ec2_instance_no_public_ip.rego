@@ -32,9 +32,9 @@ title := "EC2_INSTANCE_NO_PUBLIC_IP"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	level := "CRITICAL"

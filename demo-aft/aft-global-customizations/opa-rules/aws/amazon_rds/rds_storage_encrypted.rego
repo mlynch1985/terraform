@@ -1,12 +1,12 @@
-# This AWS Content is provided subject to the terms of the AWS Customer Agreement 
-# available at http://aws.amazon.com/agreement or other written agreement between 
-# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both. 
+# This AWS Content is provided subject to the terms of the AWS Customer Agreement
+# available at http://aws.amazon.com/agreement or other written agreement between
+# Customer and either Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
 
 # Rule Identifier:
 #    RDS_STORAGE_ENCRYPTED
 #
 # Description:
-#    Checks if storage encryption is enabled for your RDS DB instances. 
+#    Checks if storage encryption is enabled for your RDS DB instances.
 #    The rule is NON_COMPLIANT if storage encryption is not enabled.
 #
 # Resource Types:
@@ -29,9 +29,9 @@ title := "RDS_STORAGE_ENCRYPTED"
 
 level := "CRITICAL"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "RDS-7"

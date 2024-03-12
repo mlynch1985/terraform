@@ -34,9 +34,9 @@ title := "S3_BUCKET_LOGGING_ENABLED"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 is_src_or_target(rep, bucket_addr) if {
 	count(rep) == 0

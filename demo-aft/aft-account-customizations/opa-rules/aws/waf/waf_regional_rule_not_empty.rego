@@ -33,9 +33,9 @@ title := "WAF_REGIONAL_RULE_NOT_EMPTY"
 
 level := "HIGH"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 violations[response] {
 	id := "WAF-4"

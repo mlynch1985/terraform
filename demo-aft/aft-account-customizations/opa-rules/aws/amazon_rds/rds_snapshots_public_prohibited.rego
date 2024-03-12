@@ -32,9 +32,9 @@ level := "CRITICAL"
 
 title := "RDS_SNAPSHOTS_PUBLIC_PROHIBITED"
 
-cust_id := "Bofa-axiamed"
+cust_id := "TBD"
 
-owner := "UNKNOWN"
+owner := "TBD"
 
 shared_accounts_contains_all(shared_accounts) if {
 	shared_accounts == "all"
